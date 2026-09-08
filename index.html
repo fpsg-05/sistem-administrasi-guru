@@ -158,6 +158,193 @@ button{
     text-decoration: underline;
 }
 
+/* ===== LOGIN MODERN - GAYA REFERENSI SMA ===== */
+#loginPage.login-page{
+    min-height:100vh;
+    padding:0;
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    background:#eef3f9;
+    color:#18345d;
+}
+#loginPage .login-shell{
+    width:100%;
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    background:#fff;
+    overflow:hidden;
+    box-shadow:none;
+    border:0;
+    border-radius:0;
+}
+#loginPage .login-visual{
+    position:relative;
+    min-height:100vh;
+    padding:54px 70px 34px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow:hidden;
+    background:
+        linear-gradient(180deg,rgba(17,104,196,.88) 0%,rgba(17,104,196,.48) 42%,rgba(3,32,67,.80) 100%),
+        url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=88') center/cover;
+}
+#loginPage .login-visual::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg,rgba(7,76,153,.18),transparent 65%);
+    pointer-events:none;
+}
+#loginPage .login-visual::after{
+    content:'';
+    position:absolute;
+    width:460px;
+    height:460px;
+    right:-280px;
+    top:-240px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 0 0 60px rgba(255,255,255,.035),0 0 0 120px rgba(255,255,255,.025);
+}
+#loginPage .visual-top,
+#loginPage .visual-bottom,
+#loginPage .visual-copy,
+#loginPage .feature-strip{position:relative;z-index:2}
+#loginPage .school-brand{display:flex;align-items:center;gap:16px;color:#fff}
+#loginPage .school-emblem{
+    width:58px;height:58px;flex:0 0 58px;border-radius:50%;
+    object-fit:contain;background:#fff;padding:5px;
+    box-shadow:0 7px 22px rgba(0,0,0,.18)
+}
+#loginPage .brand-name{font-size:20px;font-weight:800;letter-spacing:.2px;line-height:1.15;text-transform:uppercase}
+#loginPage .brand-subtitle{margin-top:5px;font-size:12px;color:rgba(255,255,255,.82);letter-spacing:.35px}
+#loginPage .visual-copy{max-width:640px;color:#fff;margin-top:auto;margin-bottom:46px}
+#loginPage .visual-copy h3{margin:0;font-size:47px;line-height:1.08;font-weight:800;letter-spacing:-1.5px;max-width:650px}
+#loginPage .visual-copy p{margin-top:16px;max-width:580px;color:rgba(255,255,255,.90);font-size:17px;line-height:1.55}
+#loginPage .visual-kicker{display:none}
+#loginPage .feature-strip{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    max-width:760px;
+}
+#loginPage .feature-card{
+    min-height:104px;
+    padding:17px 13px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    border-radius:12px;
+    background:rgba(4,37,78,.54);
+    border:1px solid rgba(255,255,255,.10);
+    backdrop-filter:blur(5px);
+    color:#fff;
+}
+#loginPage .feature-icon{font-size:27px;line-height:1;margin-bottom:10px}
+#loginPage .feature-card span:last-child{font-size:12px;line-height:1.35;font-weight:600;color:rgba(255,255,255,.94)}
+#loginPage .visual-bottom{margin-top:18px;color:rgba(255,255,255,.68);font-size:11px}
+#loginPage .login-panel{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:58px 80px;
+    background:
+      radial-gradient(circle at 100% 0%,rgba(36,119,221,.08),transparent 22%),
+      radial-gradient(circle at 100% 100%,rgba(36,119,221,.07),transparent 24%),
+      #fff;
+    overflow:hidden;
+}
+#loginPage .login-panel::before,
+#loginPage .login-panel::after{
+    content:'';
+    position:absolute;
+    border-radius:50%;
+    border:1px solid rgba(37,99,235,.06);
+    pointer-events:none;
+}
+#loginPage .login-panel::before{width:300px;height:300px;right:-170px;top:-180px;box-shadow:0 0 0 55px rgba(37,99,235,.025)}
+#loginPage .login-panel::after{width:250px;height:250px;right:-145px;bottom:-160px;box-shadow:0 0 0 55px rgba(37,99,235,.025)}
+#loginPage .login-box{width:100%;max-width:540px;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;text-align:left;position:relative;z-index:2}
+#loginPage .login-heading{margin-bottom:38px;display:flex;align-items:center;gap:18px}
+#loginPage .login-heading .mini-logo{
+    width:74px;height:74px;flex:0 0 74px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin:0;background:#fff;padding:4px;
+    box-shadow:0 8px 22px rgba(15,23,42,.10);overflow:hidden
+}
+#loginPage .login-heading .mini-logo img{width:100%;height:100%;object-fit:contain}
+#loginPage .login-heading-copy{min-width:0}
+#loginPage .login-heading h1{margin:0 0 5px;font-size:29px;line-height:1.2;color:#112f5d;text-transform:none;letter-spacing:-.5px;font-weight:800}
+#loginPage .login-heading h2{margin:0;font-size:18px;font-weight:500;color:#476082;line-height:1.45}
+#loginPage .login-section-title{margin:0 0 8px;font-size:22px;font-weight:800;color:#102f5d;text-align:center}
+#loginPage .login-section-subtitle{margin:0 0 28px;font-size:14px;color:#70829d;line-height:1.55;text-align:center}
+#loginPage .login-label{display:block;margin:0 0 8px;color:#29466d;font-size:13px;font-weight:700}
+#loginPage .field-wrap{position:relative;margin-bottom:18px}
+#loginPage .field-icon{position:absolute;left:19px;top:50%;transform:translateY(-50%);color:#0f3b72;font-size:20px;pointer-events:none;z-index:2}
+#loginPage .field-wrap input{width:100%;height:62px;margin:0;padding:0 54px;border:1px solid #cdd8e7;border-radius:11px;background:#fff;color:#17355f;font-size:15px;box-shadow:none}
+#loginPage .field-wrap input::placeholder{color:#9aabc2}
+#loginPage .field-wrap input:focus{border-color:#0e66c8;box-shadow:0 0 0 3px rgba(14,102,200,.09)}
+#loginPage .password-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);width:40px;height:40px;padding:0;border-radius:8px;background:transparent;color:#173a6b;font-size:17px}
+#loginPage .password-toggle:hover{background:#f1f6fb;color:#0e66c8}
+#loginPage .login-options{display:flex;align-items:center;justify-content:space-between;margin:2px 0 22px;font-size:13px;color:#476082}
+#loginPage .remember-label{display:flex;align-items:center;gap:8px;cursor:pointer}
+#loginPage .remember-label input{width:18px;height:18px;margin:0;accent-color:#0e66c8}
+#loginPage .forgot-link{color:#0b63c7;font-weight:600;cursor:pointer}
+#loginPage .btn-login-modern{width:100%;height:62px;margin-top:0;border-radius:11px;background:linear-gradient(135deg,#0e68cb,#075bb7);color:#fff;font-size:16px;font-weight:800;box-shadow:0 10px 24px rgba(14,104,203,.18)}
+#loginPage .btn-login-modern:hover{background:linear-gradient(135deg,#095db6,#064f9f);transform:translateY(-1px)}
+#loginPage .btn-login-modern .arrow{font-size:20px;margin-left:8px;vertical-align:-1px}
+#loginPage .login-divider{display:flex;align-items:center;gap:14px;margin:28px 0 22px;color:#94a3b8;font-size:13px}
+#loginPage .login-divider::before,#loginPage .login-divider::after{content:'';height:1px;background:#dfe6ef;flex:1}
+#loginPage .btn-google{width:100%;height:58px;border:1px solid #cdd8e7;border-radius:11px;background:#fff;color:#17355f;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:11px}
+#loginPage .btn-google:hover{background:#f8fafc;border-color:#b8c8dd}
+#loginPage .google-icon{font-weight:900;font-size:21px;color:#4285f4}
+#loginPage .login-help{margin-top:22px;text-align:center;color:#7a8ca7;font-size:13px;line-height:1.6}
+#loginPage .login-help strong{color:#0f315f}
+#loginPage .login-register{margin-top:24px;padding-top:0;border-top:0;text-align:center}
+#loginPage .login-register .link{display:inline;color:#0b63c7;font-size:13px;font-weight:700}
+#loginPage .login-register .link + .link{margin-left:14px;padding-left:14px;border-left:1px solid #d6dfeb}
+@media (max-width:1100px){
+    #loginPage .login-panel{padding:48px 48px}
+    #loginPage .login-visual{padding-left:44px;padding-right:44px}
+    #loginPage .visual-copy h3{font-size:39px}
+}
+@media (max-width:820px){
+    #loginPage.login-page{padding:0}
+    #loginPage .login-shell{grid-template-columns:1fr;min-height:100vh}
+    #loginPage .login-visual{min-height:440px;padding:32px 28px 24px}
+    #loginPage .visual-copy{margin-bottom:30px}
+    #loginPage .visual-copy h3{font-size:34px}
+    #loginPage .visual-copy p{font-size:14px}
+    #loginPage .feature-strip{grid-template-columns:repeat(2,1fr)}
+    #loginPage .login-panel{padding:44px 28px 50px}
+}
+@media (max-width:480px){
+    #loginPage .login-visual{min-height:390px;padding:24px 20px 20px}
+    #loginPage .school-emblem{width:48px;height:48px;flex-basis:48px}
+    #loginPage .brand-name{font-size:15px}
+    #loginPage .brand-subtitle{font-size:10px}
+    #loginPage .visual-copy{margin-bottom:24px}
+    #loginPage .visual-copy h3{font-size:28px}
+    #loginPage .visual-copy p{display:none}
+    #loginPage .feature-card{min-height:88px;padding:12px 8px}
+    #loginPage .feature-icon{font-size:23px}
+    #loginPage .feature-card span:last-child{font-size:10px}
+    #loginPage .login-panel{padding:36px 20px 42px}
+    #loginPage .login-heading{gap:14px}
+    #loginPage .login-heading .mini-logo{width:60px;height:60px;flex-basis:60px}
+    #loginPage .login-heading h1{font-size:24px}
+    #loginPage .login-heading h2{font-size:15px}
+    #loginPage .login-options{font-size:12px}
+    #loginPage .login-register .link{display:block}
+    #loginPage .login-register .link + .link{margin:10px 0 0;padding:0;border-left:0}
+}
+
 /* DASHBOARD LAYOUT */
 .dashboard{ display: none; }
 
@@ -849,6 +1036,34 @@ canvas{ display: none; }
 .announcement-actions { display:flex; gap:7px; margin-top:10px; }
 .announcement-empty { text-align:center; padding:18px; color:var(--text-muted); font-size:13px; border:1px dashed var(--border-color); border-radius:10px; }
 
+/* TUGAS PEMBELAJARAN */
+.sidebar-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:25px;min-height:54px}
+.sidebar-brand-logo{width:42px;height:42px;object-fit:contain;display:block;filter:drop-shadow(0 2px 5px rgba(0,0,0,.25))}
+.sidebar-brand-title{font-size:18px;font-weight:800;color:var(--text-light);line-height:1.05;white-space:nowrap}
+.sidebar-brand .school-name{margin:4px 0 0;text-align:left;font-size:11px;line-height:1.1}
+.materi-header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.materi-tab-btn{width:auto!important;margin:0!important;padding:9px 13px!important;border:1px solid var(--border-color);background:#0f172a;color:#94a3b8;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.materi-tab-btn.active{background:rgba(37,99,235,.18);color:#93c5fd;border-color:#2563eb}
+.guru-task-action{display:none}.staff-task-action{display:inline-flex}
+.task-notification-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#ef4444;color:#fff;font-size:10px;margin-left:5px}
+.task-notification-list{display:grid;gap:9px}
+.task-notification-item{padding:12px;background:#0f172a;border:1px solid var(--border-color);border-radius:10px}
+.task-notification-item h4{font-size:13px;margin:0 0 6px;color:#f8fafc}
+.task-notification-item p{font-size:11px;color:var(--text-muted);margin:3px 0}
+.task-notification-deadline{color:#fbbf24!important;font-weight:700}
+.task-status-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800}
+.task-status-active{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.3)}
+.task-status-upcoming{background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.3)}
+.task-status-expired{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.task-card-deadline{font-weight:800;color:#fbbf24!important}
+.task-card-submission{color:#86efac!important;font-weight:700}
+.task-upload-box{margin-top:15px;padding:15px;border:1px dashed #64748b;border-radius:11px;background:#0f172a}
+.task-upload-box input{margin-top:9px}
+.task-submission-list{margin-top:20px;display:grid;gap:9px}
+.task-submission-item{padding:12px;background:#0f172a;border:1px solid var(--border-color);border-radius:10px}
+.task-submission-item strong{font-size:12px}.task-submission-item small{display:block;color:var(--text-muted);margin-top:4px}
+@media(max-width:768px){.sidebar-brand{display:none}.materi-header-actions{justify-content:flex-start;width:100%}.materi-header-actions .btn-add-materi{width:auto}.task-notification-list{grid-template-columns:1fr}}
+
 /* RESPONSIVE */
 @media(max-width: 992px){
     .dashboard-grid { grid-template-columns: 1fr; }
@@ -863,6 +1078,176 @@ canvas{ display: none; }
     .header { flex-direction: column; align-items: flex-start; gap: 10px; }
     .form-grid-4, .form-grid-3, .form-grid-2 { grid-template-columns: 1fr; }
 }
+
+
+/* ===== RESPONSIVE MOBILE ENHANCEMENT ===== */
+@media (max-width: 768px){
+    html, body{width:100%;max-width:100%;overflow-x:hidden;}
+    body{font-size:14px;}
+
+    .sidebar{
+        width:100%;
+        height:68px;
+        left:0;
+        bottom:0;
+        top:auto;
+        padding:6px 4px;
+        border-right:0;
+        border-top:1px solid var(--border-color);
+        z-index:1000;
+        overflow-x:auto;
+        overflow-y:hidden;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+    }
+    .sidebar::-webkit-scrollbar{display:none;}
+    .sidebar-brand{display:none!important;}
+    .sidebar-menu{
+        display:flex;
+        align-items:stretch;
+        gap:2px;
+        width:max-content;
+        min-width:100%;
+        list-style:none;
+    }
+    .sidebar-menu .admin-only,
+    .sidebar-menu .student-only,
+    .sidebar-menu .account-manager-only{
+        display:contents!important;
+    }
+    .sidebar a,
+    .sidebar-menu > a{
+        width:74px;
+        min-width:74px;
+        height:56px;
+        margin:0;
+        padding:5px 3px;
+        border-radius:9px;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        gap:3px;
+        font-size:10px;
+        line-height:1.1;
+        text-align:center;
+        overflow:hidden;
+        flex:0 0 74px;
+    }
+    .sidebar a > span:first-child{font-size:17px;line-height:18px;}
+    .sidebar a span.nav-text{
+        display:block!important;
+        width:100%;
+        max-width:100%;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        font-size:9px;
+        line-height:12px;
+    }
+
+    .main{
+        width:100%;
+        margin-left:0;
+        padding:12px 12px 82px;
+    }
+    .header{
+        width:100%;
+        margin-bottom:16px;
+        padding:13px 14px;
+        border-radius:13px;
+        gap:12px;
+    }
+    .header-user-info{gap:10px;min-width:0;}
+    .user-avatar{width:42px;height:42px;min-width:42px;font-size:17px;}
+    .header h2#welcome{font-size:16px!important;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}
+    .role-badge{font-size:9px;padding:3px 8px;}
+    .header > div:last-child{width:100%;text-align:left!important;}
+    .header > div:last-child p{font-size:10px!important;}
+    .header > div:last-child b{font-size:11px!important;}
+
+    .content{
+        width:100%;
+        padding:16px;
+        border-radius:13px;
+        overflow:hidden;
+    }
+    .cards{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+    .card{padding:14px;border-radius:12px;min-width:0;}
+    .card-info h3{font-size:9px;line-height:1.25;}
+    .card-info h2{font-size:22px;margin-top:4px;}
+    .card-icon{width:38px;height:38px;min-width:38px;font-size:18px;border-radius:9px;}
+    .dashboard-grid{grid-template-columns:1fr;gap:12px;margin-top:12px;}
+    .widget-box{padding:14px;border-radius:12px;}
+    .widget-title{font-size:14px;margin-bottom:12px;}
+    .quick-actions-list{grid-template-columns:repeat(2,1fr);gap:8px;}
+    .action-btn{padding:11px 7px;border-radius:10px;}
+    .action-btn span{font-size:19px;}
+    .action-btn p{font-size:10px;}
+
+    .materi-page-header,
+    .account-page-header,
+    .materi-form-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+    .materi-page-header h2,
+    .account-page-header h2{font-size:20px!important;line-height:1.25;}
+    .materi-page-header p,
+    .account-page-header p{font-size:12px!important;line-height:1.5;}
+    .materi-header-actions{width:100%;justify-content:flex-start;}
+    .materi-header-actions button{font-size:11px!important;}
+    .materi-toolbar{grid-template-columns:1fr!important;gap:8px;}
+    .materi-grid{grid-template-columns:1fr!important;gap:10px;}
+    .materi-card{padding:14px!important;border-radius:12px!important;}
+    .materi-card h3{font-size:15px!important;line-height:1.35;}
+    .materi-description{font-size:11px!important;line-height:1.5;}
+    .materi-meta{grid-template-columns:1fr!important;gap:5px!important;font-size:10px!important;}
+    .materi-card-footer{flex-wrap:wrap!important;gap:6px!important;}
+    .materi-card-footer button{font-size:10px!important;padding:8px 10px!important;}
+    .materi-form-grid,
+    .account-form-grid,
+    .student-form-grid,
+    .form-grid-2,
+    .form-grid-3,
+    .form-grid-4{grid-template-columns:1fr!important;gap:10px;}
+
+    input, select, textarea{font-size:13px;min-height:42px;}
+    button{min-height:40px;}
+    .btn-primary,.btn-success,.btn-danger,.btn-warning{font-size:11px;}
+
+    table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;}
+    table th, table td{font-size:11px;padding:9px 10px;}
+
+    .modal-card,
+    .modal-content,
+    .modal-box,
+    .modal-dialog{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:90vh;overflow-y:auto;padding:18px!important;}
+    .task-notification-list{grid-template-columns:1fr!important;}
+    .task-notification-item{padding:11px;}
+}
+
+@media (max-width: 480px){
+    .main{padding:9px 9px 80px;}
+    .header{padding:11px 12px;border-radius:11px;}
+    .header-user-info{gap:8px;}
+    .user-avatar{width:38px;height:38px;min-width:38px;font-size:16px;}
+    .header h2#welcome{font-size:14px!important;max-width:145px;}
+    .header > div:last-child p{font-size:9px!important;}
+    .header > div:last-child b{font-size:10px!important;}
+    .content{padding:12px;border-radius:11px;}
+    .cards{grid-template-columns:1fr 1fr;gap:7px;}
+    .card{padding:11px;}
+    .card-info h3{font-size:8px;}
+    .card-info h2{font-size:19px;}
+    .card-icon{width:32px;height:32px;min-width:32px;font-size:15px;}
+    .sidebar{height:64px;}
+    .sidebar a,.sidebar-menu > a{width:68px;min-width:68px;height:52px;flex-basis:68px;}
+    .sidebar a > span:first-child{font-size:16px;}
+    .sidebar a span.nav-text{font-size:8px;}
+}
+
 </style>
 </head>
 
@@ -870,23 +1255,81 @@ canvas{ display: none; }
 
 <!-- LOGIN -->
 <div class="login-page" id="loginPage">
-    <div class="login-box">
-        <div class="logo">🎓</div>
-        <h1>SISTEM ADMINISTRASI GURU</h1>
-        <h2>SMA NEGERI 1 MA'U</h2>
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Silakan masuk ke sistem</p>
-        
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        
-        <button class="btn-primary" onclick="login()">MASUK APLIKASI</button>
-        
-        <div class="link-group">
-            <div class="link" onclick="showRegister('siswa')">Belum memiliki akun? Daftar Siswa</div>
-            <div class="link" onclick="showRegister('guru')">Atau Registrasi Akun Guru Baru</div>
-        </div>
+    <div class="login-shell">
+        <section class="login-visual">
+            <div class="visual-top">
+                <div class="school-brand">
+                    <img class="school-emblem" src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo-Tut-Wuri-Handayani-PNG-Warna.png" alt="Logo Tut Wuri Handayani">
+                    <div>
+                        <div class="brand-name">SMA NEGERI 1 MA'U</div>
+                        <div class="brand-subtitle">Sistem Administrasi Guru Digital</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visual-copy">
+                <h3>Selamat Datang<br>di Sistem Administrasi Guru</h3>
+                <p>Bersama mewujudkan pendidikan yang lebih baik melalui administrasi sekolah yang cepat, rapi, dan terintegrasi.</p>
+            </div>
+
+            <div class="feature-strip">
+                <div class="feature-card"><span class="feature-icon">♙</span><span>Manajemen<br>Data Guru</span></div>
+                <div class="feature-card"><span class="feature-icon">▣</span><span>Jadwal &amp;<br>Kegiatan</span></div>
+                <div class="feature-card"><span class="feature-icon">▤</span><span>Administrasi<br>Akademik</span></div>
+                <div class="feature-card"><span class="feature-icon">♢</span><span>Akses Aman<br>&amp; Terpercaya</span></div>
+            </div>
+
+            <div class="visual-bottom">© 2026 SMA Negeri 1 Ma'u • Sistem Administrasi Guru Digital</div>
+        </section>
+
+        <section class="login-panel">
+            <div class="login-box">
+                <div class="login-heading">
+                    <div class="mini-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo-Tut-Wuri-Handayani-PNG-Warna.png" alt="Logo Tut Wuri Handayani"></div>
+                    <div class="login-heading-copy">
+                        <h1>Sistem Administrasi Guru</h1>
+                        <h2>SMA Negeri 1 Ma'u</h2>
+                    </div>
+                </div>
+
+                <div class="login-section-title">Masuk ke Akun Anda</div>
+                <div class="login-section-subtitle">Silakan login menggunakan akun yang telah terdaftar pada sistem.</div>
+
+                <label class="login-label" for="username">Email / Username</label>
+                <div class="field-wrap">
+                    <span class="field-icon">✉</span>
+                    <input type="text" id="username" placeholder="Email / Username" autocomplete="username">
+                </div>
+
+                <label class="login-label" for="password">Password</label>
+                <div class="field-wrap">
+                    <span class="field-icon">♙</span>
+                    <input type="password" id="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter') login()">
+                    <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Tampilkan password">◉</button>
+                </div>
+
+                <div class="login-options">
+                    <label class="remember-label"><input type="checkbox" id="rememberLogin"> <span>Ingat saya</span></label>
+                    <span class="forgot-link" onclick="alert('Silakan hubungi Admin untuk bantuan reset password.')">Lupa password?</span>
+                </div>
+
+                <button class="btn-login-modern" onclick="login()">Masuk <span class="arrow">→</span></button>
+
+                <div class="login-divider"><span>atau</span></div>
+
+                <button type="button" class="btn-google" onclick="alert('Login dengan Google belum diaktifkan pada sistem ini. Gunakan Email / Username dan Password yang terdaftar.')"><span class="google-icon">G</span><span>Masuk dengan Google</span></button>
+
+                <div class="login-help">Belum memiliki akun? <span class="link" onclick="showRegister('siswa')">Hubungi Admin</span></div>
+
+                <div class="login-register">
+                    <div class="link" onclick="showRegister('siswa')">Daftar Siswa</div>
+                    
+                </div>
+            </div>
+        </section>
     </div>
 </div>
+
 
 <!-- REGISTER -->
 <div class="login-page" id="registerPage" style="display:none;">
@@ -910,8 +1353,13 @@ canvas{ display: none; }
 <div class="dashboard" id="dashboard">
     <!-- SIDEBAR -->
     <div class="sidebar">
-        <h2>🎓 ADMIN GURU</h2>
-        <div class="school-name">SMA NEGERI 1 MA'U</div>
+        <div class="sidebar-brand">
+            <img class="sidebar-brand-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo-Tut-Wuri-Handayani-PNG-Warna.png" alt="Logo Tut Wuri Handayani">
+            <div>
+                <div class="sidebar-brand-title">ADMIN GURU</div>
+                <div class="school-name">SMA NEGERI 1 MA'U</div>
+            </div>
+        </div>
         
         <div class="sidebar-menu">
             <a onclick="showContent('home')" id="nav-home" class="active-link"><span>🏠</span> <span class="nav-text">Dashboard</span></a>
@@ -923,7 +1371,12 @@ canvas{ display: none; }
             <div class="admin-only">
                 <a onclick="showContent('siswa')" id="nav-siswa"><span>👨‍🎓</span> <span class="nav-text">Data Siswa</span></a>
                 <a onclick="showContent('pengumuman')" id="nav-pengumuman"><span>📢</span> <span class="nav-text">Pengumuman Sekolah</span></a>
+            </div>
+            <div class="account-manager-only">
                 <a onclick="showContent('kelolaAkun')" id="nav-kelolaAkun"><span>⚙️</span> <span class="nav-text">Kelola Akun</span></a>
+            </div>
+            <div class="student-only">
+                <a onclick="showContent('akunSaya')" id="nav-akunSaya"><span>👤</span> <span class="nav-text">Akun Saya</span></a>
             </div>
 
             <a onclick="logout()"><span>🚪</span> <span class="nav-text">Logout</span></a>
@@ -1012,6 +1465,14 @@ canvas{ display: none; }
                     <div id="dashboardAnnouncementList" class="announcement-list"></div>
                 </div>
 
+                <div class="widget-box" id="dashboardTaskWidget" style="display:none;">
+                    <div class="widget-title">
+                        <span>📝 Tugas Baru <span id="dashboardTaskCount" class="task-notification-count">0</span></span>
+                        <button class="btn-primary" type="button" onclick="showContent('materi'); bukaDaftarTugas();" style="width:auto;padding:6px 12px;font-size:11px;margin:0;">Lihat Tugas</button>
+                    </div>
+                    <div id="dashboardTaskNotificationList" class="task-notification-list"></div>
+                </div>
+
                 <div class="widget-box">
                     <div class="widget-title">
                         <span>🚀 Aksi Cepat</span>
@@ -1042,7 +1503,11 @@ canvas{ display: none; }
                         <h2>📚 MATERI PELAJARAN</h2>
                         <p class="page-subtitle">Kelola dan bagikan materi pembelajaran untuk siswa.</p>
                     </div>
-                    <button class="btn-primary btn-add-materi" type="button" onclick="bukaFormMateri()">＋ Tambah Materi</button>
+                    <div class="materi-header-actions">
+                        <button class="materi-tab-btn active" id="btnTabMateri" type="button" onclick="bukaDaftarMateri()">📚 Materi</button>
+                        <button class="materi-tab-btn" id="btnTabTugas" type="button" onclick="bukaDaftarTugas()">📝 Tugas</button>
+                        <button class="btn-primary btn-add-materi staff-task-action" type="button" onclick="bukaFormMateri()">＋ Tambah Materi</button>
+                    </div>
                 </div>
 
                 <div class="materi-toolbar">
@@ -1109,6 +1574,73 @@ canvas{ display: none; }
                     <button class="btn-back" type="button" onclick="kembaliKeDaftarMateri()">⬅ Kembali</button>
                 </div>
                 <div class="materi-detail-card" id="detailMateriContent"></div>
+            </div>
+
+            <!-- TUGAS -->
+            <div id="tugasListView" style="display:none;">
+                <div class="materi-page-header">
+                    <div>
+                        <h2>📝 TUGAS PEMBELAJARAN</h2>
+                        <p class="page-subtitle" id="tugasPageSubtitle">Guru dapat membuat tugas, menentukan waktu publikasi dan deadline. Siswa dapat melihat dan mengunggah jawaban.</p>
+                    </div>
+                    <button class="btn-primary btn-add-materi guru-task-action" type="button" onclick="bukaFormTugas()">＋ Tambah Tugas</button>
+                </div>
+                <div class="materi-toolbar">
+                    <input type="text" id="filterTugas" placeholder="🔎 Cari judul tugas, mata pelajaran, atau guru..." oninput="updateTugasTable()">
+                    <select id="filterMapelTugas" onchange="updateTugasTable()"><option value="">Semua Mata Pelajaran</option></select>
+                    <select id="filterKelasTugas" onchange="updateTugasTable()"><option value="">Semua Kelas</option></select>
+                </div>
+                <div class="materi-grid" id="dataTugas"></div>
+                <div class="materi-empty" id="tugasEmpty" style="display:none;">📝<strong>Belum ada tugas</strong><span>Belum ada tugas yang tersedia untuk Anda.</span></div>
+                <div class="materi-count" id="countTugas">Menampilkan 0 tugas</div>
+            </div>
+
+            <div id="tugasFormView" style="display:none;">
+                <div class="materi-form-header">
+                    <div>
+                        <h2 id="judulFormTugas">Tambah Tugas Baru</h2>
+                        <p class="page-subtitle" id="subjudulFormTugas">Lengkapi informasi tugas sebelum dipublikasikan.</p>
+                    </div>
+                    <button class="btn-back" type="button" onclick="kembaliKeDaftarTugas()">⬅ Kembali</button>
+                </div>
+                <div class="materi-form-card">
+                    <input type="hidden" id="editTugasIndex" value="-1">
+                    <div class="materi-form-grid">
+                        <div class="materi-form-section">
+                            <div class="materi-section-title">📝 INFORMASI TUGAS</div>
+                            <div class="materi-field"><label for="tugasJudul">Judul Tugas <span>*</span></label><input type="text" id="tugasJudul" placeholder="Contoh: Latihan Soal Hukum Newton"></div>
+                            <div class="materi-field"><label for="tugasMapel">Mata Pelajaran <span>*</span></label><select id="tugasMapel"><option value="">Pilih mata pelajaran</option></select></div>
+                            <div class="materi-field"><label for="tugasKelas">Kelas <span>*</span></label><select id="tugasKelas"><option value="">Pilih kelas</option></select></div>
+                            <div class="materi-field"><label for="tugasDeskripsi">Petunjuk / Deskripsi <span>*</span></label><textarea id="tugasDeskripsi" rows="7" placeholder="Tuliskan instruksi tugas untuk siswa..."></textarea></div>
+                        </div>
+                        <div class="materi-form-section">
+                            <div class="materi-section-title">⏰ PUBLIKASI, DEADLINE & LAMPIRAN</div>
+                            <div class="materi-field"><label for="tugasPublishAt">Mulai Dipublikasikan <span>*</span></label><input type="datetime-local" id="tugasPublishAt"></div>
+                            <div class="materi-field"><label for="tugasDeadline">Deadline Pengumpulan <span>*</span></label><input type="datetime-local" id="tugasDeadline"></div>
+                            <div class="materi-source-tabs">
+                                <button type="button" id="tugasSourceFileBtn" class="materi-source-btn active" onclick="setSumberTugas('file')">📎 File Tugas</button>
+                                <button type="button" id="tugasSourceLinkBtn" class="materi-source-btn" onclick="setSumberTugas('link')">🔗 Link Tugas</button>
+                            </div>
+                            <div id="tugasFileSource">
+                                <label class="materi-upload-box" for="tugasFile"><span>📎</span><b>Klik untuk memilih file</b><small>PDF, JPG, JPEG, PNG · Maks. 700 KB</small><input type="file" id="tugasFile" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" onchange="previewFileTugas(this)"></label>
+                                <div id="tugasFilePreview" class="materi-file-preview" style="display:none;"></div>
+                            </div>
+                            <div id="tugasLinkSource" style="display:none;">
+                                <input type="url" id="tugasLink" placeholder="https://drive.google.com/...">
+                                <small class="materi-help">Siswa akan diarahkan ke link yang diberikan guru.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="materi-form-actions"><button class="btn-account-cancel" type="button" onclick="kembaliKeDaftarTugas()">Batal</button><button class="btn-primary btn-materi-save" id="btnSimpanTugas" type="button" onclick="simpanTugas()">Simpan Tugas</button></div>
+                </div>
+            </div>
+
+            <div id="tugasDetailView" style="display:none;">
+                <div class="materi-form-header">
+                    <div><h2>📋 Detail Tugas</h2><p class="page-subtitle">Informasi tugas dan status pengumpulan siswa.</p></div>
+                    <button class="btn-back" type="button" onclick="kembaliKeDaftarTugas()">⬅ Kembali</button>
+                </div>
+                <div class="materi-detail-card" id="detailTugasContent"></div>
             </div>
         </div>
 
@@ -1472,7 +2004,7 @@ canvas{ display: none; }
                         <h2>⚙️ KELOLA AKUN</h2>
                         <p>Kelola akun Guru, Admin, dan Siswa secara terpusat.</p>
                     </div>
-                    <button class="btn-primary btn-add-account" type="button" onclick="bukaFormAkun()">＋ Tambah Akun</button>
+                    <button class="btn-primary btn-add-account" id="btnTambahAkun" type="button" onclick="bukaFormAkun()">＋ Tambah Akun</button>
                 </div>
 
                 <div class="account-toolbar">
@@ -1523,7 +2055,8 @@ canvas{ display: none; }
 
                         <div class="account-form-section">
                             <div class="account-form-section-title">🎓 ROLE & STATUS</div>
-                            <div class="account-field"><label for="accRole">Role <span>*</span></label><select id="accRole" onchange="ubahRoleAkun()"><option value="">Pilih role</option><option value="admin">Admin</option><option value="guru">Guru</option><option value="siswa">Siswa</option></select></div>
+                            <div class="account-field"><label for="accRole">Role <span>*</span></label><select id="accRole" onchange="ubahRoleAkun()"><option value="">Pilih role</option><option value="admin">Admin</option><option value="guru">Guru</option><option value="siswa">Siswa</option></select>
+                            <small id="roleHint">Admin dapat mengelola semua role. Guru hanya dapat mengelola akun Siswa.</small></div>
                             <div class="account-field"><label for="accKelas">Kelas</label><select id="accKelas"><option value="">Pilih kelas (khusus siswa)</option></select><small id="kelasHint">Kelas hanya diperlukan untuk akun Siswa.</small></div>
                             <div class="account-field"><label>Status</label><div class="account-radio-group"><label class="account-radio-option"><input type="radio" name="accStatus" value="aktif" checked> Aktif</label><label class="account-radio-option"><input type="radio" name="accStatus" value="nonaktif"> Nonaktif</label></div></div>
                         </div>
@@ -1532,6 +2065,30 @@ canvas{ display: none; }
                 </div>
             </div>
         </div>
+
+<!-- AKUN SAYA (SISWA) -->
+<div class="content" id="akunSaya">
+    <div class="account-form-header">
+        <div><h2>👤 AKUN SAYA</h2><p class="page-subtitle">Lengkapi dan perbarui data akun Anda sendiri.</p></div>
+    </div>
+    <div class="account-form-card">
+        <div class="account-form-grid">
+            <div class="account-form-section">
+                <div class="account-form-section-title">👤 INFORMASI AKUN</div>
+                <div class="account-field"><label for="selfNama">Nama Lengkap <span>*</span></label><input id="selfNama" type="text" placeholder="Nama lengkap"></div>
+                <div class="account-field"><label for="selfUsername">Username <span>*</span></label><input id="selfUsername" type="text" placeholder="Username"></div>
+                <div class="account-field"><label for="selfPassword">Password Baru</label><div class="account-password-wrap"><input id="selfPassword" type="password" placeholder="Kosongkan jika tidak diubah"><button class="account-password-toggle" type="button" onclick="toggleSelfPassword()">👁</button></div></div>
+            </div>
+            <div class="account-form-section">
+                <div class="account-form-section-title">🎓 DATA SISWA</div>
+                <div class="account-field"><label for="selfNis">NIS / NISN</label><input id="selfNis" type="text" placeholder="NIS atau NISN"></div>
+                <div class="account-field"><label for="selfKelas">Kelas <span>*</span></label><select id="selfKelas"><option value="">Pilih kelas</option></select></div>
+                <div class="account-field"><label>Jenis Kelamin</label><div class="account-radio-group"><label class="account-radio-option"><input type="radio" name="selfGender" value="Laki-laki"> Laki-laki</label><label class="account-radio-option"><input type="radio" name="selfGender" value="Perempuan"> Perempuan</label></div></div>
+            </div>
+        </div>
+        <div class="account-form-actions"><button class="btn-primary btn-account-save" type="button" onclick="simpanAkunSaya()">Simpan Perubahan</button></div>
+    </div>
+</div>
 
 <!-- MODAL KONFIRMASI HAPUS MATERI -->
 <div class="modal-overlay" id="modalHapusMateri">
@@ -1764,7 +2321,7 @@ let firebaseAuth = null;
 let firebaseDb = null;
 let firebaseReady = false;
 let firebaseSyncing = false;
-const FIREBASE_COLLECTIONS = ["users","siswa","jadwal","absensi","materi","nilai","komponenTambahan","pengumuman"];
+const FIREBASE_COLLECTIONS = ["users","siswa","jadwal","absensi","materi","nilai","komponenTambahan","pengumuman","tugas","pengumpulanTugas"];
 
 function initFirebaseBackend(){
     try{
@@ -1899,7 +2456,11 @@ let materi = JSON.parse(localStorage.getItem("materi")) || [];
 let nilai = JSON.parse(localStorage.getItem("nilai")) || [];
 let komponenTambahan = JSON.parse(localStorage.getItem("komponenTambahan")) || [];
 let pengumuman = JSON.parse(localStorage.getItem("pengumuman")) || [];
+let tugas = JSON.parse(localStorage.getItem("tugas")) || [];
+let pengumpulanTugas = JSON.parse(localStorage.getItem("pengumpulanTugas")) || [];
 let pendingDeletePengumumanIndex = -1;
+let pendingDeleteTugasIndex = -1;
+let tugasSourceMode = "file";
 
 let currentFilterHari = "Semua";
 let currentPhotoBase64 = "";
@@ -1911,51 +2472,51 @@ function isStaffUser(user){
 }
 
 window.onload = function(){
-    if(!localStorage.getItem("users")){
-        localStorage.setItem("users", JSON.stringify(defaultUsers));
-    }
-    if(!localStorage.getItem("jadwal")){
-        localStorage.setItem("jadwal", JSON.stringify(defaultJadwal));
-    }
-    let user = localStorage.getItem("loginUser");
+    if(!localStorage.getItem("users")){ localStorage.setItem("users", JSON.stringify(defaultUsers)); }
+    if(!localStorage.getItem("jadwal")){ localStorage.setItem("jadwal", JSON.stringify(defaultJadwal)); }
+    formatToday();
+    const user = localStorage.getItem("loginUser");
     if(user){
-        openDashboard();
+        openDashboard(true);
+        const requestedPage = String(location.hash || '').replace(/^#/, '');
+        const validPages = [...document.querySelectorAll('.content')].map(el => el.id);
+        if(requestedPage && validPages.includes(requestedPage)){
+            showContent(requestedPage, true);
+        }
     }
+}
+
+
+function togglePassword(id, btn){
+    const input=document.getElementById(id);
+    if(!input) return;
+    const show=input.type==='password';
+    input.type=show?'text':'password';
+    btn.setAttribute('aria-label', show?'Sembunyikan password':'Tampilkan password');
 }
 
 function login(){
-    let u = document.getElementById("username").value;
-    let p = document.getElementById("password").value;
-    let user = users.find(x => x.username === u && x.password === p);
-
+    const u = String(document.getElementById("username").value || "").trim();
+    const p = document.getElementById("password").value || "";
+    const user = users.find(x => String(x.username || "").trim().toLowerCase() === u.toLowerCase() && x.password === p);
     if(user){
-        if((user.status || "aktif") !== "aktif") {
-            alert("Akun ini sedang nonaktif. Hubungi Admin untuk mengaktifkannya.");
-            return;
-        }
+        if((user.status || "aktif") !== "aktif") { alert("Akun ini sedang nonaktif. Hubungi Admin untuk mengaktifkannya."); return; }
         localStorage.setItem("loginUser", JSON.stringify(user));
+        if(document.getElementById('rememberLogin')?.checked) localStorage.setItem('rememberLogin','1'); else localStorage.removeItem('rememberLogin');
         openDashboard();
-    } else {
-        alert("Username atau Password salah!");
-    }
+    } else alert("Username atau Password salah!");
 }
 
-function showRegister(type){
+function showRegister(type='siswa'){
+    // Registrasi publik hanya diperbolehkan untuk Siswa. Akun Guru/Admin dibuat oleh Admin.
+    if(type !== 'siswa'){ alert('Registrasi akun Guru hanya dapat dilakukan oleh Admin melalui menu Kelola Akun.'); return; }
     document.getElementById("loginPage").style.display="none";
     document.getElementById("registerPage").style.display="flex";
-    document.getElementById("regRole").value = type;
-
-    if(type === 'guru'){
-        document.getElementById("regLogo").innerText = "👨‍🏫";
-        document.getElementById("regTitle").innerText = "REGISTRASI AKUN GURU";
-        document.getElementById("extraReg").placeholder = "NIP / NUPTK (Opsional)";
-        document.getElementById("btnSubmitReg").innerText = "DAFTAR SEBAGAI GURU";
-    } else {
-        document.getElementById("regLogo").innerText = "📝";
-        document.getElementById("regTitle").innerText = "REGISTRASI AKUN SISWA";
-        document.getElementById("extraReg").placeholder = "Kelas (contoh: X IPA 1)";
-        document.getElementById("btnSubmitReg").innerText = "DAFTAR SEBAGAI SISWA";
-    }
+    document.getElementById("regRole").value = 'siswa';
+    document.getElementById("regLogo").innerText = "📝";
+    document.getElementById("regTitle").innerText = "REGISTRASI AKUN SISWA";
+    document.getElementById("extraReg").placeholder = "Kelas (contoh: X IPA 1)";
+    document.getElementById("btnSubmitReg").innerText = "DAFTAR SEBAGAI SISWA";
 }
 
 function showLogin(){
@@ -1964,38 +2525,34 @@ function showLogin(){
 }
 
 function register(){
-    let roleType = document.getElementById("regRole").value;
-    let nama = document.getElementById("namaReg").value;
-    let extraVal = document.getElementById("extraReg").value;
-    let username = document.getElementById("usernameReg").value;
-    let password = document.getElementById("passwordReg").value;
-
-    if(!nama || !username || !password){
-        alert("Lengkapi nama, username, dan password!");
-        return;
-    }
-
-    if(roleType === 'guru'){
-        users.push({ nama, username, password, role: "guru", kelas: "-", status: "aktif", jenisKelamin: "" });
-        alert("Registrasi Guru Berhasil! Silakan Login menggunakan akun Guru Anda.");
-    } else {
-        if(!extraVal){
-            alert("Harap isi kelas untuk registrasi Siswa!");
-            return;
-        }
-        users.push({ nama, username, password, role: "siswa", kelas: extraVal, status: "aktif", jenisKelamin: "" });
-        siswa.push({ nama, kelas: extraVal });
-        localStorage.setItem("siswa", JSON.stringify(siswa));
-        alert("Registrasi Siswa Berhasil! Silakan Login.");
-    }
-    
+    const roleType = 'siswa';
+    const nama = document.getElementById("namaReg").value.trim();
+    const extraVal = document.getElementById("extraReg").value.trim();
+    const username = document.getElementById("usernameReg").value.trim();
+    const password = document.getElementById("passwordReg").value;
+    if(!nama || !username || !password || !extraVal){ alert("Lengkapi nama, kelas, username, dan password!"); return; }
+    if(users.some(u => String(u.username||'').trim().toLowerCase() === username.toLowerCase())){ alert('Username sudah digunakan. Silakan pilih username lain.'); return; }
+    users.push({ nama, username, password, role: roleType, kelas: extraVal, status: 'aktif', jenisKelamin: '' });
+    if(!siswa.some(s=>normalizeName(s.nama)===normalizeName(nama))){ siswa.push({nama,kelas:extraVal,jenisKelamin:'',nisn:'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:''}); }
     localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("siswa", JSON.stringify(siswa));
+    alert("Registrasi Siswa Berhasil! Silakan Login.");
     showLogin();
 }
 
+function formatToday(){
+    const el=document.getElementById('date'); if(!el)return;
+    el.textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
 function getCurrentUser(){
     try { return JSON.parse(localStorage.getItem("loginUser")) || null; } catch(e) { return null; }
 }
+function isAdminUser(user=getCurrentUser()){ return !!user && user.role==='admin'; }
+function isGuruUser(user=getCurrentUser()){ return !!user && user.role==='guru'; }
+function isSiswaUser(user=getCurrentUser()){ return !!user && user.role==='siswa'; }
+function canManageStudentAccounts(user=getCurrentUser()){ return isAdminUser(user)||isGuruUser(user); }
+function canManageAnyAccount(user=getCurrentUser()){ return isAdminUser(user); }
+
 
 function getTodayName(){
     const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -2225,51 +2782,85 @@ function konfirmasiHapusPengumuman(){
     pendingDeletePengumumanIndex=-1;
     renderPengumuman();
 }
-function openDashboard(){
+function openDashboard(resetHistory=true){
     document.getElementById("loginPage").style.display="none";
     document.getElementById("registerPage").style.display="none";
     document.getElementById("dashboard").style.display="block";
 
-    let user = JSON.parse(localStorage.getItem("loginUser"));
-    document.getElementById("welcome").innerHTML = user.nama;
-    document.getElementById("userAvatar").innerText = user.nama.charAt(0).toUpperCase();
-
-    let roleBadge = document.getElementById("userRoleBadge");
-    if(isStaffUser(user)) {
-        roleBadge.innerText = user.role === "admin" ? "Admin" : "Guru";
-        roleBadge.className = "role-badge badge-admin";
-    } else {
-        roleBadge.innerText = "Siswa (" + (user.kelas || '') + ")";
-        roleBadge.className = "role-badge badge-siswa";
+    const user = getCurrentUser();
+    if(!user){ showLogin(); return; }
+    if(resetHistory){
+        try { history.replaceState({appPage:'home'}, '', location.pathname + location.search); } catch(e) {}
     }
+    document.getElementById("welcome").innerHTML = escapeHtml(user.nama || 'Pengguna');
+    document.getElementById("userAvatar").innerText = String(user.nama || 'U').charAt(0).toUpperCase();
+    const roleBadge = document.getElementById("userRoleBadge");
+    if(user.role === 'admin'){ roleBadge.innerText='Admin'; roleBadge.className='role-badge badge-admin'; }
+    else if(user.role === 'guru'){ roleBadge.innerText='Guru'; roleBadge.className='role-badge badge-admin'; }
+    else { roleBadge.innerText='Siswa ('+(user.kelas||'-')+')'; roleBadge.className='role-badge badge-siswa'; }
 
-    let adminElements = document.querySelectorAll(".admin-only");
-    if(!isStaffUser(user)){
-        adminElements.forEach(el => el.style.display = "none");
+    document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdminUser(user)?'block':'none');
+    document.querySelectorAll('.account-manager-only').forEach(el=>el.style.display=canManageStudentAccounts(user)?'block':'none');
+    document.querySelectorAll('.student-only').forEach(el=>el.style.display=isSiswaUser(user)?'block':'none');
+    document.querySelectorAll('.admin-only.btn-success,.admin-only.form-box').forEach(el=>el.style.display=isAdminUser(user)?'':'none');
 
-    } else {
-        adminElements.forEach(el => el.style.display = "block");
-
-    }
-
+    formatToday();
     renderKomponenDinamisForm();
     updateData();
     renderDashboardJadwal();
     updateDashboardStats();
     renderPengumuman();
+    renderDashboardTugasNotifications();
+    updateTugasTable();
+    const taskAdd=document.querySelector('.guru-task-action'); if(taskAdd) taskAdd.style.display=isStaffUser(user)?'inline-flex':'none';
+    const materiAdd=document.querySelector('.staff-task-action'); if(materiAdd) materiAdd.style.display=isStaffUser(user)?'inline-flex':'none';
+    if(isSiswaUser(user)) renderAkunSaya();
+    const accountSubtitle=document.querySelector('#kelolaAkun .account-page-header p');
+    if(accountSubtitle) accountSubtitle.textContent=isAdminUser(user)?'Kelola akun Guru dan Siswa secara terpusat. Sistem hanya mengizinkan satu akun Admin.':'Guru hanya dapat membuat dan mengedit akun Siswa.';
+    const addAccount=document.getElementById('btnTambahAkun'); if(addAccount) addAccount.textContent=isAdminUser(user)?'＋ Tambah Akun':'＋ Tambah Akun Siswa';
+    const roleFilter=document.getElementById('filterRoleAkun'); if(roleFilter&&isGuruUser(user)){ roleFilter.value='siswa'; [...roleFilter.options].forEach(o=>o.hidden=o.value!=='siswa'&&o.value!==''); }
 }
 
-function showContent(id){
-    if(id === 'pengumuman' && !isStaffUser(getCurrentUser())){ alert('Akses ditolak. Pengumuman hanya dapat dikelola oleh Guru atau Admin.'); return; }
+
+function showContent(id, fromHistory=false){
+    const currentPage=document.querySelector('.content.active')?.id || 'home';
+    const user=getCurrentUser();
+    if(id === 'pengumuman' && !isAdminUser(user)){ alert('Akses ditolak. Pengumuman hanya dapat dikelola oleh Admin.'); return; }
+    if(id === 'kelolaAkun' && !canManageStudentAccounts(user)){ alert('Akses ditolak.'); return; }
+    if(id === 'siswa' && !isAdminUser(user)){ alert('Akses ditolak. Data Siswa hanya dapat dikelola oleh Admin.'); return; }
+    if(id === 'akunSaya' && !isSiswaUser(user)){ alert('Akses ditolak.'); return; }
+
+    const target=document.getElementById(id);
+    if(!target) return;
+
     if(id === 'materi' && typeof bukaDaftarMateri === 'function'){ bukaDaftarMateri(); }
     if(id === 'absensi' && typeof initAbsensiPage === 'function'){ initAbsensiPage(); }
+
     document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
+    target.classList.add("active");
 
     document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active-link"));
     let activeNav = document.getElementById("nav-" + id);
     if(activeNav) activeNav.classList.add("active-link");
+
+    // Gunakan History API agar tombol Back HP/browser mengikuti halaman sebelumnya.
+    if(!fromHistory && currentPage !== id){
+        try { history.pushState({appPage:id}, '', '#'+encodeURIComponent(id)); } catch(e) {}
+    }
 }
+
+// Tombol Back bawaan HP/browser akan mengaktifkan halaman sebelumnya di dalam aplikasi.
+window.addEventListener('popstate', function(event){
+    const user=getCurrentUser();
+    if(!user) return;
+    const page=event.state?.appPage || String(location.hash || '').replace(/^#/, '');
+    const validPages=[...document.querySelectorAll('.content')].map(el=>el.id);
+    if(validPages.includes(page)){
+        showContent(page, true);
+    } else {
+        showContent('home', true);
+    }
+});
 
 function logout(){
     if(mediaStream){
@@ -2297,47 +2888,64 @@ function populateKelasAkun(selected=''){
     if(selected) select.value=selected;
 }
 function bukaFormAkun(index=-1){
+    const user=getCurrentUser();
+    if(!canManageStudentAccounts(user)){ alert('Akses ditolak.'); return; }
+    if(isGuruUser(user) && index>=0 && users[index]?.role!=='siswa'){ alert('Guru hanya dapat mengedit akun Siswa.'); return; }
     document.getElementById('akunListView').style.display='none';
     document.getElementById('akunFormView').style.display='block';
     populateKelasAkun();
-    if(index>=0) editAkun(index); else resetFormAkun();
+    if(index>=0) editAkun(index); else { resetFormAkun(); if(isGuruUser(user)){ document.getElementById('accRole').value='siswa'; document.getElementById('accRole').disabled=true; } }
+    applyAccountFormPermissions();
 }
-function kembaliKeDaftarAkun(){
-    document.getElementById('akunListView').style.display='block';
-    document.getElementById('akunFormView').style.display='none';
-    resetFormAkun(); updateAkunTable();
+function kembaliKeDaftarAkun(){ document.getElementById('akunListView').style.display='block'; document.getElementById('akunFormView').style.display='none'; resetFormAkun(); updateAkunTable(); }
+function applyAccountFormPermissions(){
+    const user=getCurrentUser(), role=document.getElementById('accRole'), hint=document.getElementById('roleHint');
+    if(!role)return;
+    const admin=isAdminUser(user);
+    [...role.options].forEach(o=>o.hidden=(!admin && o.value!=='siswa'));
+    role.disabled=!admin;
+    if(!admin){ role.value='siswa'; if(hint)hint.textContent='Guru hanya dapat membuat atau mengedit akun Siswa.'; }
+    else if(hint) hint.textContent='Admin memiliki akses penuh. Hanya satu akun Admin yang diperbolehkan.';
 }
 function ubahRoleAkun(){
     const role=document.getElementById('accRole').value, kelas=document.getElementById('accKelas'), hint=document.getElementById('kelasHint');
     if(role==='siswa'){ kelas.disabled=false; kelas.classList.remove('account-readonly'); hint.textContent='Pilih kelas yang sesuai dengan data siswa.'; }
     else { kelas.value=''; kelas.disabled=true; kelas.classList.add('account-readonly'); hint.textContent='Kelas otomatis kosong untuk akun Admin/Guru.'; }
+    applyAccountFormPermissions();
 }
 function togglePasswordAkun(){ const input=document.getElementById('accPass'); if(input) input.type=input.type==='password'?'text':'password'; }
 function usernameAkunSudahDipakai(username,ignoreIndex=-1){ return users.some((u,i)=>i!==Number(ignoreIndex)&&String(u.username||'').trim().toLowerCase()===String(username||'').trim().toLowerCase()); }
 function simpanAkun(){
+    const actor=getCurrentUser();
+    if(!canManageStudentAccounts(actor)){ alert('Akses ditolak.'); return; }
     const index=Number(document.getElementById('editIndex').value);
     const nama=document.getElementById('accNama').value.trim(), username=document.getElementById('accUser').value.trim(), password=document.getElementById('accPass').value;
-    const nipNis=document.getElementById('accNipNis').value.trim(), kelas=document.getElementById('accKelas').value, role=document.getElementById('accRole').value;
+    const nipNis=document.getElementById('accNipNis').value.trim(), kelas=document.getElementById('accKelas').value, role=isAdminUser(actor)?document.getElementById('accRole').value:'siswa';
     const gender=document.querySelector('input[name="accGender"]:checked')?.value||'', status=document.querySelector('input[name="accStatus"]:checked')?.value||'aktif';
     if(!nama||!username||!role||(index===-1&&!password)){ alert('Lengkapi data wajib: nama, username, role, dan password untuk akun baru.'); return; }
+    if(index>=0 && !users[index]){ alert('Data akun tidak ditemukan.'); return; }
+    if(isGuruUser(actor) && index>=0 && users[index].role!=='siswa'){ alert('Guru hanya dapat mengedit akun Siswa.'); return; }
+    if(isGuruUser(actor) && role!=='siswa'){ alert('Guru tidak dapat membuat atau mengubah role selain Siswa.'); return; }
+    if(index>=0 && users[index].role==='admin' && role!=='admin'){ alert('Akun Admin tidak boleh diturunkan role-nya.'); return; }
+    if(index>=0 && users[index].role==='guru' && !isAdminUser(actor)){ alert('Guru tidak dapat mengubah akun Guru.'); return; }
     if(usernameAkunSudahDipakai(username,index)){ alert('Username sudah digunakan. Silakan pilih username lain.'); return; }
-    if(!gender && index===-1){ alert('Pilih jenis kelamin akun terlebih dahulu.'); return; }
+    if(role==='admin' && index===-1 && users.some(u=>u.role==='admin')){ alert('Akun Admin sudah ada. Sistem hanya mengizinkan satu akun Admin.'); return; }
     if(role==='siswa'&&!kelas){ alert('Pilih kelas untuk akun Siswa.'); return; }
     if(index===-1){
         users.push({nama,username,password,role,kelas:role==='siswa'?kelas:'-',status,jenisKelamin:gender,nipNis});
-        if(role==='siswa'&&!siswa.some(s=>String(s.nama||'').toLowerCase()===nama.toLowerCase())) siswa.push({nama,kelas,jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:''});
+        if(role==='siswa'&&!siswa.some(s=>normalizeName(s.nama)===normalizeName(nama))) siswa.push({nama,kelas,jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:''});
         alert('Akun berhasil dibuat.');
     }else{
         const lama=users[index], oldNama=lama.nama, oldUsername=lama.username, oldRole=lama.role;
-        users[index]={nama,username,password:password||lama.password,role,kelas:role==='siswa'?kelas:'-',status,jenisKelamin:gender,nipNis};
+        users[index]={...lama,nama,username,password:password||lama.password,role:oldRole==='admin'?'admin':role,kelas:role==='siswa'?kelas:'-',status,jenisKelamin:gender,nipNis};
         if(oldRole==='siswa'||role==='siswa'){
-            let target=siswa.find(s=>String(s.nama||'').toLowerCase()===String(oldNama||'').toLowerCase());
+            let target=siswa.find(st=>normalizeName(st.nama)===normalizeName(oldNama));
             if(role==='siswa'){
                 if(!target) siswa.push({nama,kelas,jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:''});
                 else { target.nama=nama; target.kelas=kelas; target.jenisKelamin=gender; if(nipNis) target.nisn=nipNis; }
             }
         }
-        const current=JSON.parse(localStorage.getItem('loginUser'));
+        const current=getCurrentUser();
         if(current&&current.username===oldUsername){ localStorage.setItem('loginUser',JSON.stringify(users[index])); }
         alert('Akun berhasil diperbarui.');
     }
@@ -2345,20 +2953,22 @@ function simpanAkun(){
     kembaliKeDaftarAkun(); updateData();
 }
 function editAkun(index){
-    const u=users[index]; if(!u) return;
+    const actor=getCurrentUser(), u=users[index]; if(!u)return;
+    if(!canManageStudentAccounts(actor)){ alert('Akses ditolak.'); return; }
+    if(isGuruUser(actor)&&u.role!=='siswa'){ alert('Guru hanya dapat mengedit akun Siswa.'); return; }
     document.getElementById('editIndex').value=index; document.getElementById('judulFormAkun').innerText='Edit Akun: '+u.nama; document.getElementById('subjudulFormAkun').innerText='Periksa data akun sebelum menyimpan perubahan.';
     document.getElementById('accNama').value=u.nama||''; document.getElementById('accUser').value=u.username||''; document.getElementById('accPass').value=''; document.getElementById('accNipNis').value=u.nipNis||u.nis||''; document.getElementById('accRole').value=u.role||'';
     populateKelasAkun(u.kelas&&u.kelas!=='-'?u.kelas:'');
     document.querySelectorAll('input[name="accGender"]').forEach(r=>r.checked=r.value===(u.jenisKelamin||''));
     document.querySelectorAll('input[name="accStatus"]').forEach(r=>r.checked=r.value===(u.status||'aktif'));
-    document.getElementById('btnSimpanAkun').innerText='Perbarui Akun'; document.getElementById('passwordHint').innerText='Kosongkan jika tidak ingin mengubah password.'; ubahRoleAkun();
+    document.getElementById('btnSimpanAkun').innerText='Perbarui Akun'; document.getElementById('passwordHint').innerText='Kosongkan jika tidak ingin mengubah password.'; ubahRoleAkun(); applyAccountFormPermissions();
     document.getElementById('akunListView').style.display='none'; document.getElementById('akunFormView').style.display='block';
 }
 function resetFormAkun(){
     document.getElementById('editIndex').value='-1'; document.getElementById('judulFormAkun').innerText='Tambah Akun Baru'; document.getElementById('subjudulFormAkun').innerText='Buat akun pengguna baru untuk sistem administrasi.';
     document.getElementById('accNama').value=''; document.getElementById('accUser').value=''; document.getElementById('accPass').value=''; document.getElementById('accNipNis').value=''; document.getElementById('accRole').value='';
     document.querySelectorAll('input[name="accGender"]').forEach(r=>r.checked=false); document.querySelectorAll('input[name="accStatus"]').forEach(r=>r.checked=r.value==='aktif'); populateKelasAkun();
-    document.getElementById('btnSimpanAkun').innerText='Simpan Akun'; document.getElementById('passwordHint').innerText='Gunakan password yang mudah diingat tetapi tidak mudah ditebak.'; ubahRoleAkun();
+    document.getElementById('btnSimpanAkun').innerText='Simpan Akun'; document.getElementById('passwordHint').innerText='Gunakan password yang mudah diingat tetapi tidak mudah ditebak.'; document.getElementById('accRole').disabled=false; ubahRoleAkun(); applyAccountFormPermissions();
 }
 function bukaModalHapusAkun(index){
     const u=users[index]; if(!u) return; const current=JSON.parse(localStorage.getItem('loginUser'));
@@ -2368,18 +2978,46 @@ function bukaModalHapusAkun(index){
 }
 function tutupModalHapusAkun(){ pendingDeleteAkunIndex=-1; document.getElementById('modalHapusAkun').style.display='none'; }
 function konfirmasiHapusAkun(){
-    const index=pendingDeleteAkunIndex; if(index<0||!users[index]) return; const deleted=users[index]; users.splice(index,1);
+    if(!isAdminUser(getCurrentUser())){ alert('Hanya Admin yang dapat menghapus akun.'); return; }
+    const index=pendingDeleteAkunIndex; if(index<0||!users[index]) return; const deleted=users[index];
+    if(deleted.role==='admin'){ alert('Akun Admin tidak dapat dihapus. Sistem harus selalu memiliki satu Admin.'); return; } users.splice(index,1);
     if(deleted.role==='siswa'){ siswa=siswa.filter(s=>String(s.nama||'').toLowerCase()!==String(deleted.nama||'').toLowerCase()); localStorage.setItem('siswa',JSON.stringify(siswa)); }
     localStorage.setItem('users',JSON.stringify(users)); tutupModalHapusAkun(); alert('Akun '+deleted.nama+' berhasil dihapus.'); updateAkunTable(); updateData();
 }
 function updateAkunTable(){
     const table=document.getElementById('dataAkun'); if(!table) return; const keyword=(document.getElementById('filterAkun')?.value||'').trim().toLowerCase(), roleFilter=document.getElementById('filterRoleAkun')?.value||'';
-    const filtered=users.filter(u=>{ const text=[u.nama,u.username,u.nipNis,u.nis].map(v=>String(v||'').toLowerCase()).join(' '); return (!keyword||text.includes(keyword))&&(!roleFilter||u.role===roleFilter); }); table.innerHTML='';
+    const actor=getCurrentUser();
+    const visibleUsers=isGuruUser(actor)?users.filter(u=>u.role==='siswa'):users;
+    const effectiveRoleFilter=isGuruUser(actor)?'siswa':roleFilter;
+    const filtered=visibleUsers.filter(u=>{ const text=[u.nama,u.username,u.nipNis,u.nis].map(v=>String(v||'').toLowerCase()).join(' '); return (!keyword||text.includes(keyword))&&(!effectiveRoleFilter||u.role===effectiveRoleFilter); }); table.innerHTML='';
     if(!filtered.length) table.innerHTML='<tr><td colspan="8" class="account-empty">Tidak ada akun yang sesuai dengan pencarian.</td></tr>';
-    else filtered.forEach(u=>{ const i=users.indexOf(u), roleLabel=u.role==='admin'?'Admin':u.role==='guru'?'Guru':'Siswa', roleClass=u.role==='admin'?'account-role-admin':u.role==='guru'?'account-role-guru':'account-role-siswa', status=u.status||'aktif', statusLabel=status==='aktif'?'Aktif':'Nonaktif', statusClass=status==='aktif'?'account-status-active':'account-status-inactive', nipnis=u.nipNis||u.nis||'-', initial=String(u.nama||'?').trim().charAt(0).toUpperCase(); table.innerHTML+=`<tr><td>${i+1}</td><td><div class="account-name-cell"><div class="account-avatar">${initial}</div><div class="account-meta"><strong>${escapeHtmlAkun(u.nama||'-')}</strong><small>${roleLabel}</small></div></div></td><td>${escapeHtmlAkun(u.username||'-')}</td><td>${escapeHtmlAkun(nipnis)}</td><td><span class="account-role-badge ${roleClass}">${roleLabel}</span></td><td>${escapeHtmlAkun(u.kelas||'-')}</td><td><span class="account-status-badge ${statusClass}">${statusLabel}</span></td><td><div class="account-actions"><button class="btn-account-edit" type="button" onclick="bukaFormAkun(${i})">Edit</button><button class="btn-danger" type="button" onclick="bukaModalHapusAkun(${i})">Hapus</button></div></td></tr>`; });
+    else { const actor=getCurrentUser(); filtered.forEach(u=>{ const i=users.indexOf(u), roleLabel=u.role==='admin'?'Admin':u.role==='guru'?'Guru':'Siswa', roleClass=u.role==='admin'?'account-role-admin':u.role==='guru'?'account-role-guru':'account-role-siswa', status=u.status||'aktif', statusLabel=status==='aktif'?'Aktif':'Nonaktif', statusClass=status==='aktif'?'account-status-active':'account-status-inactive', nipnis=u.nipNis||u.nis||'-', initial=String(u.nama||'?').trim().charAt(0).toUpperCase(); const canEdit=isAdminUser(actor)||(isGuruUser(actor)&&u.role==='siswa'); const canDelete=isAdminUser(actor)&&u.role!=='admin'; const actions=(canEdit?`<button class="btn-account-edit" type="button" onclick="bukaFormAkun(${i})">Edit</button>`:'')+(canDelete?`<button class="btn-danger" type="button" onclick="bukaModalHapusAkun(${i})">Hapus</button>`:''); table.innerHTML+=`<tr><td>${i+1}</td><td><div class="account-name-cell"><div class="account-avatar">${initial}</div><div class="account-meta"><strong>${escapeHtmlAkun(u.nama||'-')}</strong><small>${roleLabel}</small></div></div></td><td>${escapeHtmlAkun(u.username||'-')}</td><td>${escapeHtmlAkun(nipnis)}</td><td><span class="account-role-badge ${roleClass}">${roleLabel}</span></td><td>${escapeHtmlAkun(u.kelas||'-')}</td><td><span class="account-status-badge ${statusClass}">${statusLabel}</span></td><td><div class="account-actions">${actions||'<span style="color:var(--text-muted);font-size:12px;">Terbatas</span>'}</div></td></tr>`; }); }
     const count=document.getElementById('countAkun'); if(count) count.textContent=`Menampilkan ${filtered.length} dari ${users.length} akun`;
 }
 function escapeHtmlAkun(value){ return String(value).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
+
+function renderAkunSaya(){
+    const user=getCurrentUser(); if(!isSiswaUser(user))return;
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};
+    set('selfNama',user.nama); set('selfUsername',user.username); set('selfNis',user.nipNis||user.nis||'');
+    const kelas=document.getElementById('selfKelas'); if(kelas){ populateSelfKelas(user.kelas||''); }
+    document.querySelectorAll('input[name="selfGender"]').forEach(r=>r.checked=r.value===(user.jenisKelamin||''));
+}
+function populateSelfKelas(selected=''){
+    const el=document.getElementById('selfKelas'); if(!el)return; el.innerHTML='<option value="">Pilih kelas</option>'; getDaftarKelasAkun().forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;el.appendChild(o);}); if(selected && ![...el.options].some(o=>o.value===selected)){const o=document.createElement('option');o.value=selected;o.textContent=selected;el.appendChild(o);} el.value=selected;
+}
+function toggleSelfPassword(){const el=document.getElementById('selfPassword');if(el)el.type=el.type==='password'?'text':'password';}
+function simpanAkunSaya(){
+    const actor=getCurrentUser(); if(!isSiswaUser(actor)){alert('Akses ditolak.');return;}
+    const idx=users.findIndex(u=>String(u.username||'')===String(actor.username||'')); if(idx<0){alert('Akun tidak ditemukan.');return;}
+    const nama=document.getElementById('selfNama').value.trim(), username=document.getElementById('selfUsername').value.trim(), password=document.getElementById('selfPassword').value, kelas=document.getElementById('selfKelas').value, nipNis=document.getElementById('selfNis').value.trim(), gender=document.querySelector('input[name="selfGender"]:checked')?.value||'';
+    if(!nama||!username||!kelas){alert('Nama, username, dan kelas wajib diisi.');return;}
+    if(users.some((u,i)=>i!==idx&&String(u.username||'').trim().toLowerCase()===username.toLowerCase())){alert('Username sudah digunakan.');return;}
+    const oldNama=users[idx].nama; users[idx]={...users[idx],nama,username,password:password||users[idx].password,kelas,nipNis,jenisKelamin:gender};
+    let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(oldNama)); if(!st){st={nama,kelas,nisn:nipNis,jenisKelamin:gender,tempatLahir:'',tanggalLahir:'',alamat:'',noHP:''};siswa.push(st);} else {st.nama=nama;st.kelas=kelas;st.nisn=nipNis||st.nisn;st.jenisKelamin=gender;}
+    localStorage.setItem('users',JSON.stringify(users)); localStorage.setItem('siswa',JSON.stringify(siswa)); localStorage.setItem('loginUser',JSON.stringify(users[idx]));
+    document.getElementById('selfPassword').value=''; alert('Akun Anda berhasil diperbarui.'); openDashboard(); showContent('akunSaya');
+}
 
 /* DATA SISWA */
 let pendingDeleteSiswaIndex = -1;
@@ -2437,6 +3075,7 @@ function populateFilterKelasSiswa(){
 }
 
 function bukaFormSiswa(index = -1){
+    if(!isAdminUser(getCurrentUser())){ alert('Hanya Admin yang dapat mengelola Data Siswa.'); return; }
     resetFormSiswa();
     populateKelasSiswa();
 
@@ -2497,6 +3136,7 @@ function kembaliKeDaftarSiswa(){
 }
 
 function simpanDataSiswa(){
+    if(!isAdminUser(getCurrentUser())){ alert('Hanya Admin yang dapat mengelola Data Siswa.'); return; }
     const index = parseInt(document.getElementById('editSiswaIndex').value, 10);
     const nisn = document.getElementById('siswaNISN').value.trim();
     const nama = document.getElementById('siswaNamaLengkap').value.trim();
@@ -2578,6 +3218,7 @@ function simpanDataSiswa(){
 }
 
 function bukaModalHapusSiswa(index){
+    if(!isAdminUser(getCurrentUser())){ alert('Hanya Admin yang dapat menghapus Data Siswa.'); return; }
     if(!siswa[index]) return;
     pendingDeleteSiswaIndex = index;
     document.getElementById('hapusSiswaNama').textContent = siswa[index].nama || '-';
@@ -2591,6 +3232,7 @@ function tutupModalHapusSiswa(){
 }
 
 function konfirmasiHapusSiswa(){
+    if(!isAdminUser(getCurrentUser())){ alert('Hanya Admin yang dapat menghapus Data Siswa.'); return; }
     const index = pendingDeleteSiswaIndex;
     if(index < 0 || !siswa[index]) return;
     const deletedName = siswa[index].nama;
@@ -2671,9 +3313,33 @@ function populateFilterMateri(){
     if(kelas){kelas.innerHTML='<option value="">Semua Kelas</option>';getDaftarKelasMateri().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;kelas.appendChild(o)});kelas.value=oldK;}
 }
 function bukaDaftarMateri(){
-    document.getElementById('materiListView').style.display='block'; document.getElementById('materiFormView').style.display='none'; document.getElementById('materiDetailView').style.display='none';
+    document.getElementById('materiListView').style.display='block';
+    document.getElementById('materiFormView').style.display='none';
+    document.getElementById('materiDetailView').style.display='none';
+    document.getElementById('tugasListView').style.display='none';
+    document.getElementById('tugasFormView').style.display='none';
+    document.getElementById('tugasDetailView').style.display='none';
+    document.getElementById('btnTabMateri')?.classList.add('active');
+    document.getElementById('btnTabTugas')?.classList.remove('active');
     updateMateriTable();
 }
+function bukaDaftarTugas(){
+    const user=getCurrentUser();
+    if(!user){return;}
+    document.getElementById('materiListView').style.display='none';
+    document.getElementById('materiFormView').style.display='none';
+    document.getElementById('materiDetailView').style.display='none';
+    document.getElementById('tugasListView').style.display='block';
+    document.getElementById('tugasFormView').style.display='none';
+    document.getElementById('tugasDetailView').style.display='none';
+    document.getElementById('btnTabMateri')?.classList.remove('active');
+    document.getElementById('btnTabTugas')?.classList.add('active');
+    const add=document.querySelector('.guru-task-action');
+    if(add)add.style.display=isStaffUser(user)?'inline-flex':'none';
+    updateTugasTable();
+}
+function kembaliKeDaftarMateri(){bukaDaftarMateri();}
+function kembaliKeDaftarTugas(){bukaDaftarTugas();}
 function kembaliKeDaftarMateri(){bukaDaftarMateri();}
 function bukaFormMateri(index=-1){
     const user=JSON.parse(localStorage.getItem('loginUser'))||{};
@@ -2739,6 +3405,131 @@ function updateMateriTable(){
     table.innerHTML='';
     const empty=document.getElementById('materiEmpty'); if(!filtered.length){table.style.display='none';empty.style.display='flex';}else{table.style.display='grid';empty.style.display='none';filtered.forEach(({m,i})=>{const canEdit=isStaffUser(user);let attachment=m.attachment?.type==='file'?'📎 File':(m.attachment?.type==='link'||m.link?'🔗 Link':'-');table.innerHTML+=`<article class="materi-card"><div class="materi-card-top"><span class="materi-mapel-badge">${escapeHtml(m.mapel||'-')}</span><span style="font-size:10px;color:var(--text-muted)">${escapeHtml(m.kelas||'-')}</span></div><h3>${escapeHtml(m.judul||'-')}</h3><p class="materi-description">${escapeHtml(m.deskripsi||'-').slice(0,150)}${String(m.deskripsi||'').length>150?'…':''}</p><div class="materi-meta"><span>👨‍🏫 <strong>${escapeHtml(m.dibuatOleh||'-')}</strong></span><span>📎 <strong>${attachment}</strong></span><span>📅 <strong>${m.tanggalDibuat?new Date(m.tanggalDibuat).toLocaleDateString('id-ID'): '-'}</strong></span><span>📖 <strong>Pertemuan ${escapeHtml(m.pertemuan||'-')}</strong></span></div><div class="materi-card-footer"><button class="materi-btn btn-materi-view" onclick="lihatMateri(${i})">📖 Lihat Materi</button>${canEdit?`<button class="materi-btn btn-materi-edit" onclick="bukaFormMateri(${i})">✏️ Edit</button><button class="btn-danger materi-btn" onclick="bukaModalHapusMateri(${i})">🗑️ Hapus</button>`:''}</div></article>`;});}
     document.getElementById('countMateri').innerText=`Menampilkan ${filtered.length} dari ${materi.length} materi`;
+}
+
+/* TUGAS PEMBELAJARAN */
+function isTaskManager(user=getCurrentUser()){ return !!user && (user.role==='admin' || user.role==='guru'); }
+function formatDateTimeLocal(value){
+    const d=value?new Date(value):new Date();
+    const pad=n=>String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function formatTanggalJam(value){
+    if(!value)return '-';
+    const d=new Date(value); if(Number.isNaN(d.getTime()))return '-';
+    return d.toLocaleString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function getDaftarKelasTugas(){
+    const list=[]; const add=v=>{v=String(v||'').trim();if(v&&v!=='-'&&!list.some(x=>x.toLowerCase()===v.toLowerCase()))list.push(v);};
+    siswa.forEach(s=>add(s.kelas)); users.filter(u=>u.role==='siswa').forEach(u=>add(u.kelas)); jadwal.forEach(j=>add(j.kelas)); materi.forEach(m=>add(m.kelas));
+    return list.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
+}
+function getDaftarMapelTugas(){
+    const list=[]; const add=v=>{v=String(v||'').trim();if(v&&!list.some(x=>x.toLowerCase()===v.toLowerCase()))list.push(v);};
+    materi.forEach(m=>add(m.mapel)); jadwal.forEach(j=>add(j.mapel));
+    return list.sort((a,b)=>a.localeCompare(b,'id'));
+}
+function populateTugasSelects(selectedMapel='',selectedKelas=''){
+    const mapel=document.getElementById('tugasMapel'), kelas=document.getElementById('tugasKelas'); if(!mapel||!kelas)return;
+    mapel.innerHTML='<option value="">Pilih mata pelajaran</option>'; getDaftarMapelTugas().forEach(v=>mapel.innerHTML+=`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`);
+    kelas.innerHTML='<option value="">Pilih kelas</option>'; getDaftarKelasTugas().forEach(v=>kelas.innerHTML+=`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`);
+    if(selectedMapel)mapel.value=selectedMapel; if(selectedKelas)kelas.value=selectedKelas;
+}
+function resetFormTugas(){
+    ['tugasJudul','tugasDeskripsi','tugasLink'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('tugasPublishAt').value=formatDateTimeLocal();
+    document.getElementById('tugasDeadline').value=formatDateTimeLocal(new Date(Date.now()+7*24*60*60*1000));
+    document.getElementById('editTugasIndex').value='-1'; document.getElementById('judulFormTugas').innerText='Tambah Tugas Baru';
+    document.getElementById('subjudulFormTugas').innerText='Lengkapi informasi tugas sebelum dipublikasikan.'; document.getElementById('btnSimpanTugas').innerText='Simpan Tugas';
+    document.getElementById('tugasFile').value=''; document.getElementById('tugasFilePreview').style.display='none'; document.getElementById('tugasFilePreview').innerHTML=''; setSumberTugas('file'); populateTugasSelects();
+}
+function bukaFormTugas(index=-1){
+    const user=getCurrentUser(); if(!isTaskManager(user)){alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengelola tugas.');return;}
+    document.getElementById('materiListView').style.display='none'; document.getElementById('materiFormView').style.display='none'; document.getElementById('materiDetailView').style.display='none';
+    document.getElementById('tugasListView').style.display='none'; document.getElementById('tugasDetailView').style.display='none'; document.getElementById('tugasFormView').style.display='block';
+    document.getElementById('btnTabMateri')?.classList.remove('active'); document.getElementById('btnTabTugas')?.classList.add('active');
+    if(index<0){resetFormTugas();return;}
+    const t=tugas[index]; if(!t)return; document.getElementById('editTugasIndex').value=index; document.getElementById('judulFormTugas').innerText=`Edit Tugas: ${t.judul||''}`; document.getElementById('subjudulFormTugas').innerText='Periksa kembali informasi tugas sebelum diperbarui.'; document.getElementById('btnSimpanTugas').innerText='Perbarui Tugas';
+    document.getElementById('tugasJudul').value=t.judul||''; document.getElementById('tugasDeskripsi').value=t.deskripsi||''; document.getElementById('tugasPublishAt').value=formatDateTimeLocal(t.publishAt||t.tanggalDibuat); document.getElementById('tugasDeadline').value=formatDateTimeLocal(t.deadline); populateTugasSelects(t.mapel||'',t.kelas||'');
+    document.getElementById('tugasLink').value=t.attachment?.type==='link'?t.attachment.url:(t.link||''); setSumberTugas(t.attachment?.type==='link'?'link':'file');
+    const box=document.getElementById('tugasFilePreview'); if(t.attachment?.type==='file'){box.style.display='block';box.innerHTML=`📄 <strong>${escapeHtml(t.attachment.name)}</strong> &nbsp; File tersimpan. Pilih file baru jika ingin menggantinya.`;}
+}
+function setSumberTugas(mode){
+    tugasSourceMode=mode; document.getElementById('tugasFileSource').style.display=mode==='file'?'block':'none'; document.getElementById('tugasLinkSource').style.display=mode==='link'?'block':'none';
+    document.getElementById('tugasSourceFileBtn').classList.toggle('active',mode==='file'); document.getElementById('tugasSourceLinkBtn').classList.toggle('active',mode==='link');
+}
+function previewFileTugas(input){const file=input.files?.[0],box=document.getElementById('tugasFilePreview');if(!file){box.style.display='none';return;}box.style.display='block';box.innerHTML=`📄 <strong>${escapeHtml(file.name)}</strong> &nbsp; ${(file.size/1024/1024).toFixed(2)} MB`;
+}
+function validateTaskFile(file){
+    if(!file)return true;
+    const ok=['application/pdf','image/jpeg','image/png']; const ext=String(file.name||'').split('.').pop().toLowerCase();
+    if(!ok.includes(file.type) && !['pdf','jpg','jpeg','png'].includes(ext)){alert('File tugas hanya mendukung PDF, JPG, JPEG, atau PNG.');return false;}
+    if(file.size>700*1024){alert('Untuk sinkronisasi sistem saat ini, ukuran file maksimal sekitar 700 KB.');return false;} return true;
+}
+function readFileAsDataURLTask(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});}
+async function simpanTugas(){
+    const user=getCurrentUser(); if(!isTaskManager(user)){alert('Akses ditolak.');return;}
+    const judul=document.getElementById('tugasJudul').value.trim(),mapel=document.getElementById('tugasMapel').value,kelas=document.getElementById('tugasKelas').value,deskripsi=document.getElementById('tugasDeskripsi').value.trim();
+    const publishAt=document.getElementById('tugasPublishAt').value,deadline=document.getElementById('tugasDeadline').value;
+    if(!judul||!mapel||!kelas||!deskripsi||!publishAt||!deadline){alert('Lengkapi judul, mata pelajaran, kelas, petunjuk, waktu publikasi, dan deadline.');return;}
+    const publishDate=new Date(publishAt),deadlineDate=new Date(deadline); if(Number.isNaN(publishDate.getTime())||Number.isNaN(deadlineDate.getTime())||deadlineDate<=publishDate){alert('Deadline harus setelah waktu publikasi.');return;}
+    const idx=Number(document.getElementById('editTugasIndex').value),old=idx>=0?tugas[idx]:null; let attachment=old?.attachment||null;
+    if(tugasSourceMode==='link'){const link=document.getElementById('tugasLink').value.trim();if(!link){alert('Masukkan link tugas.');return;}attachment={type:'link',url:link,name:'Link Tugas'};}
+    else{const file=document.getElementById('tugasFile').files?.[0];if(file){if(!validateTaskFile(file))return;attachment={type:'file',name:file.name,size:file.size,mime:file.type,data:await readFileAsDataURLTask(file)};}else if(!attachment&&!old){alert('Pilih file PDF/JPG/JPEG/PNG atau gunakan link tugas.');return;}}
+    const record={id:old?.id||('tugas_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),judul,mapel,kelas,deskripsi,publishAt:publishDate.toISOString(),deadline:deadlineDate.toISOString(),attachment,link:attachment?.type==='link'?attachment.url:'',dibuatOleh:old?.dibuatOleh||user.nama||'Pengguna',dibuatOlehUsername:old?.dibuatOlehUsername||user.username||'',tanggalDibuat:old?.tanggalDibuat||new Date().toISOString(),tanggalEdit:idx>=0?new Date().toISOString():''};
+    if(idx>=0)tugas[idx]=record;else tugas.push(record); localStorage.setItem('tugas',JSON.stringify(tugas)); updateTugasTable(); renderDashboardTugasNotifications(); alert(idx>=0?'Tugas berhasil diperbarui.':'Tugas berhasil ditambahkan.'); bukaDaftarTugas();
+}
+function getTaskStatus(t){const now=Date.now(),p=new Date(t.publishAt||t.tanggalDibuat||0).getTime(),d=new Date(t.deadline||0).getTime();if(now<p)return 'upcoming';if(d&&now>d)return 'expired';return 'active';}
+function getTugasUntukUser(user=getCurrentUser(),includeUpcoming=true){
+    if(!user)return [];
+    if(isTaskManager(user))return [...tugas];
+    const kelas=normalizeName(user.kelas); return tugas.filter(t=>normalizeName(t.kelas)===kelas).filter(t=>includeUpcoming || getTaskStatus(t)!=='upcoming');
+}
+function getSubmissionForUser(taskId,user=getCurrentUser()){return pengumpulanTugas.find(x=>String(x.tugasId)===String(taskId)&&normalizeName(x.username||x.namaSiswa)===normalizeName(user?.username||user?.nama))||null;}
+function getTaskAttachmentHtml(t){
+    if(t.attachment?.type==='link'||t.link){const url=t.attachment?.url||t.link;return `<div class="materi-attachment"><h4>🔗 Link Tugas</h4><a href="${escapeHtml(url)}" target="_blank" rel="noopener">Buka Link Tugas ↗</a></div>`;}
+    if(t.attachment?.type==='file'&&t.attachment.data)return `<div class="materi-attachment"><h4>📎 File Tugas</h4><a href="${t.attachment.data}" download="${escapeHtml(t.attachment.name)}">⬇️ Download ${escapeHtml(t.attachment.name)}</a><div style="font-size:10px;color:var(--text-muted);margin-top:5px;">${escapeHtml(t.attachment.name||'File')}</div></div>`;
+    return '<div class="materi-attachment"><span class="materi-no-attachment">Tidak ada lampiran tugas.</span></div>';
+}
+function lihatTugas(index){
+    const user=getCurrentUser(),t=tugas[index];if(!t)return;
+    const allowed=isTaskManager(user)||normalizeName(t.kelas)===normalizeName(user?.kelas);if(!allowed){alert('Tugas ini bukan untuk kelas Anda.');return;}
+    document.getElementById('tugasListView').style.display='none';document.getElementById('tugasFormView').style.display='none';document.getElementById('tugasDetailView').style.display='block';
+    const status=getTaskStatus(t),statusLabel=status==='active'?'Sedang Dibuka':status==='upcoming'?'Belum Dipublikasikan':'Deadline Berakhir';
+    const sub=getSubmissionForUser(t.id,user); let studentUpload='';
+    if(isSiswaUser(user)){
+        const expired=status==='expired'; studentUpload=`<div class="task-upload-box"><h4>📤 Pengumpulan Tugas</h4><p style="font-size:11px;color:var(--text-muted);margin:5px 0 8px;">${expired?'Deadline sudah berakhir.':'Upload jawaban tugas Anda dalam PDF, JPG, JPEG, atau PNG. Maksimal sekitar 700 KB.'}</p>${sub?`<div class="task-submission-item"><strong>Sudah dikumpulkan: ${escapeHtml(sub.fileName||'-')}</strong><small>${formatTanggalJam(sub.dikumpulkanPada)} · <a href="${sub.fileData}" download="${escapeHtml(sub.fileName||'jawaban')}">Unduh kiriman</a></small></div>`:''}${!expired?`<input type="file" id="studentTaskFile_${escapeHtml(String(t.id))}" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"><button class="btn-primary" type="button" style="width:auto;margin-top:10px;" onclick="kirimTugasSiswa(${index})">📤 ${sub?'Kirim Ulang':'Kirim Tugas'}</button>`:''}</div>`;
+    } else {
+        const subs=pengumpulanTugas.filter(x=>String(x.tugasId)===String(t.id)); studentUpload=`<div class="task-submission-list"><h4>👥 Pengumpulan Siswa (${subs.length})</h4>${subs.length?subs.map(x=>`<div class="task-submission-item"><strong>${escapeHtml(x.namaSiswa||'-')} · ${escapeHtml(x.kelas||'-')}</strong><small>${formatTanggalJam(x.dikumpulkanPada)} · <a href="${x.fileData}" download="${escapeHtml(x.fileName||'jawaban')}">Unduh ${escapeHtml(x.fileName||'jawaban')}</a></small></div>`).join(''):'<div style="color:var(--text-muted);font-size:12px;">Belum ada siswa yang mengumpulkan tugas.</div>'}</div>`;
+    }
+    document.getElementById('detailTugasContent').innerHTML=`<div class="materi-detail-mapel">${escapeHtml(t.mapel||'-')} · ${escapeHtml(t.kelas||'-')}</div><h3>${escapeHtml(t.judul||'-')}</h3><div style="display:flex;gap:7px;flex-wrap:wrap;margin:12px 0;"><span class="task-status-badge task-status-${status}">${statusLabel}</span><span class="task-status-badge task-status-upcoming">Publikasi: ${formatTanggalJam(t.publishAt)}</span><span class="task-status-badge task-status-expired">Deadline: ${formatTanggalJam(t.deadline)}</span></div><div class="materi-detail-grid"><div class="materi-detail-item"><small>Guru</small><strong>${escapeHtml(t.dibuatOleh||'-')}</strong></div><div class="materi-detail-item"><small>Dipublikasikan</small><strong>${formatTanggalJam(t.publishAt)}</strong></div><div class="materi-detail-item"><small>Deadline</small><strong>${formatTanggalJam(t.deadline)}</strong></div><div class="materi-detail-item"><small>Status</small><strong>${statusLabel}</strong></div></div><div class="materi-detail-desc">${escapeHtml(t.deskripsi||'-').replace(/\n/g,'<br>')}</div>${getTaskAttachmentHtml(t)}${studentUpload}`;
+}
+async function kirimTugasSiswa(index){
+    const user=getCurrentUser(),t=tugas[index];if(!isSiswaUser(user)||!t)return;if(getTaskStatus(t)==='expired'){alert('Deadline tugas sudah berakhir.');return;}
+    const input=document.getElementById(`studentTaskFile_${String(t.id).replace(/[^a-zA-Z0-9_-]/g,'')}`) || document.querySelector(`input[type="file"][id^="studentTaskFile_"]`); const file=input?.files?.[0];if(!file){alert('Pilih file jawaban terlebih dahulu.');return;}if(!validateTaskFile(file))return;
+    const data=await readFileAsDataURLTask(file),old=getSubmissionForUser(t.id,user); const rec={id:old?.id||('sub_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),tugasId:t.id,namaSiswa:user.nama||'',username:user.username||'',kelas:user.kelas||'',fileName:file.name,fileMime:file.type,fileSize:file.size,fileData:data,dikumpulkanPada:new Date().toISOString()};
+    if(old){const idx=pengumpulanTugas.indexOf(old);pengumpulanTugas[idx]=rec;}else pengumpulanTugas.push(rec);localStorage.setItem('pengumpulanTugas',JSON.stringify(pengumpulanTugas));alert('Tugas berhasil dikirim.');lihatTugas(index);
+}
+function updateTugasTable(){
+    const table=document.getElementById('dataTugas');if(!table)return;const user=getCurrentUser();if(!user)return;populateTugasFilterOptions();
+    const q=(document.getElementById('filterTugas')?.value||'').trim().toLowerCase(),fm=document.getElementById('filterMapelTugas')?.value||'',fk=document.getElementById('filterKelasTugas')?.value||'';
+    let list=getTugasUntukUser(user,true); if(isSiswaUser(user))list=list.filter(t=>getTaskStatus(t)!=='upcoming');
+    const filtered=list.map(t=>({t,i:tugas.indexOf(t)})).filter(({t})=>(!q||[t.judul,t.mapel,t.dibuatOleh,t.deskripsi].some(v=>String(v||'').toLowerCase().includes(q)))&&(!fm||t.mapel===fm)&&(!fk||t.kelas===fk));
+    table.innerHTML='';const empty=document.getElementById('tugasEmpty');if(!filtered.length){table.style.display='none';empty.style.display='flex';}else{table.style.display='grid';empty.style.display='none';filtered.forEach(({t,i})=>{const status=getTaskStatus(t),sub=isSiswaUser(user)?getSubmissionForUser(t.id,user):null;const actions=isTaskManager(user)?`<button class="materi-btn btn-materi-edit" onclick="bukaFormTugas(${i})">✏️ Edit</button><button class="btn-danger materi-btn" onclick="bukaModalHapusTugas(${i})">🗑️ Hapus</button>`:'';const attachment=t.attachment?.type==='file'?'📎 File':(t.attachment?.type==='link'||t.link?'🔗 Link':'-');table.innerHTML+=`<article class="materi-card"><div class="materi-card-top"><span class="materi-mapel-badge">${escapeHtml(t.mapel||'-')}</span><span style="font-size:10px;color:var(--text-muted)">${escapeHtml(t.kelas||'-')}</span></div><h3>${escapeHtml(t.judul||'-')}</h3><p class="materi-description">${escapeHtml(t.deskripsi||'-').slice(0,150)}${String(t.deskripsi||'').length>150?'…':''}</p><div class="materi-meta"><span>👨‍🏫 <strong>${escapeHtml(t.dibuatOleh||'-')}</strong></span><span>📎 <strong>${attachment}</strong></span><span>📢 <strong>${formatTanggalJam(t.publishAt)}</strong></span><span class="task-card-deadline">⏰ Deadline: ${formatTanggalJam(t.deadline)}</span>${sub?`<span class="task-card-submission">✅ Sudah dikumpulkan</span>`:''}</div><div class="materi-card-footer"><button class="materi-btn btn-materi-view" onclick="lihatTugas(${i})">📋 Lihat Tugas</button>${actions}</div></article>`;});}
+    document.getElementById('countTugas').innerText=`Menampilkan ${filtered.length} dari ${list.length} tugas`;
+}
+function populateTugasFilterOptions(){
+    const fm=document.getElementById('filterMapelTugas'),fk=document.getElementById('filterKelasTugas');if(!fm||!fk)return;const oldM=fm.value,oldK=fk.value;const user=getCurrentUser();const list=getTugasUntukUser(user,true);
+    const mapel=[...new Set(list.map(t=>t.mapel).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'id'));const kelas=[...new Set(list.map(t=>t.kelas).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
+    fm.innerHTML='<option value="">Semua Mata Pelajaran</option>'+mapel.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');fk.innerHTML='<option value="">Semua Kelas</option>'+kelas.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');if(oldM)fm.value=oldM;if(oldK)fk.value=oldK;
+}
+function bukaModalHapusTugas(index){const user=getCurrentUser();if(!isTaskManager(user))return;pendingDeleteTugasIndex=index;const t=tugas[index];if(confirm(`Hapus tugas "${t?.judul||''}"?`))konfirmasiHapusTugas();}
+function konfirmasiHapusTugas(){const user=getCurrentUser();if(!isTaskManager(user)||pendingDeleteTugasIndex<0)return;const t=tugas[pendingDeleteTugasIndex];if(t){pengumpulanTugas=pengumpulanTugas.filter(x=>String(x.tugasId)!==String(t.id));localStorage.setItem('pengumpulanTugas',JSON.stringify(pengumpulanTugas));}tugas.splice(pendingDeleteTugasIndex,1);localStorage.setItem('tugas',JSON.stringify(tugas));pendingDeleteTugasIndex=-1;updateTugasTable();renderDashboardTugasNotifications();}
+function renderDashboardTugasNotifications(){
+    const widget=document.getElementById('dashboardTaskWidget'),listEl=document.getElementById('dashboardTaskNotificationList'),countEl=document.getElementById('dashboardTaskCount');const user=getCurrentUser();if(!widget||!listEl||!countEl)return;
+    if(!isSiswaUser(user)){widget.style.display='none';return;}
+    const now=Date.now(),items=tugas.filter(t=>normalizeName(t.kelas)===normalizeName(user.kelas)&&new Date(t.publishAt||t.tanggalDibuat||0).getTime()<=now&&(!t.deadline||new Date(t.deadline).getTime()>=now)).sort((a,b)=>new Date(b.publishAt||b.tanggalDibuat||0)-new Date(a.publishAt||a.tanggalDibuat||0));
+    if(!items.length){widget.style.display='none';return;} widget.style.display='block';countEl.innerText=items.length;listEl.innerHTML=items.slice(0,5).map(t=>`<div class="task-notification-item"><h4>📝 ${escapeHtml(t.judul||'Tugas Baru')}</h4><p>📚 ${escapeHtml(t.mapel||'-')} · ${escapeHtml(t.kelas||'-')}</p><p class="task-notification-deadline">⏰ Deadline: ${formatTanggalJam(t.deadline)}</p></div>`).join('');
 }
 
 /* FITUR NILAI */
@@ -3729,12 +4520,12 @@ function updateData(){
     populateNilaiDropdowns();
     updateDashboardStats();
     renderPengumuman();
+    renderDashboardTugasNotifications();
+    updateTugasTable();
 }
 
 /* TANGGAL */
-document.getElementById("date").innerHTML = new Date().toLocaleDateString("id-ID", {
-    weekday: "long", year: "numeric", month: "long", day: "numeric"
-});
+formatToday();
 </script>
 </body>
 </html>
