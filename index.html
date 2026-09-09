@@ -189,7 +189,7 @@ button{
     overflow:hidden;
     background:
         linear-gradient(180deg,rgba(17,104,196,.88) 0%,rgba(17,104,196,.48) 42%,rgba(3,32,67,.80) 100%),
-        url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=88') center/cover;
+        url('asset/foto sekolah1.jpeg') center/cover;
 }
 #loginPage .login-visual::before{
     content:'';
@@ -920,6 +920,13 @@ canvas{ display: none; }
 @media(max-width:900px){.materi-grid,.materi-form-grid{grid-template-columns:1fr}.materi-toolbar{grid-template-columns:1fr}.materi-page-header{align-items:flex-start;flex-direction:column}.materi-form-header{align-items:flex-start}.btn-add-materi{width:100%}.materi-detail-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.materi-form-header{flex-direction:column}.materi-form-header .btn-back{align-self:flex-start}}
 
+/* AKSES & HALAMAN UNDUH */
+.student-data-access,.announcement-access,.self-account-access{display:none}
+.staff-only{display:none}
+.account-download-access{width:auto;margin:0;padding:11px 18px;white-space:nowrap}
+.download-choice-note{color:var(--text-muted);font-size:12px;line-height:1.6}
+@media(max-width:850px){.account-download-access{width:100%}}
+
 /* MODAL STYLES (HALAMAN BARU DI TENGAH LAYAR) */
 .modal-overlay {
     position: fixed;
@@ -1368,14 +1375,16 @@ canvas{ display: none; }
             <a onclick="showContent('nilai')" id="nav-nilai"><span>📊</span> <span class="nav-text">Nilai Siswa</span></a>
             <a onclick="showContent('jadwal')" id="nav-jadwal"><span>📅</span> <span class="nav-text">Jadwal</span></a>
             
-            <div class="admin-only">
+            <div class="student-data-access">
                 <a onclick="showContent('siswa')" id="nav-siswa"><span>👨‍🎓</span> <span class="nav-text">Data Siswa</span></a>
+            </div>
+            <div class="announcement-access">
                 <a onclick="showContent('pengumuman')" id="nav-pengumuman"><span>📢</span> <span class="nav-text">Pengumuman Sekolah</span></a>
             </div>
             <div class="account-manager-only">
                 <a onclick="showContent('kelolaAkun')" id="nav-kelolaAkun"><span>⚙️</span> <span class="nav-text">Kelola Akun</span></a>
             </div>
-            <div class="student-only">
+            <div class="self-account-access">
                 <a onclick="showContent('akunSaya')" id="nav-akunSaya"><span>👤</span> <span class="nav-text">Akun Saya</span></a>
             </div>
 
@@ -1644,16 +1653,16 @@ canvas{ display: none; }
             </div>
         </div>
 
-        <!-- DATA SISWA (ADMIN ONLY) -->
+        <!-- DATA SISWA (ADMIN / GURU: GURU READ-ONLY) -->
         <div class="content" id="siswa">
             <!-- DAFTAR DATA SISWA -->
             <div id="siswaListView">
                 <div class="page-title-row">
                     <div>
                         <h2>👨‍🎓 DATA SISWA SMAN 1 MA'U</h2>
-                        <p class="page-subtitle">Kelola identitas, data akademik, dan kontak siswa secara terpusat.</p>
+                        <p class="page-subtitle">Admin dapat mengelola data. Guru dapat melihat data siswa.</p>
                     </div>
-                    <button class="btn-primary btn-add-student" onclick="bukaFormSiswa()">+ TAMBAH SISWA</button>
+                    <button class="btn-primary btn-add-student admin-only" onclick="bukaFormSiswa()">+ TAMBAH SISWA</button>
                 </div>
 
                 <div class="student-filter-bar">
@@ -1766,7 +1775,7 @@ canvas{ display: none; }
                     <h2>📋 ABSENSI</h2>
                     <p class="page-subtitle">Pilih metode absensi yang akan digunakan.</p>
                 </div>
-                <button class="admin-only btn-success" onclick="downloadRekapPDF()" style="padding:10px 18px;">📄 Unduh Rekap PDF</button>
+                <button class="staff-only btn-success" onclick="bukaHalamanUnduhAbsensi()" style="padding:10px 18px;">📥 Unduh Rekap Presensi</button>
             </div>
 
             <div id="absensiSiswaMenu" style="display:none;">
@@ -1785,6 +1794,7 @@ canvas{ display: none; }
                     <div class="form-grid-2">
                         <div class="form-field"><label>Nama Siswa</label><input id="kameraAbsensiNama" readonly></div>
                         <div class="form-field"><label>Kelas</label><input id="kameraAbsensiKelas" readonly></div>
+                        <div class="form-field"><label>Mata Pelajaran</label><select id="kameraAbsensiMapel"></select></div>
                         <div class="form-field"><label>Tanggal</label><input type="date" id="kameraAbsensiTanggal" readonly></div>
                         <div class="form-field"><label>Pertemuan</label><input id="kameraAbsensiPertemuan" readonly></div>
                     </div>
@@ -1812,6 +1822,7 @@ canvas{ display: none; }
                     <div class="form-grid-2">
                         <div class="form-field"><label>Nama Siswa</label><input id="manualAbsensiNama" readonly></div>
                         <div class="form-field"><label>Kelas</label><input id="manualAbsensiKelas" readonly></div>
+                        <div class="form-field"><label>Mata Pelajaran</label><select id="manualAbsensiMapel"></select></div>
                         <div class="form-field"><label>Tanggal</label><input type="date" id="manualAbsensiTanggal" readonly></div>
                         <div class="form-field"><label>Pertemuan</label><input id="manualAbsensiPertemuan" readonly></div>
                     </div>
@@ -1822,15 +1833,19 @@ canvas{ display: none; }
 
             <div id="absensiStaffView" style="display:none;">
                 <div class="student-form-card">
-                    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button class="btn-success" type="button" onclick="tambahAbsensiStaff()">➕ Tambah Absensi</button></div>
-                    <div class="form-grid-3">
-                        <div class="form-field"><label>Kelas</label><select id="staffAbsensiKelas" onchange="renderAbsensiStaff()"></select></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                        <div><strong>📝 Input Absensi Siswa</strong><div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Pilih status setiap siswa, lalu simpan sekaligus.</div></div>
+                        <button class="btn-success" type="button" onclick="simpanAbsensiKelasStaff()">💾 Simpan Absensi Kelas</button>
+                    </div>
+                    <div class="form-grid-4">
+                        <div class="form-field"><label>Kelas</label><select id="staffAbsensiKelas" onchange="populateStaffAbsensiMapel();renderAbsensiStaff()"></select></div>
+                        <div class="form-field"><label>Mata Pelajaran</label><select id="staffAbsensiMapel" onchange="renderAbsensiStaff()"></select></div>
                         <div class="form-field"><label>Tanggal</label><input type="date" id="staffAbsensiTanggal" onchange="renderAbsensiStaff()"></div>
                         <div class="form-field"><label>Pertemuan</label><select id="staffAbsensiPertemuan" onchange="renderAbsensiStaff()"></select></div>
                     </div>
                 </div>
                 <h3 style="margin-top:25px;font-size:16px;">Rekapitulasi Presensi</h3>
-                <table><thead><tr><th>No</th><th>NISN</th><th>Nama</th><th>Kelas</th><th>Status</th><th>Waktu</th><th>Aksi</th></tr></thead><tbody id="dataAbsensi"></tbody></table>
+                <table><thead><tr><th>No</th><th>NISN</th><th>Nama</th><th>Kelas</th><th>Mata Pelajaran</th><th>Status Absensi</th><th>Waktu</th><th>Aksi</th></tr></thead><tbody id="dataAbsensi"></tbody></table>
             </div>
 
             <div id="absensiSiswaRiwayat" style="display:none;margin-top:25px;">
@@ -1843,12 +1858,12 @@ canvas{ display: none; }
         <div class="content" id="nilai">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h2>📊 PENILAIAN SISWA & REKAP RAPOR</h2>
-                <button class="admin-only btn-success" onclick="downloadNilaiPDF()" style="padding: 10px 18px; border-radius: 8px;">
-                    📄 Unduh Rekap Nilai PDF (Guru)
+                <button class="staff-only btn-success" onclick="bukaHalamanUnduhNilai()" style="padding: 10px 18px; border-radius: 8px;">
+                    📥 Unduh Rekap Nilai
                 </button>
             </div>
             <br>
-            <div class="admin-only form-box">
+            <div class="staff-only form-box">
                 <input type="hidden" id="editNilaiIndex" value="-1">
                 
                 <label style="font-size:12px; color:var(--accent-color);">Pilih Siswa & Mata Pelajaran:</label>
@@ -1921,11 +1936,34 @@ canvas{ display: none; }
                             <th>UAS</th>
                             <th>Nilai Akhir</th>
                             <th>Grade</th>
-                            <th class="admin-only">Aksi</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="dataNilai"></tbody>
                 </table>
+            </div>
+        </div>
+
+
+        <!-- HALAMAN UNDUH REKAP NILAI -->
+        <div class="content" id="unduhNilai">
+            <div class="page-title-row">
+                <div>
+                    <h2>📥 UNDUH REKAP NILAI</h2>
+                    <p class="page-subtitle">Pilih mata pelajaran dan kelas terlebih dahulu, lalu pilih format file.</p>
+                </div>
+                <button class="btn-back" type="button" onclick="kembaliDariUnduhNilai()">⬅ Kembali</button>
+            </div>
+            <div class="student-form-card">
+                <div class="form-grid-2">
+                    <div class="form-field"><label>Mata Pelajaran <span style="color:#f87171">*</span></label><select id="downloadNilaiMapel" onchange="populateDownloadNilaiKelas()"></select></div>
+                    <div class="form-field"><label>Kelas <span style="color:#f87171">*</span></label><select id="downloadNilaiKelas"></select></div>
+                </div>
+                <div style="margin-top:18px;padding:14px;background:#0f172a;border:1px solid var(--border-color);border-radius:12px;color:var(--text-muted);font-size:12px;line-height:1.6;">💡 Rekap hanya mengambil nilai siswa sesuai mata pelajaran dan kelas yang dipilih. Guru dibatasi pada data yang terkait dengan kelas dan mata pelajaran yang tersedia pada sistem.</div>
+                <div class="student-form-actions">
+                    <button class="btn-success" type="button" onclick="downloadRekapNilaiExcel()">📊 Unduh Excel</button>
+                    <button class="btn-primary" type="button" style="width:auto;min-width:170px;" onclick="downloadRekapNilaiPDFTerfilter()">📄 Unduh PDF</button>
+                </div>
             </div>
         </div>
 
@@ -1937,7 +1975,7 @@ canvas{ display: none; }
                     <p style="color: var(--text-muted); font-size: 13px;">Kelola jadwal pelajaran mingguan SMAN 1 Ma'u</p>
                 </div>
                 <div>
-                    <button class="admin-only btn-success" onclick="openModalTambahJadwal('manual')" style="padding: 10px 18px; border-radius: 8px; margin-right: 5px;">
+                    <button class="staff-only btn-success" onclick="openModalTambahJadwal('manual')" style="padding: 10px 18px; border-radius: 8px; margin-right: 5px;">
                         ➕ Tambah Jadwal Baru
                     </button>
                     <button class="btn-primary" onclick="downloadJadwalPDF()" style="padding: 10px 18px; border-radius: 8px; width: auto; margin-top: 0;">
@@ -1984,14 +2022,55 @@ canvas{ display: none; }
             </table>
         </div>
 
-        <!-- PENGUMUMAN SEKOLAH (GURU / ADMIN ONLY) -->
+        <!-- HALAMAN UNDUH REKAP ABSENSI -->
+        <div class="content" id="unduhAbsensi">
+            <div class="page-title-row">
+                <div>
+                    <h2>📥 UNDUH REKAP PRESENSI</h2>
+                    <p class="page-subtitle">Pilih kelas dan mata pelajaran terlebih dahulu, lalu pilih format file.</p>
+                </div>
+                <button class="btn-back" type="button" onclick="kembaliDariUnduhAbsensi()">⬅ Kembali</button>
+            </div>
+            <div class="student-form-card">
+                <div class="form-grid-2">
+                    <div class="form-field"><label>Kelas <span style="color:#f87171">*</span></label><select id="downloadAbsensiKelas" onchange="populateDownloadAbsensiMapel()"></select></div>
+                    <div class="form-field"><label>Mata Pelajaran <span style="color:#f87171">*</span></label><select id="downloadAbsensiMapel"></select></div>
+                </div>
+                <div style="margin-top:18px;padding:14px;background:#0f172a;border:1px solid var(--border-color);border-radius:12px;color:var(--text-muted);font-size:12px;line-height:1.6;">💡 Rekap hanya mengambil data presensi yang sesuai dengan kelas dan mata pelajaran yang dipilih. Guru hanya dapat mengunduh data yang terkait dengan kegiatan mengajarnya.</div>
+                <div class="student-form-actions">
+                    <button class="btn-success" type="button" onclick="downloadRekapAbsensiExcel()">📊 Unduh Excel</button>
+                    <button class="btn-primary" type="button" style="width:auto;min-width:170px;" onclick="downloadRekapAbsensiPDF()">📄 Unduh PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HALAMAN UNDUH AKUN -->
+        <div class="content" id="unduhAkun">
+            <div class="page-title-row">
+                <div>
+                    <h2>📥 UNDUH DATA AKUN</h2>
+                    <p class="page-subtitle">Pilih jenis akun yang ingin direkap sebelum mengunduh.</p>
+                </div>
+                <button class="btn-back" type="button" onclick="kembaliDariUnduhAkun()">⬅ Kembali</button>
+            </div>
+            <div class="student-form-card">
+                <div class="form-field"><label>Jenis Akun <span style="color:#f87171">*</span></label><select id="downloadAkunRole" onchange="renderPreviewUnduhAkun()"></select></div>
+                <div id="previewUnduhAkun" class="account-table-wrap" style="margin-top:18px;"></div>
+                <div class="student-form-actions">
+                    <button class="btn-success" type="button" onclick="downloadAkunExcel()">📊 Unduh Excel</button>
+                    <button class="btn-primary" type="button" style="width:auto;min-width:170px;" onclick="downloadAkunPDF()">📄 Unduh PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PENGUMUMAN SEKOLAH (SEMUA LOGIN: SISWA LIHAT SAJA) -->
         <div class="content" id="pengumuman">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;">
                 <div>
                     <h2>📢 PENGUMUMAN SEKOLAH</h2>
-                    <p style="color:var(--text-muted);font-size:13px;margin-top:5px;">Kelola informasi dan pengumuman sekolah.</p>
+                    <p style="color:var(--text-muted);font-size:13px;margin-top:5px;">Guru dan Admin dapat menambah, mengedit, dan menghapus. Siswa hanya dapat melihat.</p>
                 </div>
-                <button class="btn-success" onclick="bukaFormPengumuman()" style="padding:10px 16px;">➕ Tambah Pengumuman</button>
+                <button class="btn-success staff-announcement-action" onclick="bukaFormPengumuman()" style="padding:10px 16px;">➕ Tambah Pengumuman</button>
             </div>
             <div id="announcementManagementList" class="announcement-list"></div>
         </div>
@@ -2004,7 +2083,10 @@ canvas{ display: none; }
                         <h2>⚙️ KELOLA AKUN</h2>
                         <p>Kelola akun Guru, Admin, dan Siswa secara terpusat.</p>
                     </div>
-                    <button class="btn-primary btn-add-account" id="btnTambahAkun" type="button" onclick="bukaFormAkun()">＋ Tambah Akun</button>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+                        <button class="btn-success account-download-access" type="button" onclick="bukaHalamanUnduhAkun()">📥 Unduh Akun</button>
+                        <button class="btn-primary btn-add-account" id="btnTambahAkun" type="button" onclick="bukaFormAkun()">＋ Tambah Akun</button>
+                    </div>
                 </div>
 
                 <div class="account-toolbar">
@@ -2069,7 +2151,7 @@ canvas{ display: none; }
 <!-- AKUN SAYA (SISWA) -->
 <div class="content" id="akunSaya">
     <div class="account-form-header">
-        <div><h2>👤 AKUN SAYA</h2><p class="page-subtitle">Lengkapi dan perbarui data akun Anda sendiri.</p></div>
+        <div><h2>👤 AKUN SAYA</h2><p id="selfAccountSubtitle" class="page-subtitle">Lengkapi dan perbarui data akun Anda sendiri.</p></div>
     </div>
     <div class="account-form-card">
         <div class="account-form-grid">
@@ -2080,9 +2162,9 @@ canvas{ display: none; }
                 <div class="account-field"><label for="selfPassword">Password Baru</label><div class="account-password-wrap"><input id="selfPassword" type="password" placeholder="Kosongkan jika tidak diubah"><button class="account-password-toggle" type="button" onclick="toggleSelfPassword()">👁</button></div></div>
             </div>
             <div class="account-form-section">
-                <div class="account-form-section-title">🎓 DATA SISWA</div>
-                <div class="account-field"><label for="selfNis">NIS / NISN</label><input id="selfNis" type="text" placeholder="NIS atau NISN"></div>
-                <div class="account-field"><label for="selfKelas">Kelas <span>*</span></label><select id="selfKelas"><option value="">Pilih kelas</option></select></div>
+                <div class="account-form-section-title" id="selfDataSectionTitle">🎓 DATA PENGGUNA</div>
+                <div class="account-field"><label for="selfNis" id="selfNisLabel">NIS / NISN</label><input id="selfNis" type="text" placeholder="NIS atau NISN"></div>
+                <div class="account-field" id="selfKelasWrap"><label for="selfKelas">Kelas <span>*</span></label><select id="selfKelas"><option value="">Pilih kelas</option></select></div>
                 <div class="account-field"><label>Jenis Kelamin</label><div class="account-radio-group"><label class="account-radio-option"><input type="radio" name="selfGender" value="Laki-laki"> Laki-laki</label><label class="account-radio-option"><input type="radio" name="selfGender" value="Perempuan"> Perempuan</label></div></div>
             </div>
         </div>
@@ -2671,7 +2753,7 @@ function getDaftarKelasPengumuman(){
     const add=v=>{v=String(v||'').trim(); if(v && v!=='-' && !list.some(x=>x.toLowerCase()===v.toLowerCase())) list.push(v);};
     siswa.forEach(s=>add(s.kelas));
     users.filter(u=>u.role==='siswa').forEach(u=>add(u.kelas));
-    jadwal.forEach(j=>add(j.kelas));
+    jadwal.forEach(j=>add(j.kelas)); tugas.forEach(t=>add(t.kelas));
     return list.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
 }
 
@@ -2800,6 +2882,11 @@ function openDashboard(resetHistory=true){
     else { roleBadge.innerText='Siswa ('+(user.kelas||'-')+')'; roleBadge.className='role-badge badge-siswa'; }
 
     document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdminUser(user)?'block':'none');
+    document.querySelectorAll('.student-data-access').forEach(el=>el.style.display=(isAdminUser(user)||isGuruUser(user))?'block':'none');
+    document.querySelectorAll('.announcement-access').forEach(el=>el.style.display=user?'block':'none');
+    document.querySelectorAll('.self-account-access').forEach(el=>el.style.display=(isSiswaUser(user)||isGuruUser(user))?'block':'none');
+    document.querySelectorAll('.staff-only').forEach(el=>el.style.display=isStaffUser(user)?(el.classList.contains('form-box')?'block':'inline-flex'):'none');
+    document.querySelectorAll('.account-download-access').forEach(el=>el.style.display=(isAdminUser(user)||isGuruUser(user))?'inline-flex':'none');
     document.querySelectorAll('.account-manager-only').forEach(el=>el.style.display=canManageStudentAccounts(user)?'block':'none');
     document.querySelectorAll('.student-only').forEach(el=>el.style.display=isSiswaUser(user)?'block':'none');
     document.querySelectorAll('.admin-only.btn-success,.admin-only.form-box').forEach(el=>el.style.display=isAdminUser(user)?'':'none');
@@ -2814,9 +2901,9 @@ function openDashboard(resetHistory=true){
     updateTugasTable();
     const taskAdd=document.querySelector('.guru-task-action'); if(taskAdd) taskAdd.style.display=isStaffUser(user)?'inline-flex':'none';
     const materiAdd=document.querySelector('.staff-task-action'); if(materiAdd) materiAdd.style.display=isStaffUser(user)?'inline-flex':'none';
-    if(isSiswaUser(user)) renderAkunSaya();
+    if(isSiswaUser(user)||isGuruUser(user)) renderAkunSaya();
     const accountSubtitle=document.querySelector('#kelolaAkun .account-page-header p');
-    if(accountSubtitle) accountSubtitle.textContent=isAdminUser(user)?'Kelola akun Guru dan Siswa secara terpusat. Sistem hanya mengizinkan satu akun Admin.':'Guru hanya dapat membuat dan mengedit akun Siswa.';
+    if(accountSubtitle) accountSubtitle.textContent=isAdminUser(user)?'Kelola akun Guru dan Siswa secara terpusat. Sistem hanya mengizinkan satu akun Admin.':'Guru dapat membuat dan mengedit akun Siswa, tetapi tidak dapat membuat akun Guru lain.';
     const addAccount=document.getElementById('btnTambahAkun'); if(addAccount) addAccount.textContent=isAdminUser(user)?'＋ Tambah Akun':'＋ Tambah Akun Siswa';
     const roleFilter=document.getElementById('filterRoleAkun'); if(roleFilter&&isGuruUser(user)){ roleFilter.value='siswa'; [...roleFilter.options].forEach(o=>o.hidden=o.value!=='siswa'&&o.value!==''); }
 }
@@ -2825,10 +2912,12 @@ function openDashboard(resetHistory=true){
 function showContent(id, fromHistory=false){
     const currentPage=document.querySelector('.content.active')?.id || 'home';
     const user=getCurrentUser();
-    if(id === 'pengumuman' && !isAdminUser(user)){ alert('Akses ditolak. Pengumuman hanya dapat dikelola oleh Admin.'); return; }
+    if(id === 'pengumuman' && !user){ alert('Silakan login terlebih dahulu.'); return; }
+    if(id === 'unduhAbsensi' && !isStaffUser(user)){ alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengunduh rekap presensi.'); return; }
+    if(id === 'unduhAkun' && !(isAdminUser(user)||isGuruUser(user))){ alert('Akses ditolak.'); return; }
     if(id === 'kelolaAkun' && !canManageStudentAccounts(user)){ alert('Akses ditolak.'); return; }
-    if(id === 'siswa' && !isAdminUser(user)){ alert('Akses ditolak. Data Siswa hanya dapat dikelola oleh Admin.'); return; }
-    if(id === 'akunSaya' && !isSiswaUser(user)){ alert('Akses ditolak.'); return; }
+    if(id === 'siswa' && !(isAdminUser(user)||isGuruUser(user))){ alert('Akses ditolak. Data Siswa hanya dapat diakses Admin atau Guru.'); return; }
+    if(id === 'akunSaya' && !(isSiswaUser(user)||isGuruUser(user))){ alert('Akses ditolak.'); return; }
 
     const target=document.getElementById(id);
     if(!target) return;
@@ -2997,27 +3086,67 @@ function updateAkunTable(){
 function escapeHtmlAkun(value){ return String(value).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
 
 function renderAkunSaya(){
-    const user=getCurrentUser(); if(!isSiswaUser(user))return;
-    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};
+    const user=getCurrentUser(); if(!user || !(isSiswaUser(user)||isGuruUser(user)))return;
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??'';};
     set('selfNama',user.nama); set('selfUsername',user.username); set('selfNis',user.nipNis||user.nis||'');
-    const kelas=document.getElementById('selfKelas'); if(kelas){ populateSelfKelas(user.kelas||''); }
+    const title=document.getElementById('selfDataSectionTitle'), subtitle=document.getElementById('selfAccountSubtitle'), nisLabel=document.getElementById('selfNisLabel'), kelasWrap=document.getElementById('selfKelasWrap');
+    if(isGuruUser(user)){
+        if(title)title.textContent='🎓 DATA GURU';
+        if(subtitle)subtitle.textContent='Perbarui data akun Guru Anda sendiri. Anda tidak dapat membuat akun Guru lain.';
+        if(nisLabel)nisLabel.textContent='NIP';
+        const kelasEl=document.getElementById('selfKelas'); if(kelasEl)kelasEl.value='';
+        if(kelasWrap)kelasWrap.style.display='none';
+    }else{
+        if(title)title.textContent='🎓 DATA SISWA';
+        if(subtitle)subtitle.textContent='Lengkapi dan perbarui data akun Anda sendiri.';
+        if(nisLabel)nisLabel.textContent='NIS / NISN';
+        if(kelasWrap)kelasWrap.style.display='block';
+        populateSelfKelas(user.kelas||'');
+    }
     document.querySelectorAll('input[name="selfGender"]').forEach(r=>r.checked=r.value===(user.jenisKelamin||''));
+    set('selfPassword','');
 }
 function populateSelfKelas(selected=''){
     const el=document.getElementById('selfKelas'); if(!el)return; el.innerHTML='<option value="">Pilih kelas</option>'; getDaftarKelasAkun().forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;el.appendChild(o);}); if(selected && ![...el.options].some(o=>o.value===selected)){const o=document.createElement('option');o.value=selected;o.textContent=selected;el.appendChild(o);} el.value=selected;
 }
 function toggleSelfPassword(){const el=document.getElementById('selfPassword');if(el)el.type=el.type==='password'?'text':'password';}
 function simpanAkunSaya(){
-    const actor=getCurrentUser(); if(!isSiswaUser(actor)){alert('Akses ditolak.');return;}
+    const actor=getCurrentUser(); if(!actor || !(isSiswaUser(actor)||isGuruUser(actor))){alert('Akses ditolak.');return;}
     const idx=users.findIndex(u=>String(u.username||'')===String(actor.username||'')); if(idx<0){alert('Akun tidak ditemukan.');return;}
-    const nama=document.getElementById('selfNama').value.trim(), username=document.getElementById('selfUsername').value.trim(), password=document.getElementById('selfPassword').value, kelas=document.getElementById('selfKelas').value, nipNis=document.getElementById('selfNis').value.trim(), gender=document.querySelector('input[name="selfGender"]:checked')?.value||'';
-    if(!nama||!username||!kelas){alert('Nama, username, dan kelas wajib diisi.');return;}
+    const nama=document.getElementById('selfNama').value.trim(), username=document.getElementById('selfUsername').value.trim(), password=document.getElementById('selfPassword').value;
+    const nipNis=document.getElementById('selfNis').value.trim(), gender=document.querySelector('input[name="selfGender"]:checked')?.value||'';
+    const kelas=isSiswaUser(actor)?(document.getElementById('selfKelas').value||''):actor.kelas||'-';
+    if(!nama||!username){alert('Nama dan username wajib diisi.');return;}
+    if(isSiswaUser(actor)&&!kelas){alert('Kelas wajib diisi untuk akun Siswa.');return;}
     if(users.some((u,i)=>i!==idx&&String(u.username||'').trim().toLowerCase()===username.toLowerCase())){alert('Username sudah digunakan.');return;}
-    const oldNama=users[idx].nama; users[idx]={...users[idx],nama,username,password:password||users[idx].password,kelas,nipNis,jenisKelamin:gender};
-    let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(oldNama)); if(!st){st={nama,kelas,nisn:nipNis,jenisKelamin:gender,tempatLahir:'',tanggalLahir:'',alamat:'',noHP:''};siswa.push(st);} else {st.nama=nama;st.kelas=kelas;st.nisn=nipNis||st.nisn;st.jenisKelamin=gender;}
+    const oldNama=users[idx].nama;
+    users[idx]={...users[idx],nama,username,password:password||users[idx].password,kelas,nipNis,jenisKelamin:gender};
+    if(isSiswaUser(actor)){
+        let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(oldNama));
+        if(!st){st={nama,kelas,nisn:nipNis,jenisKelamin:gender,tempatLahir:'',tanggalLahir:'',alamat:'',noHP:''};siswa.push(st);} else {st.nama=nama;st.kelas=kelas;st.nisn=nipNis||st.nisn;st.jenisKelamin=gender;}
+    }
     localStorage.setItem('users',JSON.stringify(users)); localStorage.setItem('siswa',JSON.stringify(siswa)); localStorage.setItem('loginUser',JSON.stringify(users[idx]));
     document.getElementById('selfPassword').value=''; alert('Akun Anda berhasil diperbarui.'); openDashboard(); showContent('akunSaya');
 }
+
+function bukaHalamanUnduhAkun(){
+    const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} showContent('unduhAkun'); const el=document.getElementById('downloadAkunRole'); if(!el)return; el.innerHTML=isAdminUser(user)?'<option value="siswa">Akun Siswa</option><option value="guru">Akun Guru</option>':'<option value="siswa">Akun Siswa</option>'; renderPreviewUnduhAkun();
+}
+function getAccountExportList(){
+    const user=getCurrentUser(), role=document.getElementById('downloadAkunRole')?.value||'siswa'; if(isGuruUser(user)&&role!=='siswa')return []; return users.filter(u=>u.role===role);
+}
+function renderPreviewUnduhAkun(){
+    const box=document.getElementById('previewUnduhAkun'); if(!box)return; const list=getAccountExportList();
+    box.innerHTML=`<table style="min-width:900px"><thead><tr><th>No</th><th>Nama</th><th>Username</th><th>NIP / NIS</th><th>Role</th><th>Kelas</th><th>Status</th></tr></thead><tbody>${list.length?list.map((u,i)=>`<tr><td>${i+1}</td><td>${escapeHtmlAkun(u.nama||'-')}</td><td>${escapeHtmlAkun(u.username||'-')}</td><td>${escapeHtmlAkun(u.nipNis||u.nis||'-')}</td><td>${escapeHtmlAkun(u.role||'-')}</td><td>${escapeHtmlAkun(u.kelas||'-')}</td><td>${escapeHtmlAkun(u.status||'aktif')}</td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--text-muted);">Tidak ada akun.</td></tr>'}</tbody></table><div class="account-count">Menampilkan ${list.length} akun. Password tidak ditampilkan dalam rekap untuk menjaga keamanan akun.</div>`;
+}
+function downloadAkunExcel(){
+    const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} const role=document.getElementById('downloadAkunRole')?.value||'siswa'; const list=getAccountExportList(); if(!list.length){alert('Tidak ada akun untuk diunduh.');return;}
+    const rows=list.map((u,i)=>[i+1,u.nama||'',u.username||'',u.nipNis||u.nis||'',u.role||'',u.kelas||'-',u.jenisKelamin||'',u.status||'aktif']); const ws=XLSX.utils.aoa_to_sheet([["SMA NEGERI 1 MA'U"],[`REKAP AKUN ${role.toUpperCase()}`],[],['No','Nama','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status'],...rows]); ws['!cols']=[{wch:6},{wch:28},{wch:20},{wch:18},{wch:12},{wch:16},{wch:16},{wch:12}]; const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Data Akun');XLSX.writeFile(wb,`Data_Akun_${role}.xlsx`);
+}
+function downloadAkunPDF(){
+    const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} const role=document.getElementById('downloadAkunRole')?.value||'siswa'; const list=getAccountExportList(); if(!list.length){alert('Tidak ada akun untuk diunduh.');return;} const {jsPDF}=window.jspdf; const doc=new jsPDF('l','mm','a4'); doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text("SMA NEGERI 1 MA'U",148,12,{align:'center'});doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text(`REKAP DATA AKUN ${role.toUpperCase()}`,148,19,{align:'center'}); const body=list.map((u,i)=>[i+1,u.nama||'-',u.username||'-',u.nipNis||u.nis||'-',u.role||'-',u.kelas||'-',u.jenisKelamin||'-',u.status||'aktif']); doc.autoTable({head:[['No','Nama','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status']],body,startY:26,theme:'grid',styles:{fontSize:8},headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold'}}); doc.setFontSize(8);doc.text('Catatan: Password tidak ditampilkan dalam rekap untuk menjaga keamanan akun.',18,(doc.lastAutoTable?.finalY||180)+10); doc.save(`Data_Akun_${role}.pdf`);
+}
+function kembaliDariUnduhAkun(){showContent('kelolaAkun');}
 
 /* DATA SISWA */
 let pendingDeleteSiswaIndex = -1;
@@ -3275,8 +3404,8 @@ function updateDataSiswaTable(){
             <td>${s.kelas || '-'}</td>
             <td>${s.noHP || '-'}</td>
             <td style="white-space:nowrap;">
-                <button class="btn-edit-student" onclick="bukaFormSiswa(${originalIndex})">Edit</button>
-                <button class="btn-danger" onclick="bukaModalHapusSiswa(${originalIndex})">Hapus</button>
+                ${isAdminUser(getCurrentUser()) ? `<button class="btn-edit-student" onclick="bukaFormSiswa(${originalIndex})">Edit</button>
+                <button class="btn-danger" onclick="bukaModalHapusSiswa(${originalIndex})">Hapus</button>` : '<span style="color:var(--text-muted);font-size:12px;">Lihat saja</span>'}
             </td>
         </tr>`;
     });
@@ -3337,6 +3466,7 @@ function bukaDaftarTugas(){
     const add=document.querySelector('.guru-task-action');
     if(add)add.style.display=isStaffUser(user)?'inline-flex':'none';
     updateTugasTable();
+    if(isStaffUser(user) && document.getElementById('absensi')?.classList.contains('active')) renderAbsensiStaff();
 }
 function kembaliKeDaftarMateri(){bukaDaftarMateri();}
 function kembaliKeDaftarTugas(){bukaDaftarTugas();}
@@ -3705,6 +3835,8 @@ function hitungNilaiOtomatis(){
 }
 
 function simpanNilai(){
+    const user = getCurrentUser();
+    if(!isStaffUser(user)){ alert("Akses ditolak. Hanya Admin/Guru yang dapat mengelola nilai siswa."); return; }
     let index = document.getElementById("editNilaiIndex").value;
     let nama = document.getElementById("nilaiNama").value;
     let mapel = document.getElementById("nilaiMapel").value;
@@ -3726,7 +3858,9 @@ function simpanNilai(){
         extraObj[comp.key] = el ? (el.value || 0) : 0;
     });
 
-    let dataObj = { nama, mapel, kehadiran, tugas, uts, uas, extra: extraObj, angka: nilaiAkhir, grade };
+    const studentRef = siswa.find(s => normalizeName(s.nama) === normalizeName(nama)) || users.find(u => u.role === "siswa" && normalizeName(u.nama) === normalizeName(nama));
+    const kelasSiswa = studentRef?.kelas || nilai[index]?.kelas || "";
+    let dataObj = { nama, mapel, kelas: kelasSiswa, kehadiran, tugas, uts, uas, extra: extraObj, angka: nilaiAkhir, grade, dibuatOleh: nilai[index]?.dibuatOleh || user.nama };
 
     if(index == "-1"){
         nilai.push(dataObj);
@@ -3784,6 +3918,7 @@ function resetFormNilai(){
 }
 
 function hapusNilai(i){
+    if(!isStaffUser(getCurrentUser())){alert("Akses ditolak.");return;}
     if(confirm("Hapus catatan nilai ini?")){
         nilai.splice(i, 1);
         localStorage.setItem("nilai", JSON.stringify(nilai));
@@ -3808,21 +3943,21 @@ function updateNilaiTable(){
         ${extraHeadersHTML}
         <th>Nilai Akhir</th>
         <th>Grade</th>
-        ${isStaffUser(user) ? '<th class="admin-only">Aksi</th>' : ''}
+        ${isStaffUser(user) ? '<th>Aksi</th>' : ''}
     </tr>`;
     header.innerHTML = headerHTML;
 
     let table = document.getElementById("dataNilai");
     table.innerHTML = "";
     
-    let filteredNilai = isStaffUser(user) ? nilai : nilai.filter(n => n.nama.toLowerCase() === user.nama.toLowerCase());
+    let filteredNilai = isStaffUser(user) ? nilai : nilai.filter(n => normalizeName(n.nama) === normalizeName(user.nama));
 
     filteredNilai.forEach((n, i) => {
         let gradeClass = "grade-" + (n.grade || 'c').toLowerCase();
         let extraTd = komponenTambahan.map(c => `<td>${(n.extra && n.extra[c.key]) ? n.extra[c.key] : 0}</td>`).join("");
 
         let aksi = isStaffUser(user) ? `
-            <td class="admin-only">
+            <td>
                 <button class="btn-warning" onclick="editNilai(${i})">Edit</button>
                 <button class="btn-danger" onclick="hapusNilai(${i})">Hapus</button>
             </td>` : "";
@@ -3841,6 +3976,94 @@ function updateNilaiTable(){
             ${aksi}
         </tr>`;
     });
+}
+
+
+function getNilaiScopeForUser(user=getCurrentUser()){
+    if(!user || !isStaffUser(user)) return [];
+    // Guru diberi akses pengelolaan nilai seperti Admin.
+    // Data kelas lama yang belum memiliki field kelas tetap akan diturunkan dari Data Siswa berdasarkan nama siswa.
+    return nilai.map(n => {
+        if(n.kelas) return n;
+        const st = siswa.find(x => normalizeName(x.nama) === normalizeName(n.nama)) || users.find(x => x.role === "siswa" && normalizeName(x.nama) === normalizeName(n.nama));
+        return st?.kelas ? {...n, kelas: st.kelas} : n;
+    });
+}
+
+function getDownloadNilaiMapelList(user=getCurrentUser()){
+    const list=[]; const add=v=>{v=String(v||'').trim(); if(v&&!list.some(x=>normalizeName(x)===normalizeName(v)))list.push(v);};
+    getNilaiScopeForUser(user).forEach(n=>add(n.mapel));
+    if(isAdminUser(user)) jadwal.forEach(j=>add(j.mapel));
+    else jadwal.filter(j=>normalizeName(getScheduleTeacher(j))===normalizeName(user?.nama)).forEach(j=>add(j.mapel));
+    return list.sort((a,b)=>a.localeCompare(b,'id'));
+}
+function populateDownloadNilaiMapel(){
+    const el=document.getElementById('downloadNilaiMapel'); if(!el)return;
+    const old=el.value||''; const list=getDownloadNilaiMapelList();
+    el.innerHTML='<option value="">Pilih mata pelajaran</option>'+list.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    if(old&&list.some(v=>normalizeName(v)===normalizeName(old)))el.value=old;
+    populateDownloadNilaiKelas();
+}
+function populateDownloadNilaiKelas(){
+    const el=document.getElementById('downloadNilaiKelas'); if(!el)return;
+    const mapel=document.getElementById('downloadNilaiMapel')?.value||'';
+    const user=getCurrentUser(); const list=[];
+    const add=v=>{v=String(v||'').trim(); if(v&&!list.some(x=>normalizeName(x)===normalizeName(v)))list.push(v);};
+    getNilaiScopeForUser(user).filter(n=>!mapel||normalizeName(n.mapel)===normalizeName(mapel)).forEach(n=>{
+        let kelas=n.kelas;
+        if(!kelas){
+            const st=siswa.find(x=>normalizeName(x.nama)===normalizeName(n.nama))||users.find(x=>x.role==='siswa'&&normalizeName(x.nama)===normalizeName(n.nama));
+            kelas=st?.kelas||'';
+        }
+        add(kelas);
+    });
+    // Untuk nilai lama yang belum menyimpan kelas, turunkan kelas dari Data Siswa berdasarkan nama.
+    if(!mapel){
+        siswa.forEach(st=>add(st.kelas));
+        users.filter(u=>u.role==='siswa').forEach(u=>add(u.kelas));
+    }
+    jadwal.filter(j=>(!mapel||normalizeName(j.mapel)===normalizeName(mapel))).forEach(j=>add(j.kelas));
+    el.innerHTML='<option value="">Pilih kelas</option>'+list.sort((a,b)=>a.localeCompare(b,'id',{numeric:true})).map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+}
+
+function bukaHalamanUnduhNilai(){
+    const user=getCurrentUser(); if(!isStaffUser(user)){alert('Akses ditolak.');return;}
+    showContent('unduhNilai'); populateDownloadNilaiMapel();
+}
+function kembaliDariUnduhNilai(){ showContent('nilai'); }
+function getSelectedNilaiExport(){
+    const mapel=document.getElementById('downloadNilaiMapel')?.value||'';
+    const kelas=document.getElementById('downloadNilaiKelas')?.value||'';
+    if(!mapel||!kelas){alert('Pilih mata pelajaran dan kelas terlebih dahulu.');return null;}
+    const data=getNilaiScopeForUser().map(n=>{
+        if(n.kelas)return n;
+        const st=siswa.find(x=>normalizeName(x.nama)===normalizeName(n.nama))||users.find(x=>x.role==='siswa'&&normalizeName(x.nama)===normalizeName(n.nama));
+        return st?.kelas?{...n,kelas:st.kelas}:n;
+    }).filter(n=>normalizeName(n.mapel)===normalizeName(mapel)&&normalizeName(n.kelas)===normalizeName(kelas));
+    return {mapel,kelas,data};
+}
+function downloadRekapNilaiExcel(){
+    const selected=getSelectedNilaiExport(); if(!selected)return;
+    if(!window.XLSX){alert('Library Excel belum siap.');return;}
+    const rows=selected.data.map((n,i)=>{
+        const row={No:i+1,'Nama Siswa':n.nama||'-','Kelas':selected.kelas,'Mata Pelajaran':selected.mapel,
+        'Kehadiran':n.kehadiran||'100%','Tugas':n.tugas||0,'UTS':n.uts||0,'UAS':n.uas||0};
+        komponenTambahan.forEach(c=>row[c.label]=(n.extra&&n.extra[c.key])?n.extra[c.key]:0);
+        row['Nilai Akhir']=n.angka||0; row['Grade']=n.grade||'-'; return row;
+    });
+    const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{'Keterangan':'Belum ada data nilai untuk pilihan ini'}]);
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Rekap Nilai');
+    XLSX.writeFile(wb,`Rekap_Nilai_${selected.kelas}_${selected.mapel}.xlsx`.replace(/[\\/:*?"<>|]/g,'_'));
+}
+function downloadRekapNilaiPDFTerfilter(){
+    const selected=getSelectedNilaiExport(); if(!selected)return;
+    if(!window.jspdf){alert('Library PDF belum siap.');return;}
+    const {jsPDF}=window.jspdf; const doc=new jsPDF('l','mm','a4');
+    doc.setFontSize(14); doc.text("SMA NEGERI 1 MA'U",148,15,{align:'center'});
+    doc.setFontSize(10); doc.text(`REKAP NILAI - ${selected.kelas} - ${selected.mapel}`,148,22,{align:'center'});
+    const body=selected.data.map((n,i)=>[i+1,n.nama||'-',selected.kelas,selected.mapel,n.kehadiran||'100%',n.tugas||0,n.uts||0,n.uas||0,n.angka||0,n.grade||'-']);
+    doc.autoTable({head:[['No','Nama','Kelas','Mapel','Kehadiran','Tugas','UTS','UAS','Akhir','Grade']],body:body.length?body:[['-','Belum ada data','','','','','','','','']],startY:28,theme:'grid',styles:{fontSize:8}});
+    doc.save(`Rekap_Nilai_${selected.kelas}_${selected.mapel}.pdf`.replace(/[\\/:*?"<>|]/g,'_'));
 }
 
 function downloadNilaiPDF(){
@@ -3936,6 +4159,8 @@ function populateGuruJadwal(selected=''){
 }
 
 function openModalTambahJadwal(defaultTab = 'manual'){
+    const currentUser = getCurrentUser();
+    if(!isStaffUser(currentUser)){ alert('Akses ditolak.'); return; }
     document.getElementById("editJadwalIndex").value = "-1";
     document.getElementById("modalJadwalTitle").innerText = "➕ Tambah Jadwal Mengajar Baru";
     document.getElementById("inputJadwalHari").value = "Senin";
@@ -4280,77 +4505,69 @@ function downloadJadwalPDF(){
     doc.save("Jadwal_Mengajar_SMAN1_Mau.pdf");
 }
 
-function downloadRekapPDF(){
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("SMA NEGERI 1 MA'U", 105, 15, { align: "center" });
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    let currentYear = new Date().getFullYear();
-    doc.text(`REKAPITULASI PRESENSI SISWA - TAHUN AJARAN ${currentYear}/${currentYear+1}`, 105, 21, { align: "center" });
-    doc.line(14, 25, 196, 25);
-
-    let tanggalList = [...new Set(absensi.map(item => item.tanggal))].slice(0, 5);
-    
-    let tableHeaders = ["No", "Nama Siswa", "Kelas"];
-    if(tanggalList.length === 0){
-        tableHeaders.push("Pertemuan 1");
-    } else {
-        tanggalList.forEach((tgl, i) => {
-            tableHeaders.push(`P${i+1}\n(${tgl})`);
-        });
-    }
-    tableHeaders.push("Total Hadir");
-
-    let tableData = [];
-    let daftarSiswa = siswa.length > 0 ? siswa : [...new Set(absensi.map(a => a.nama))].map(n => ({ nama: n, kelas: "-" }));
-
-    daftarSiswa.forEach((s, idx) => {
-        let row = [idx + 1, s.nama, s.kelas];
-        let totalHadir = 0;
-
-        if(tanggalList.length === 0){
-            row.push("-");
-        } else {
-            tanggalList.forEach(tgl => {
-                let rec = absensi.find(a => a.nama.toLowerCase() === s.nama.toLowerCase() && a.tanggal === tgl);
-                if(rec){
-                    row.push(rec.status);
-                    if(rec.status === "Hadir") totalHadir++;
-                } else {
-                    row.push("-");
-                }
-            });
-        }
-        row.push(totalHadir.toString());
-        tableData.push(row);
-    });
-
-    doc.autoTable({
-        head: [tableHeaders],
-        body: tableData,
-        startY: 30,
-        theme: 'grid',
-        styles: { fontSize: 8, halign: 'center' },
-        headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontStyle: 'bold' },
-        columnStyles: { 1: { halign: 'left' } }
-    });
-
-    let finalY = doc.lastAutoTable.finalY + 15;
-    if(finalY > 250) finalY = 250;
-
-    doc.setFontSize(9);
-    doc.text("Mengetahui,", 140, finalY);
-    doc.text("Guru Mata Pelajaran,", 140, finalY + 5);
-    doc.text("( ________________________ )", 140, finalY + 25);
-
-    doc.save("Rekap_Absensi_SMAN1_Mau.pdf");
+function getAttendanceScopeForUser(user=getCurrentUser()){
+    if(!user || !isStaffUser(user)) return [];
+    const name=normalizeName(user.nama);
+    if(isAdminUser(user)) return absensi.slice();
+    const fromAttendance=absensi.filter(a=>normalizeName(a.dibuatOleh)===name || normalizeName(a.guru)===name);
+    const fromSchedule=jadwal.filter(j=>normalizeName(getScheduleTeacher(j))===name);
+    const pairs=new Set(fromSchedule.map(j=>normalizeName(j.kelas)+'|'+normalizeName(j.mapel)));
+    return absensi.filter(a=>fromAttendance.includes(a) || pairs.has(normalizeName(a.kelas)+'|'+normalizeName(a.mapel||'')));
 }
+function getDownloadAbsensiKelasList(user=getCurrentUser()){
+    const list=[]; const add=v=>{v=String(v||'').trim();if(v&&v!=='-'&&!list.some(x=>normalizeName(x)===normalizeName(v)))list.push(v);};
+    const scope=getAttendanceScopeForUser(user); scope.forEach(a=>add(a.kelas));
+    if(isAdminUser(user)) jadwal.forEach(j=>add(j.kelas));
+    else jadwal.filter(j=>normalizeName(getScheduleTeacher(j))===normalizeName(user?.nama)).forEach(j=>add(j.kelas));
+    return list.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
+}
+function getDownloadAbsensiMapelList(kelas,user=getCurrentUser()){
+    const list=[]; const add=v=>{v=String(v||'').trim();if(v&&v!=='-'&&!list.some(x=>normalizeName(x)===normalizeName(v)))list.push(v);};
+    const scope=getAttendanceScopeForUser(user).filter(a=>!kelas||normalizeName(a.kelas)===normalizeName(kelas)); scope.forEach(a=>add(a.mapel));
+    const schedules=jadwal.filter(j=>(!kelas||normalizeName(j.kelas)===normalizeName(kelas))&&(isAdminUser(user)||normalizeName(getScheduleTeacher(j))===normalizeName(user?.nama))); schedules.forEach(j=>add(j.mapel));
+    materi.filter(m=>!kelas||normalizeName(m.kelas)===normalizeName(kelas)).forEach(m=>add(m.mapel));
+    return list.sort((a,b)=>a.localeCompare(b,'id'));
+}
+function bukaHalamanUnduhAbsensi(){
+    const user=getCurrentUser(); if(!isStaffUser(user)){alert('Akses ditolak.');return;}
+    showContent('unduhAbsensi');
+    populateDownloadAbsensiKelas();
+}
+function populateDownloadAbsensiKelas(selected=''){
+    const el=document.getElementById('downloadAbsensiKelas'); if(!el)return; const user=getCurrentUser(); const list=getDownloadAbsensiKelasList(user); const old=selected||el.value||'';
+    el.innerHTML='<option value="">Pilih kelas</option>'+list.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join(''); if(old&&list.some(v=>normalizeName(v)===normalizeName(old)))el.value=old; populateDownloadAbsensiMapel();
+}
+function populateDownloadAbsensiMapel(selected=''){
+    const kelas=document.getElementById('downloadAbsensiKelas')?.value||''; const el=document.getElementById('downloadAbsensiMapel'); if(!el)return; const list=getDownloadAbsensiMapelList(kelas,getCurrentUser()); const old=selected||el.value||'';
+    el.innerHTML='<option value="">Pilih mata pelajaran</option>'+list.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join(''); if(old&&list.some(v=>normalizeName(v)===normalizeName(old)))el.value=old;
+}
+function getSelectedAttendanceExport(){
+    const kelas=document.getElementById('downloadAbsensiKelas')?.value||'', mapel=document.getElementById('downloadAbsensiMapel')?.value||''; if(!kelas||!mapel){alert('Pilih kelas dan mata pelajaran terlebih dahulu.');return null;}
+    const user=getCurrentUser(); const scope=getAttendanceScopeForUser(user).filter(a=>normalizeName(a.kelas)===normalizeName(kelas)&&normalizeName(a.mapel)===normalizeName(mapel));
+    const students=getDaftarSiswaAbsensiByClass(kelas); const dates=[...new Set(scope.map(a=>a.tanggalISO||a.tanggal).filter(Boolean))].sort();
+    return {user,kelas,mapel,scope,students,dates};
+}
+function buildAttendanceExportRows(data){
+    const rows=[]; const students=data.students.length?data.students:[...new Map(data.scope.map(a=>[String(a.nisn||a.nama),{nisn:a.nisn||'',nama:a.nama,kelas:a.kelas}])).values()];
+    students.forEach((st,i)=>{
+        let hadir=0,sakit=0,izin=0,alpha=0; const row=[i+1,st.nisn||'',st.nama||'',st.kelas||data.kelas];
+        data.dates.forEach(tgl=>{const rec=data.scope.find(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn)||normalizeName(a.nama)===normalizeName(st.nama))&&String(a.tanggalISO||a.tanggal)===String(tgl)); const status=rec?.status||'-'; row.push(status); if(status==='Hadir')hadir++; else if(status==='Sakit')sakit++; else if(status==='Izin')izin++; else if(status==='Alpha')alpha++;});
+        row.push(hadir,sakit,izin,alpha); rows.push(row);
+    }); return rows;
+}
+function downloadRekapAbsensiExcel(){
+    const data=getSelectedAttendanceExport(); if(!data)return; const headers=['No','NISN','Nama Siswa','Kelas',...data.dates.map(d=>`Presensi ${d}`),'Hadir','Sakit','Izin','Alpha']; const rows=buildAttendanceExportRows(data);
+    const ws=XLSX.utils.aoa_to_sheet([['SMA NEGERI 1 MA\'U'],['REKAP PRESENSI'],[`Kelas: ${data.kelas}`],[`Mata Pelajaran: ${data.mapel}`],[],headers,...rows]); ws['!cols']=headers.map((_,i)=>({wch:i<4?18:14})); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Rekap Presensi'); XLSX.writeFile(wb,`Rekap_Presensi_${data.kelas}_${data.mapel}.xlsx`);
+}
+function downloadRekapAbsensiPDF(){
+    const data=getSelectedAttendanceExport(); if(!data)return; const {jsPDF}=window.jspdf; const doc=new jsPDF('l','mm','a4'); doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text("SMA NEGERI 1 MA'U",148,12,{align:'center'});doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text('REKAPITULASI PRESENSI SISWA',148,18,{align:'center'});doc.text(`Kelas: ${data.kelas} | Mata Pelajaran: ${data.mapel}`,148,24,{align:'center'});
+    const headers=['No','NISN','Nama Siswa','Kelas',...data.dates.map((d,i)=>`P${i+1}\n${d}`),'Hadir','Sakit','Izin','Alpha']; const body=buildAttendanceExportRows(data); doc.autoTable({head:[headers],body,startY:30,theme:'grid',styles:{fontSize:7,halign:'center'},headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold'},columnStyles:{2:{halign:'left'}}});
+    doc.setFontSize(9);doc.text(`Guru: ${data.user.nama||'-'}`,18,(doc.lastAutoTable?.finalY||190)+12);doc.save(`Rekap_Presensi_${data.kelas}_${data.mapel}.pdf`);
+}
+function kembaliDariUnduhAbsensi(){showContent('absensi');}
 
 /* ABSENSI BARU: SISWA SELF-SERVICE + GURU/ADMIN MANAGEMENT */
+
 function formatTanggalISOAbsensi(d){
     const x=d||new Date();
     return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
@@ -4395,10 +4612,32 @@ function initAbsensiPage(){
         renderRiwayatAbsensiSiswa();
     }
 }
+function getStudentAttendanceMapelList(kelas){
+    const list=[];
+    const add=v=>{
+        v=String(v||'').trim();
+        if(v && v!=='-' && !list.some(x=>normalizeName(x)===normalizeName(v))) list.push(v);
+    };
+    jadwal.filter(j=>normalizeName(j.kelas)===normalizeName(kelas)).forEach(j=>add(j.mapel));
+    return list.sort((a,b)=>a.localeCompare(b,'id'));
+}
+function setStudentAttendanceMapelSelect(prefix, kelas, preferred=''){
+    const el=document.getElementById(prefix+'Mapel');
+    if(!el) return '';
+    const list=getStudentAttendanceMapelList(kelas);
+    el.innerHTML=list.length
+        ? list.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('')
+        : '<option value="">Belum ada mata pelajaran pada jadwal</option>';
+    const target=preferred && list.some(m=>normalizeName(m)===normalizeName(preferred)) ? preferred : (list[0]||'');
+    el.value=target;
+    return target;
+}
 function setAutoAbsensiFields(prefix){
     const u=getCurrentUser(), st=getStudentIdentityForAbsensi(u), tanggal=formatTanggalISOAbsensi(new Date()), pertemuan=getCurrentMeetingAbsensi();
+    const mapel=getCurrentStudentAttendanceMapel(st.kelas, pertemuan);
     document.getElementById(prefix+'Nama').value=st.nama;
     document.getElementById(prefix+'Kelas').value=st.kelas;
+    setStudentAttendanceMapelSelect(prefix, st.kelas, mapel);
     document.getElementById(prefix+'Tanggal').value=tanggal;
     document.getElementById(prefix+'Pertemuan').value='Pertemuan ke-'+pertemuan;
 }
@@ -4417,8 +4656,9 @@ function tutupFormAbsensiSiswa(){
     const menu=document.getElementById('absensiSiswaMenu');if(menu)menu.style.display='block'; stopCamera();
 }
 function kembaliKeMenuAbsensiSiswa(){tutupFormAbsensiSiswa();renderRiwayatAbsensiSiswa();}
+function getCurrentStudentAttendanceMapel(kelas,pertemuan){ const u=getCurrentUser(); const today=getTodayName(); const candidates=jadwal.filter(j=>String(j.hari||'').toLowerCase()===today.toLowerCase()&&normalizeName(j.kelas)===normalizeName(kelas)); candidates.sort((a,b)=>(getMinutesFromJam(a.jam)?.start??9999)-(getMinutesFromJam(b.jam)?.start??9999)); const idx=Math.max(0,Number(pertemuan||1)-1); return candidates[idx]?.mapel||candidates[0]?.mapel||''; }
 function simpanAbsensiRecord(data){
-    const idx=absensi.findIndex(a=>String(a.nisn||'')===String(data.nisn||'') && normalizeName(a.nama)===normalizeName(data.nama) && String(a.tanggalISO||a.tanggal||'')===String(data.tanggalISO) && String(a.pertemuan||'')===String(data.pertemuan||''));
+    const idx=absensi.findIndex(a=>String(a.nisn||'')===String(data.nisn||'') && normalizeName(a.nama)===normalizeName(data.nama) && String(a.tanggalISO||a.tanggal||'')===String(data.tanggalISO) && String(a.pertemuan||'')===String(data.pertemuan||'') && normalizeName(a.mapel||'')===normalizeName(data.mapel||''));
     if(idx>=0) absensi[idx]={...absensi[idx],...data}; else absensi.push(data);
     localStorage.setItem('absensi',JSON.stringify(absensi));
     updateData();
@@ -4426,14 +4666,14 @@ function simpanAbsensiRecord(data){
 function simpanAbsensiKameraSiswa(){
     const u=getCurrentUser(),st=getStudentIdentityForAbsensi(u);if(!u||u.role!=='siswa')return;
     if(!currentPhotoBase64){alert('Silakan ambil foto terlebih dahulu.');return;}
-    const tanggal=document.getElementById('kameraAbsensiTanggal').value, pertemuan=(document.getElementById('kameraAbsensiPertemuan').value||'').replace('Pertemuan ke-','');
-    simpanAbsensiRecord({nisn:st.nisn,nama:st.nama,kelas:st.kelas,status:document.getElementById('kameraAbsensiStatus').value,foto:currentPhotoBase64,tanggal:tanggal,tanggalISO:tanggal,pertemuan:Number(pertemuan)||1,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:u.nama});
+    const tanggal=document.getElementById('kameraAbsensiTanggal').value, pertemuan=(document.getElementById('kameraAbsensiPertemuan').value||'').replace('Pertemuan ke-',''); const mapel=document.getElementById('kameraAbsensiMapel')?.value||getCurrentStudentAttendanceMapel(st.kelas,Number(pertemuan)||1);
+    simpanAbsensiRecord({nisn:st.nisn,nama:st.nama,kelas:st.kelas,mapel,status:document.getElementById('kameraAbsensiStatus').value,foto:currentPhotoBase64,tanggal:tanggal,tanggalISO:tanggal,pertemuan:Number(pertemuan)||1,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:u.nama});
     alert('Absensi kamera berhasil disimpan.');tutupFormAbsensiSiswa();renderRiwayatAbsensiSiswa();
 }
 function simpanAbsensiManualSiswa(){
     const u=getCurrentUser(),st=getStudentIdentityForAbsensi(u);if(!u||u.role!=='siswa')return;
-    const tanggal=document.getElementById('manualAbsensiTanggal').value, pertemuan=(document.getElementById('manualAbsensiPertemuan').value||'').replace('Pertemuan ke-','');
-    simpanAbsensiRecord({nisn:st.nisn,nama:st.nama,kelas:st.kelas,status:document.getElementById('manualAbsensiStatus').value,foto:'',tanggal:tanggal,tanggalISO:tanggal,pertemuan:Number(pertemuan)||1,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:u.nama});
+    const tanggal=document.getElementById('manualAbsensiTanggal').value, pertemuan=(document.getElementById('manualAbsensiPertemuan').value||'').replace('Pertemuan ke-',''); const mapel=document.getElementById('manualAbsensiMapel')?.value||getCurrentStudentAttendanceMapel(st.kelas,Number(pertemuan)||1);
+    simpanAbsensiRecord({nisn:st.nisn,nama:st.nama,kelas:st.kelas,mapel,status:document.getElementById('manualAbsensiStatus').value,foto:'',tanggal:tanggal,tanggalISO:tanggal,pertemuan:Number(pertemuan)||1,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:u.nama});
     alert('Absensi manual berhasil disimpan.');tutupFormAbsensiSiswa();renderRiwayatAbsensiSiswa();
 }
 function renderRiwayatAbsensiSiswa(){
@@ -4442,29 +4682,59 @@ function renderRiwayatAbsensiSiswa(){
     tb.innerHTML=rows.length?rows.map((a,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(a.tanggalISO||a.tanggal||'-')}</td><td>${escapeHtml(a.pertemuan||'-')}</td><td><span class="status-badge status-${String(a.status||'').toLowerCase()}">${escapeHtml(a.status||'-')}</span></td><td>${escapeHtml(a.waktu||'-')}</td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Belum ada riwayat absensi.</td></tr>';
 }
 function populateStaffAbsensiControls(){
-    const ks=document.getElementById('staffAbsensiKelas'),ts=document.getElementById('staffAbsensiTanggal'),ps=document.getElementById('staffAbsensiPertemuan');if(!ks||!ts||!ps)return;
-    const oldK=ks.value||getDaftarKelasSiswa()[0]||'';ks.innerHTML=getDaftarKelasSiswa().map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');if(oldK)ks.value=oldK;
+    const ks=document.getElementById('staffAbsensiKelas'),ms=document.getElementById('staffAbsensiMapel'),ts=document.getElementById('staffAbsensiTanggal'),ps=document.getElementById('staffAbsensiPertemuan');if(!ks||!ms||!ts||!ps)return;
+    const user=getCurrentUser(); const classList=isAdminUser(user)?getDaftarKelasSiswa():[...new Set(jadwal.filter(j=>normalizeName(getScheduleTeacher(j))===normalizeName(user?.nama)).map(j=>j.kelas).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'id',{numeric:true})); const oldK=ks.value||classList[0]||'';ks.innerHTML=classList.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');if(oldK)ks.value=oldK; populateStaffAbsensiMapel();
     if(!ts.value)ts.value=formatTanggalISOAbsensi(new Date());
     const oldP=ps.value||String(getCurrentMeetingAbsensi());ps.innerHTML=Array.from({length:16},(_,i)=>`<option value="${i+1}">Pertemuan ke-${i+1}</option>`).join('');ps.value=oldP;
 }
-function tambahAbsensiStaff(){
+function populateStaffAbsensiMapel(){
+    const user=getCurrentUser(), kelas=document.getElementById('staffAbsensiKelas')?.value||'', ms=document.getElementById('staffAbsensiMapel'); if(!ms)return;
+    const old=ms.value||''; const list=getDownloadAbsensiMapelList(kelas,user); ms.innerHTML=list.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join(''); if(old&&list.some(m=>normalizeName(m)===normalizeName(old)))ms.value=old;
+}
+function simpanAbsensiKelasStaff(){
     const user=getCurrentUser(); if(!isStaffUser(user))return;
-    const kelas=document.getElementById('staffAbsensiKelas')?.value||''; const tanggal=document.getElementById('staffAbsensiTanggal')?.value||formatTanggalISOAbsensi(new Date()); const pertemuan=Number(document.getElementById('staffAbsensiPertemuan')?.value||1);
-    const list=getDaftarSiswaAbsensiByClass(kelas); if(!list.length){alert('Belum ada siswa pada kelas ini.');return;}
-    const pilihan=list.map((st,i)=>`${i+1}. ${st.nama}`).join('\n'); const input=prompt('Pilih nomor siswa yang akan ditambahkan:\n\n'+pilihan); if(input===null)return; const i=Number(input)-1; if(!list[i]){alert('Nomor siswa tidak valid.');return;}
-    const status=prompt('Status (Hadir/Sakit/Izin/Alpha):','Hadir'); if(!status)return;
-    const st=list[i]; simpanAbsensiRecord({nisn:st.nisn||'',nama:st.nama,kelas:st.kelas,status:status.trim(),foto:'',tanggal,tanggalISO:tanggal,pertemuan,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:user.nama}); renderAbsensiStaff();
+    const kelas=document.getElementById('staffAbsensiKelas')?.value||'';
+    const mapel=document.getElementById('staffAbsensiMapel')?.value||'';
+    const tanggal=document.getElementById('staffAbsensiTanggal')?.value||formatTanggalISOAbsensi(new Date());
+    const pertemuan=Number(document.getElementById('staffAbsensiPertemuan')?.value||1);
+    const list=getDaftarSiswaAbsensiByClass(kelas);
+    if(!kelas||!mapel){alert('Pilih kelas dan mata pelajaran terlebih dahulu.');return;}
+    if(!list.length){alert('Belum ada siswa pada kelas ini.');return;}
+    const waktu=new Date().toLocaleTimeString('id-ID');
+    list.forEach((st,i)=>{
+        const status=document.getElementById('statusAbsensiStaff_'+i)?.value||'Hadir';
+        const idx=absensi.findIndex(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn)||normalizeName(a.nama)===normalizeName(st.nama))&&normalizeName(a.kelas||kelas)===normalizeName(kelas)&&normalizeName(a.mapel||'')===normalizeName(mapel)&&String(a.tanggalISO||a.tanggal||'')===tanggal&&Number(a.pertemuan||1)===pertemuan);
+        const data={nisn:st.nisn||'',nama:st.nama,kelas:st.kelas||kelas,mapel,status,foto:idx>=0?(absensi[idx].foto||''):'',tanggal,tanggalISO:tanggal,pertemuan,waktu:idx>=0?(absensi[idx].waktu||waktu):waktu,dibuatOleh:user.nama};
+        if(idx>=0) absensi[idx]={...absensi[idx],...data}; else absensi.push(data);
+    });
+    localStorage.setItem('absensi',JSON.stringify(absensi));
+    updateData();
+    renderAbsensiStaff();
+    alert(`Absensi ${list.length} siswa berhasil disimpan.`);
 }
+
+function tambahAbsensiStaff(){
+    simpanAbsensiKelasStaff();
+}
+
 function renderAbsensiStaff(){
-    const tb=document.getElementById('dataAbsensi'),kelas=document.getElementById('staffAbsensiKelas')?.value||'',tanggal=document.getElementById('staffAbsensiTanggal')?.value||'',pertemuan=Number(document.getElementById('staffAbsensiPertemuan')?.value||1);if(!tb)return;
-    const students=getDaftarSiswaAbsensiByClass(kelas);tb.innerHTML=students.length?students.map((st,i)=>{const rec=absensi.find(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn)||normalizeName(a.nama)===normalizeName(st.nama))&&String(a.kelas||'').toLowerCase()===String(kelas).toLowerCase()&&String(a.tanggalISO||a.tanggal||'')===tanggal&&Number(a.pertemuan||1)===pertemuan);return `<tr><td>${i+1}</td><td>${escapeHtml(st.nisn||'-')}</td><td>${escapeHtml(st.nama||'-')}</td><td>${escapeHtml(kelas)}</td><td>${rec?`<span class="status-badge status-${String(rec.status||'').toLowerCase()}">${escapeHtml(rec.status)}</span>`:'<span style="color:var(--text-muted)">Belum Absen</span>'}</td><td>${escapeHtml(rec?.waktu||'-')}</td><td><button class="btn-warning" onclick="ubahAbsensiStaff('${escapeHtml(st.nisn||'')}',${rec?absensi.indexOf(rec):-1})">Edit</button> <button class="btn-danger" onclick="hapusAbsensiStaff(${rec?absensi.indexOf(rec):-1})">Hapus</button></td></tr>`;}).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">Belum ada siswa pada kelas ini.</td></tr>';
+    const tb=document.getElementById('dataAbsensi'),kelas=document.getElementById('staffAbsensiKelas')?.value||'',mapel=document.getElementById('staffAbsensiMapel')?.value||'',tanggal=document.getElementById('staffAbsensiTanggal')?.value||'',pertemuan=Number(document.getElementById('staffAbsensiPertemuan')?.value||1);
+    if(!tb)return;
+    const students=getDaftarSiswaAbsensiByClass(kelas);
+    tb.innerHTML=students.length?students.map((st,i)=>{
+        const rec=absensi.find(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn)||normalizeName(a.nama)===normalizeName(st.nama))&&normalizeName(a.kelas||kelas)===normalizeName(kelas)&&normalizeName(a.mapel||'')===normalizeName(mapel)&&String(a.tanggalISO||a.tanggal||'')===tanggal&&Number(a.pertemuan||1)===pertemuan);
+        const selected=rec?.status||'Hadir';
+        const options=['Hadir','Sakit','Izin','Alpha'].map(v=>`<option value="${v}" ${selected===v?'selected':''}>${v}</option>`).join('');
+        return `<tr><td>${i+1}</td><td>${escapeHtml(st.nisn||'-')}</td><td><strong>${escapeHtml(st.nama||'-')}</strong></td><td>${escapeHtml(kelas)}</td><td>${escapeHtml(mapel)}</td><td><select id="statusAbsensiStaff_${i}" style="min-width:110px;"><option value="Hadir" ${selected==='Hadir'?'selected':''}>Hadir</option><option value="Sakit" ${selected==='Sakit'?'selected':''}>Sakit</option><option value="Izin" ${selected==='Izin'?'selected':''}>Izin</option><option value="Alpha" ${selected==='Alpha'?'selected':''}>Alpha</option></select></td><td>${escapeHtml(rec?.waktu||'-')}</td><td>${rec?`<button class="btn-warning" onclick="ubahAbsensiStaff('${escapeHtml(st.nisn||'')}',${absensi.indexOf(rec)})">Edit</button> <button class="btn-danger" onclick="hapusAbsensiStaff(${absensi.indexOf(rec)})">Hapus</button>`:'<span style="color:var(--text-muted);font-size:12px;">Belum disimpan</span>'}</td></tr>`;
+    }).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--text-muted);">Belum ada siswa pada kelas ini.</td></tr>';
 }
+
 function getDaftarSiswaAbsensiByClass(kelas){
     const map=new Map();siswa.filter(s=>normalizeName(s.kelas)===normalizeName(kelas)).forEach(s=>map.set(String(s.nisn||s.nama),s));users.filter(u=>u.role==='siswa'&&normalizeName(u.kelas)===normalizeName(kelas)).forEach(u=>{const key=String(u.nisn||u.nis||u.nama);if(!map.has(key))map.set(key,{nisn:u.nisn||u.nis||'',nama:u.nama,kelas:u.kelas});});return [...map.values()];
 }
 function ubahAbsensiStaff(nisn,index){
     if(!isStaffUser(getCurrentUser()))return; const st=getDaftarSiswaAbsensiByClass(document.getElementById('staffAbsensiKelas').value).find(s=>String(s.nisn||'')===String(nisn)); const old=index>=0?absensi[index]:null; const status=prompt('Status (Hadir/Sakit/Izin/Alpha):',old?.status||'Hadir');if(!status)return;
-    const tanggal=document.getElementById('staffAbsensiTanggal').value,pertemuan=Number(document.getElementById('staffAbsensiPertemuan').value||1);simpanAbsensiRecord({nisn:st?.nisn||'',nama:st?.nama||old?.nama||'',kelas:st?.kelas||old?.kelas||'',status:status.trim(),foto:old?.foto||'',tanggal,tanggalISO:tanggal,pertemuan,waktu:old?.waktu||new Date().toLocaleTimeString('id-ID'),dibuatOleh:getCurrentUser().nama});renderAbsensiStaff();
+    const tanggal=document.getElementById('staffAbsensiTanggal').value,pertemuan=Number(document.getElementById('staffAbsensiPertemuan').value||1);simpanAbsensiRecord({nisn:st?.nisn||'',nama:st?.nama||old?.nama||'',kelas:st?.kelas||old?.kelas||'',mapel:document.getElementById('staffAbsensiMapel')?.value||old?.mapel||'',status:status.trim(),foto:old?.foto||'',tanggal,tanggalISO:tanggal,pertemuan,waktu:old?.waktu||new Date().toLocaleTimeString('id-ID'),dibuatOleh:getCurrentUser().nama});renderAbsensiStaff();
 }
 function hapusAbsensiStaff(index){if(!isStaffUser(getCurrentUser())||index<0||!absensi[index])return;if(!confirm('Hapus data absensi ini?'))return;absensi.splice(index,1);localStorage.setItem('absensi',JSON.stringify(absensi));updateData();renderAbsensiStaff();}
 function startCamera(){
@@ -4522,6 +4792,7 @@ function updateData(){
     renderPengumuman();
     renderDashboardTugasNotifications();
     updateTugasTable();
+    if(isStaffUser(user) && document.getElementById('absensi')?.classList.contains('active')) renderAbsensiStaff();
 }
 
 /* TANGGAL */
