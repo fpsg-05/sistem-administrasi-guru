@@ -921,6 +921,14 @@ canvas{ display: none; }
 @media(max-width:560px){.materi-form-header{flex-direction:column}.materi-form-header .btn-back{align-self:flex-start}}
 
 
+.nilai-harian-grid-table{min-width:1250px;border-collapse:collapse}
+.nilai-harian-grid-table th,.nilai-harian-grid-table td{border:1px solid var(--border-color);padding:5px;text-align:center;font-size:11px;white-space:nowrap}
+.nilai-harian-grid-table thead th{background:#0f172a;color:#e5e7eb}
+.nilai-harian-grid-table .nilai-harian-number-row th{background:#111827;color:#38bdf8;font-weight:700}
+.nilai-harian-grid-table tbody tr:hover{background:rgba(59,130,246,.06)}
+.grid-input{width:42px!important;min-width:42px!important;height:30px!important;padding:4px!important;text-align:center!important;font-size:11px!important}
+.grid-input:disabled{opacity:.35;cursor:not-allowed}
+.nilai-harian-total{font-weight:800;color:#38bdf8;min-width:70px}
 /* NILAI HARIAN */
 .nilai-harian-cell{
     min-width:150px;
@@ -1012,6 +1020,23 @@ canvas{ display: none; }
 @media(max-width:560px){
     .nilai-harian-summary{grid-template-columns:1fr}
 }
+
+
+.nilai-harian-filter-card{padding-bottom:16px}
+.nilai-harian-filter-info{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;background:#0f172a;border:1px solid var(--border-color);border-radius:9px;color:var(--text-muted);font-size:11px}
+.nilai-harian-filter-info b{color:#e2e8f0}
+.nilai-harian-grid-table{min-width:1420px;table-layout:fixed}
+.nilai-harian-grid-table th{font-weight:800}
+.nilai-harian-grid-table th:first-child{width:42px}.nilai-harian-grid-table .sticky-name-col{width:170px}
+.nilai-harian-grid-table td:first-child{width:42px}.nilai-harian-grid-table td:nth-child(2){width:170px}
+.nilai-harian-grid-table .grid-input{box-sizing:border-box;width:48px!important;min-width:48px!important;height:31px!important;margin:0!important;border-radius:5px!important;border:1px solid #334155!important;background:#0b1220!important;color:#f8fafc!important;padding:3px!important}
+.nilai-harian-grid-table .grid-input:focus{border-color:#38bdf8!important;outline:none;box-shadow:0 0 0 2px rgba(56,189,248,.12)}
+.nilai-harian-grid-table tbody td{height:40px}
+.nilai-harian-bottom-bar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:14px}
+.nilai-harian-bottom-bar .btn-success{width:auto;margin:0;white-space:nowrap}
+.nilai-harian-note{font-size:11px;color:var(--text-muted);line-height:1.6}
+.nilai-harian-note b{color:#facc15}
+@media(max-width:700px){.nilai-harian-bottom-bar{flex-direction:column;align-items:stretch}.nilai-harian-bottom-bar .btn-success{width:100%}}
 
 /* AKSES & HALAMAN UNDUH */
 .student-data-access,.announcement-access,.self-account-access{display:none}
@@ -1127,7 +1152,7 @@ canvas{ display: none; }
 
 /* PENGUMUMAN SEKOLAH */
 .announcement-list { display:grid; gap:12px; }
-.announcement-item { background:#0f172a; border:1px solid var(--border-color); border-left:4px solid var(--accent-color); border-radius:12px; padding:14px; }
+.announcement-item { background:hwb(240 99% 0%); border:1px solid var(--border-color); border-left:4px solid var(--accent-color); border-radius:12px; padding:14px; }
 .announcement-item h4 { color:var(--text-light); font-size:15px; margin-bottom:6px; }
 .announcement-item p { color:var(--text-muted); font-size:13px; line-height:1.6; white-space:pre-wrap; }
 .announcement-meta { color:var(--text-muted); font-size:11px; margin-top:8px; }
@@ -1347,6 +1372,228 @@ canvas{ display: none; }
     .sidebar a > span:first-child{font-size:16px;}
     .sidebar a span.nav-text{font-size:8px;}
 }
+
+
+
+/* =========================================================
+   TEMA CERAH MODERN - MENGIKUTI WARNA HALAMAN LOGIN
+   Semua area aplikasi selain #loginPage dibuat terang.
+   ========================================================= */
+:root{
+    --primary-color:#0e68cb;
+    --primary-hover:#075bb7;
+    --bg-dark:#eef3f9;
+    --bg-card:#ffffff;
+    --sidebar-bg:#ffffff;
+    --text-light:#17355f;
+    --text-muted:#70829d;
+    --border-color:#d6e0ec;
+    --accent-color:#0e66c8;
+    --success-color:#20bf6b;
+    --warning-color:#f5a623;
+    --danger-color:#ef5350;
+}
+
+body:not(:has(#loginPage)),
+body:has(.dashboard[style*="display: block"]){
+    background:#eef3f9;
+    color:#17355f;
+}
+
+.dashboard{background:#eef3f9;color:#17355f;}
+.sidebar{
+    background:linear-gradient(180deg,#ffffff 0%,#f7faff 100%);
+    border-right:1px solid #d7e2ef;
+    box-shadow:4px 0 18px rgba(31,73,125,.05);
+}
+.sidebar h2,.sidebar-brand-title{color:#112f5d!important}
+.sidebar .school-name{color:#0e66c8!important}
+.sidebar a{color:#536b8c!important}
+.sidebar a:hover,.sidebar a.active-link{
+    background:linear-gradient(135deg,#eaf3ff,#dcecff)!important;
+    color:#0e66c8!important;
+    box-shadow:inset 3px 0 0 #0e68cb;
+}
+
+.main{background:#eef3f9;}
+.header{
+    background:#ffffff;
+    border-color:#d6e0ec;
+    box-shadow:0 8px 24px rgba(39,76,119,.07);
+}
+.header h1,.header h2,.header h3,.header p{color:#17355f;}
+.header .school-name,.header small{color:#70829d;}
+.user-avatar{background:linear-gradient(135deg,#0e68cb,#0875d1);border-color:#48b5ff;}
+
+.cards .card,.card{
+    background:#ffffff;
+    border-color:#d6e0ec;
+    box-shadow:0 7px 20px rgba(39,76,119,.06);
+}
+.card-info h3{color:#70829d!important}
+.card-info h2{color:#17355f!important}
+.icon-blue{background:#e7f4ff;color:#0e66c8}
+.icon-green{background:#e8f9f0;color:#18a85c}
+.icon-yellow{background:#fff5df;color:#d98a00}
+.icon-purple{background:#f3eaff;color:#8255c7}
+
+.dashboard-grid .widget-box,.widget-box{
+    background:#ffffff;
+    border-color:#d6e0ec;
+    box-shadow:0 7px 20px rgba(39,76,119,.05);
+}
+.widget-title{color:#17355f;border-color:#e2e9f2}
+.action-btn{
+    background:#f8fbff;
+    border-color:#d6e0ec;
+    color:#29466d;
+}
+.action-btn:hover{background:#0e68cb;border-color:#0e68cb;color:#fff}
+
+.content{
+    background:#ffffff;
+    border-color:#d6e0ec;
+    box-shadow:0 8px 24px rgba(39,76,119,.06);
+    color:#17355f;
+}
+.content h1,.content h2,.content h3,.content h4,.content h5,.content h6{color:#17355f;}
+.page-subtitle,.download-choice-note,.materi-count{color:#70829d!important}
+
+input,select,textarea{
+    background:#ffffff!important;
+    color:#17355f!important;
+    border-color:#cdd8e7!important;
+    box-shadow:none;
+}
+input::placeholder,textarea::placeholder{color:#9aabc2!important}
+input:focus,select:focus,textarea:focus{
+    border-color:#0e66c8!important;
+    box-shadow:0 0 0 3px rgba(14,102,200,.09)!important;
+}
+input[type="time"]{color-scheme:light}
+
+button.btn-primary{background:linear-gradient(135deg,#0e68cb,#075bb7);}
+button.btn-primary:hover{background:linear-gradient(135deg,#095db6,#064f9f)}
+.btn-success{background:#20bf6b}
+.btn-danger{background:#ef5350}
+.btn-warning{background:#f5a623;color:#fff}
+.btn-back{background:#f3f7fc;color:#29466d;border-color:#d6e0ec}
+.btn-back:hover{background:#e7eff8}
+
+/* tabel umum */
+table{color:#29466d}
+table th{
+    background:linear-gradient(180deg,#edf6ff,#e3f0fd)!important;
+    color:#0e66c8!important;
+    border-color:#d3dfec!important;
+}
+table th,table td{border-color:#dbe4ee!important}
+table tbody tr:hover{background:#f6faff}
+
+.status-hadir{background:#e8f9f0;color:#159957;border-color:#20bf6b}
+.status-sakit{background:#fff5df;color:#b97900;border-color:#f5a623}
+.status-izin{background:#e7f4ff;color:#0e66c8;border-color:#48b5ff}
+.status-alpha{background:#fff0f0;color:#d73b3b;border-color:#ef5350}
+.grade-a{background:#e8f9f0;color:#159957;border-color:#20bf6b}
+.grade-b{background:#e7f4ff;color:#0e66c8;border-color:#48b5ff}
+.grade-c{background:#fff5df;color:#b97900;border-color:#f5a623}
+.grade-d{background:#fff0f0;color:#d73b3b;border-color:#ef5350}
+
+.day-tab-btn{background:#f7faff;color:#536b8c;border-color:#d6e0ec}
+.day-tab-btn:hover,.day-tab-btn.active{background:#0e68cb;color:#fff;border-color:#0e68cb}
+.schedule-card{background:#f8fbff;border-color:#d6e0ec;border-left-color:#0e66c8}
+.schedule-card h4{color:#17355f}
+.schedule-card p{color:#70829d}
+
+.student-form-card,.materi-form-card{
+    background:#f8fbff!important;
+    border-color:#d6e0ec!important;
+    box-shadow:0 5px 18px rgba(39,76,119,.04);
+}
+.student-form-column,.materi-form-section{
+    background:#ffffff!important;
+    border-color:#dbe4ee!important;
+}
+.materi-card,.materi-detail-card{
+    background:#ffffff!important;
+    border-color:#d6e0ec!important;
+    box-shadow:0 6px 18px rgba(39,76,119,.05);
+}
+.materi-card h3,.materi-detail-card h3{color:#17355f!important}
+.materi-description,.materi-detail-desc{color:#536b8c!important}
+.materi-meta,.materi-detail-item,.materi-attachment,.materi-upload-box,.materi-file-preview{
+    background:#f6f9fd!important;
+    border-color:#dbe4ee!important;
+    color:#536b8c!important;
+}
+.materi-meta strong,.materi-upload-box b{color:#29466d!important}
+.materi-section-title{color:#0e66c8!important;border-color:#dbe4ee!important}
+.materi-field label{color:#536b8c!important}
+.materi-source-btn{background:#f5f8fc;color:#536b8c;border-color:#d6e0ec}
+.materi-source-btn.active{background:#e7f1ff;color:#0e66c8;border-color:#0e68cb}
+.materi-empty{border-color:#b9cce0;color:#70829d}
+.materi-empty strong{color:#29466d}
+
+/* Nilai Harian */
+.nilai-harian-btn{background:#e8f2ff;border-color:#8ec5f5;color:#0e66c8}
+.nilai-harian-btn:hover{background:#dcecff;border-color:#0e68cb}
+.nilai-harian-btn.has-score{background:#e8f9f0;border-color:#7bd7a7;color:#159957}
+.nilai-harian-btn.pending{background:#fff5df;border-color:#f2c66b;color:#b97900}
+.nilai-harian-filter-info{background:#f5f9fd!important;border-color:#d6e0ec!important;color:#70829d!important}
+.nilai-harian-filter-info b{color:#29466d!important}
+.nilai-harian-table-wrap{border-color:#d1ddea!important;background:#fff}
+.nilai-harian-grid-table th,.nilai-harian-grid-table td{border-color:#cbd8e6!important}
+.nilai-harian-grid-table thead th{
+    background:linear-gradient(180deg,#0e68cb,#075bb7)!important;
+    color:#fff!important;
+}
+.nilai-harian-grid-table .nilai-harian-number-row th{
+    background:#e7f2ff!important;
+    color:#0e66c8!important;
+}
+.nilai-harian-grid-table tbody tr:hover{background:#f4f9ff!important}
+.nilai-harian-grid-table .grid-input{
+    background:#fff!important;
+    color:#17355f!important;
+    border-color:#bfcfe0!important;
+}
+.nilai-harian-grid-table .grid-input:focus{
+    border-color:#0e66c8!important;
+    box-shadow:0 0 0 2px rgba(14,102,200,.10)!important;
+}
+.nilai-harian-total{color:#0e66c8!important}
+.nilai-harian-summary-card{background:#fff;border-color:#d6e0ec;box-shadow:0 5px 16px rgba(39,76,119,.05)}
+.nilai-harian-summary-card small{color:#70829d}
+.nilai-harian-summary-card strong{color:#17355f}
+.nilai-harian-final{color:#159957!important}
+.nilai-harian-final.waiting{color:#b97900!important}
+.nilai-harian-note{color:#70829d}
+.nilai-harian-note b{color:#d98a00}
+
+/* Form & panel umum */
+.form-box,.account-form-card,.account-table-card{color:#17355f}
+hr{border-color:#dbe4ee!important}
+.modal-overlay{background:rgba(18,47,93,.28)!important}
+.modal-card{background:#fff!important;border-color:#d6e0ec!important;color:#17355f!important;box-shadow:0 20px 50px rgba(31,62,99,.18)!important}
+.modal-header{border-color:#dbe4ee!important}
+.modal-header h3{color:#17355f!important}
+.modal-close{color:#70829d!important}
+.modal-close:hover{color:#17355f!important}
+.modal-footer{border-color:#dbe4ee!important}
+
+/* Elemen yang sebelumnya memakai latar navy secara langsung */
+.quick-actions-list .action-btn,
+.materi-upload-box,
+.materi-file-preview,
+.materi-meta,
+.materi-detail-item,
+.materi-attachment,
+.student-form-card,
+.student-form-column{color:#29466d}
+
+/* Jangan ubah halaman Login modern */
+#loginPage,
+#loginPage *{box-sizing:border-box}
 
 </style>
 </head>
@@ -2002,6 +2249,8 @@ canvas{ display: none; }
                 <!-- Kontainer Komponen Penilaian Tambahan Dinamis -->
                 <div id="containerKomponenDinamis" class="form-grid-3" style="margin-top: 10px;"></div>
 
+                <button type="button" class="btn-success" style="margin-top:10px; width:auto;" onclick="bukaNilaiHarianDariForm()">📝 Penilaian Harian</button>
+
                 <label style="font-size:12px; color:var(--accent-color); margin-top:10px; display:block;">Nilai Akhir & Predikat (Dapat Diubah Manual):</label>
                 <div class="form-grid-2">
                     <input type="number" id="nilaiAkhir" placeholder="Nilai Akhir">
@@ -2044,113 +2293,78 @@ canvas{ display: none; }
         <div class="content nilai-harian-page" id="nilaiHarian">
             <div class="page-title-row">
                 <div>
-                    <h2>📝 NILAI HARIAN</h2>
-                    <p class="page-subtitle">Input penilaian setiap pertemuan: Afektif, Kognitif, dan Psikomotorik.</p>
+                    <h2>📝 INPUT NILAI HARIAN</h2>
+                    <p class="page-subtitle">Input nilai setiap pertemuan untuk seluruh siswa berdasarkan kelas dan mata pelajaran.</p>
                 </div>
                 <button class="btn-back" type="button" onclick="kembaliDariNilaiHarian()">⬅ Kembali ke Nilai Siswa</button>
             </div>
 
-            <div class="student-form-card">
+            <div class="student-form-card nilai-harian-filter-card">
                 <div class="form-grid-3">
                     <div class="form-field">
-                        <label>Nama Siswa</label>
-                        <input id="nilaiHarianNama" readonly>
+                        <label>Filter Kelas</label>
+                        <select id="filterNilaiHarianKelas" onchange="renderNilaiHarianTable()">
+                            <option value="">-- Semua Kelas --</option>
+                        </select>
                     </div>
                     <div class="form-field">
-                        <label>Mata Pelajaran</label>
-                        <input id="nilaiHarianMapel" readonly>
+                        <label>Filter Mata Pelajaran</label>
+                        <select id="filterNilaiHarianMapel" onchange="renderNilaiHarianTable()">
+                            <option value="">-- Pilih Mata Pelajaran --</option>
+                        </select>
                     </div>
                     <div class="form-field">
-                        <label>Jumlah Pertemuan</label>
-                        <select id="nilaiHarianJumlahPertemuan" onchange="renderNilaiHarianTable()">
-                            <option value="1">1 Pertemuan</option>
-                            <option value="2">2 Pertemuan</option>
-                            <option value="3">3 Pertemuan</option>
-                            <option value="4">4 Pertemuan</option>
-                            <option value="5">5 Pertemuan</option>
-                            <option value="6">6 Pertemuan</option>
-                            <option value="7">7 Pertemuan</option>
-                            <option value="8">8 Pertemuan</option>
-                            <option value="9">9 Pertemuan</option>
-                            <option value="10" selected>10 Pertemuan</option>
-                            <option value="11">11 Pertemuan</option>
-                            <option value="12">12 Pertemuan</option>
-                            <option value="13">13 Pertemuan</option>
-                            <option value="14">14 Pertemuan</option>
-                            <option value="15">15 Pertemuan</option>
-                            <option value="16">16 Pertemuan</option>
-                            <option value="17">17 Pertemuan</option>
-                            <option value="18">18 Pertemuan</option>
-                            <option value="19">19 Pertemuan</option>
-                            <option value="20">20 Pertemuan</option>
+                        <label>Filter Nama Siswa</label>
+                        <select id="filterNilaiHarianNama" onchange="renderNilaiHarianTable()">
+                            <option value="">-- Semua Siswa --</option>
                         </select>
                     </div>
                 </div>
-
-                <div class="nilai-harian-summary">
-                    <div class="nilai-harian-summary-card">
-                        <small>Pertemuan Lengkap</small>
-                        <strong id="nilaiHarianLengkap">0 / 10</strong>
-                    </div>
-                    <div class="nilai-harian-summary-card">
-                        <small>Rata-rata Afektif</small>
-                        <strong id="nilaiHarianAvgAfektif">-</strong>
-                    </div>
-                    <div class="nilai-harian-summary-card">
-                        <small>Rata-rata Kognitif</small>
-                        <strong id="nilaiHarianAvgKognitif">-</strong>
-                    </div>
-                    <div class="nilai-harian-summary-card">
-                        <small>Rata-rata Psikomotorik</small>
-                        <strong id="nilaiHarianAvgPsikomotorik">-</strong>
-                    </div>
-                </div>
-
-                <div style="margin-top:18px;padding:13px 15px;background:#0f172a;border:1px solid var(--border-color);border-radius:10px;color:var(--text-muted);font-size:12px;line-height:1.6;">
-                    💡 <b style="color:#cbd5e1;">Aturan perhitungan:</b> Nilai Harian setiap pertemuan = rata-rata Afektif, Kognitif, dan Psikomotorik. Nilai Harian Akhir baru dihitung otomatis setelah <b style="color:#fde047;">semua pertemuan</b> yang dipilih lengkap.
+                <div class="nilai-harian-filter-info">
+                    <span>📌 <b>Pertemuan 1 sampai 10</b></span>
+                    <span>Nilai kosong tetap dihitung <b>0</b> dalam rekap.</span>
+                    <span>Hanya <b>Guru/Admin</b> yang dapat menginput dan menyimpan.</span>
                 </div>
             </div>
 
             <div class="nilai-harian-table-wrap">
-                <table>
+                <table class="nilai-harian-grid-table">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Pertemuan</th>
-                            <th>Penilaian Sikap<br>(Afektif)</th>
-                            <th>Penilaian Pengetahuan<br>(Kognitif)</th>
-                            <th>Penilaian Keterampilan<br>(Psikomotorik)</th>
-                            <th>Nilai Harian</th>
-                            <th>Status</th>
+                            <th rowspan="3">No.</th>
+                            <th rowspan="3" class="sticky-name-col">Nama<br>Siswa</th>
+                            <th colspan="10">Penilaian Sikap (Afektif)</th>
+                            <th colspan="10">Penilaian Pengetahuan (Kognitif)</th>
+                            <th colspan="10">Penilaian Keterampilan (Psikomotorik)</th>
+                            <th rowspan="3">Jumlah</th>
+                        </tr>
+                        <tr>
+                            <th colspan="10">Pertemuan ke-</th>
+                            <th colspan="10">Pertemuan ke-</th>
+                            <th colspan="10">Pertemuan ke-</th>
+                        </tr>
+                        <tr class="nilai-harian-number-row">
+                            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
                         </tr>
                     </thead>
                     <tbody id="dataNilaiHarian"></tbody>
                 </table>
             </div>
 
-            <div class="student-form-actions" style="margin-top:18px;">
-                <button class="btn-success" type="button" onclick="simpanNilaiHarian()">💾 Simpan Nilai Harian</button>
+            <div class="nilai-harian-bottom-bar">
+                <div class="nilai-harian-note">
+                    <b>Catatan:</b> dari pertemuan 1 sampai 10 boleh tidak diisi. Jika kosong, nilai dianggap 0 dan tetap masuk ke rekap perhitungan.
+                </div>
+                <button class="btn-success" type="button" onclick="simpanSemuaNilaiHarian()">💾 SIMPAN NILAI HARIAN</button>
             </div>
 
-            <div id="nilaiHarianRekapBox" class="student-form-card" style="margin-top:18px;display:none;">
-                <h3 style="font-size:16px;margin-bottom:14px;">📊 Rekap Nilai Harian Akhir</h3>
+            <div class="student-form-card" style="margin-top:18px;">
                 <div class="nilai-harian-summary">
-                    <div class="nilai-harian-summary-card">
-                        <small>Nilai Harian Akhir</small>
-                        <strong id="nilaiHarianFinal">-</strong>
-                    </div>
-                    <div class="nilai-harian-summary-card">
-                        <small>Rata-rata Afektif</small>
-                        <strong id="nilaiHarianRekapAfektif">-</strong>
-                    </div>
-                    <div class="nilai-harian-summary-card">
-                        <small>Rata-rata Kognitif</small>
-                        <strong id="nilaiHarianRekapKognitif">-</strong>
-                    </div>
-                    <div class="nilai-harian-summary-card">
-                        <small>Rata-rata Psikomotorik</small>
-                        <strong id="nilaiHarianRekapPsikomotorik">-</strong>
-                    </div>
+                    <div class="nilai-harian-summary-card"><small>Jumlah Siswa</small><strong id="nilaiHarianJumlahSiswa">0</strong></div>
+                    <div class="nilai-harian-summary-card"><small>Total Nilai</small><strong id="nilaiHarianTotalSemua">0</strong></div>
+                    <div class="nilai-harian-summary-card"><small>Rata-rata Rekap</small><strong id="nilaiHarianRataSemua">0</strong></div>
                 </div>
             </div>
         </div>
@@ -4150,11 +4364,11 @@ function updateNilaiTable(){
         <th>Nama Siswa</th>
         <th>Mata Pelajaran</th>
         <th>Kehadiran</th>
+        <th>Nilai Harian</th>
         <th>Tugas</th>
         <th>UTS</th>
         <th>UAS</th>
         ${extraHeadersHTML}
-        <th>Nilai Harian</th>
         <th>Nilai Akhir</th>
         <th>Grade</th>
         ${isStaffUser(user) ? '<th>Aksi</th>' : ''}
@@ -4181,11 +4395,11 @@ function updateNilaiTable(){
             <td>${n.nama}</td>
             <td>${n.mapel}</td>
             <td><span style="color:var(--success-color); font-weight:bold;">${n.kehadiran || '100%'}</span></td>
+            <td class="nilai-harian-cell">${getNilaiHarianDisplay(n)}</td>
             <td>${n.tugas || 0}</td>
             <td>${n.uts || 0}</td>
             <td>${n.uas || 0}</td>
             ${extraTd}
-            <td class="nilai-harian-cell">${getNilaiHarianDisplay(n)}</td>
             <td><b>${n.angka || 0}</b></td>
             <td><span class="grade-badge ${gradeClass}">${n.grade || 'C'}</span></td>
             ${aksi}
@@ -4196,242 +4410,28 @@ function updateNilaiTable(){
 
 
 /* NILAI HARIAN */
-let nilaiHarianCurrentKey = '';
-
-function getNilaiHarianKey(nama, mapel){
-    return String(nama || '').trim().toLowerCase() + '||' + String(mapel || '').trim().toLowerCase();
-}
-
-function getNilaiHarianRecord(nama, mapel){
-    const key = getNilaiHarianKey(nama, mapel);
-    return nilaiHarian.find(x => x.key === key)
-        || nilaiHarian.find(x => getNilaiHarianKey(x.nama, x.mapel) === key)
-        || null;
-}
-
-function getNilaiHarianMeetingScore(item){
-    const a = Number(item?.afektif), k = Number(item?.kognitif), p = Number(item?.psikomotorik);
-    if(!Number.isFinite(a) || !Number.isFinite(k) || !Number.isFinite(p)) return null;
-    return Math.round(((a + k + p) / 3) * 100) / 100;
-}
-
-function getNilaiHarianFinal(record){
-    if(!record || !Array.isArray(record.pertemuan) || !record.jumlahPertemuan) return null;
-    const meetings = record.pertemuan.slice(0, Number(record.jumlahPertemuan));
-    if(meetings.length < Number(record.jumlahPertemuan)) return null;
-    const complete = meetings.filter(x => getNilaiHarianMeetingScore(x) !== null);
-    if(complete.length !== Number(record.jumlahPertemuan)) return null;
-    const total = complete.reduce((sum, x) => sum + getNilaiHarianMeetingScore(x), 0);
-    return Math.round((total / complete.length) * 100) / 100;
-}
-
-function bukaNilaiHarian(nama, mapel){
-    const user = getCurrentUser();
-    if(!isStaffUser(user)){ alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengelola Nilai Harian.'); return; }
-    if(!nama || !mapel){ alert('Data siswa atau mata pelajaran belum lengkap.'); return; }
-
-    nilaiHarianCurrentKey = getNilaiHarianKey(nama, mapel);
-    document.getElementById('nilaiHarianNama').value = nama;
-    document.getElementById('nilaiHarianMapel').value = mapel;
-
-    const record = getNilaiHarianRecord(nama, mapel);
-    const jumlah = Number(record?.jumlahPertemuan || 10);
-    document.getElementById('nilaiHarianJumlahPertemuan').value = String(Math.min(20, Math.max(1, jumlah)));
-
-    showContent('nilaiHarian');
-    initNilaiHarianPage();
-}
-
-function kembaliDariNilaiHarian(){
-    showContent('nilai');
-}
-
-function initNilaiHarianPage(){
-    const user = getCurrentUser();
-    if(!isStaffUser(user)) return;
-
-    const namaEl = document.getElementById('nilaiHarianNama');
-    const mapelEl = document.getElementById('nilaiHarianMapel');
-    if(!namaEl || !mapelEl) return;
-
-    if(!namaEl.value || !mapelEl.value){
-        const row = nilai.find(n => getNilaiHarianKey(n.nama, n.mapel) === nilaiHarianCurrentKey);
-        if(row){
-            namaEl.value = row.nama || '';
-            mapelEl.value = row.mapel || '';
-        }
-    }
-
-    if(namaEl.value && mapelEl.value){
-        nilaiHarianCurrentKey = getNilaiHarianKey(namaEl.value, mapelEl.value);
-        const record = getNilaiHarianRecord(namaEl.value, mapelEl.value);
-        if(record){
-            document.getElementById('nilaiHarianJumlahPertemuan').value = String(record.jumlahPertemuan || 10);
-        }
-        renderNilaiHarianTable();
-    }
-}
-
-function renderNilaiHarianTable(){
-    const tbody = document.getElementById('dataNilaiHarian');
-    if(!tbody) return;
-
-    const nama = document.getElementById('nilaiHarianNama')?.value || '';
-    const mapel = document.getElementById('nilaiHarianMapel')?.value || '';
-    const jumlah = Math.min(20, Math.max(1, Number(document.getElementById('nilaiHarianJumlahPertemuan')?.value || 10)));
-    const record = getNilaiHarianRecord(nama, mapel);
-    const oldMeetings = Array.isArray(record?.pertemuan) ? record.pertemuan : [];
-
-    tbody.innerHTML = '';
-    for(let i = 1; i <= jumlah; i++){
-        const old = oldMeetings.find(x => Number(x.pertemuan) === i) || {};
-        const score = getNilaiHarianMeetingScore(old);
-        const status = score === null
-            ? '<span class="status-badge status-alpha">Belum lengkap</span>'
-            : '<span class="status-badge status-hadir">Lengkap</span>';
-
-        tbody.innerHTML += `
-            <tr>
-                <td>${i}</td>
-                <td><b>Pertemuan ke-${i}</b></td>
-                <td><input class="nilai-harian-input" type="number" min="0" max="100" step="0.01" id="nh_afektif_${i}" value="${old.afektif ?? ''}" oninput="updateNilaiHarianPreview()"></td>
-                <td><input class="nilai-harian-input" type="number" min="0" max="100" step="0.01" id="nh_kognitif_${i}" value="${old.kognitif ?? ''}" oninput="updateNilaiHarianPreview()"></td>
-                <td><input class="nilai-harian-input" type="number" min="0" max="100" step="0.01" id="nh_psikomotorik_${i}" value="${old.psikomotorik ?? ''}" oninput="updateNilaiHarianPreview()"></td>
-                <td id="nh_score_${i}" class="nilai-harian-final">${score === null ? '-' : score}</td>
-                <td id="nh_status_${i}">${status}</td>
-            </tr>`;
-    }
-    updateNilaiHarianPreview();
-}
-
-function updateNilaiHarianPreview(){
-    const jumlah = Math.min(20, Math.max(1, Number(document.getElementById('nilaiHarianJumlahPertemuan')?.value || 10)));
-    let complete = 0, sumA = 0, sumK = 0, sumP = 0, sumDaily = 0;
-
-    for(let i = 1; i <= jumlah; i++){
-        const aEl = document.getElementById(`nh_afektif_${i}`);
-        const kEl = document.getElementById(`nh_kognitif_${i}`);
-        const pEl = document.getElementById(`nh_psikomotorik_${i}`);
-        if(!aEl || !kEl || !pEl) continue;
-
-        const a = aEl.value === '' ? NaN : Number(aEl.value);
-        const k = kEl.value === '' ? NaN : Number(kEl.value);
-        const p = pEl.value === '' ? NaN : Number(pEl.value);
-        const valid = [a,k,p].every(v => Number.isFinite(v) && v >= 0 && v <= 100);
-
-        const scoreEl = document.getElementById(`nh_score_${i}`);
-        const statusEl = document.getElementById(`nh_status_${i}`);
-
-        if(valid){
-            const daily = Math.round(((a+k+p)/3)*100)/100;
-            complete++;
-            sumA += a; sumK += k; sumP += p; sumDaily += daily;
-            if(scoreEl){ scoreEl.textContent = daily; scoreEl.classList.remove('waiting'); }
-            if(statusEl) statusEl.innerHTML = '<span class="status-badge status-hadir">Lengkap</span>';
-        }else{
-            if(scoreEl){ scoreEl.textContent = '-'; scoreEl.classList.add('waiting'); }
-            if(statusEl) statusEl.innerHTML = '<span class="status-badge status-alpha">Belum lengkap</span>';
-        }
-    }
-
-    const setText = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
-    setText('nilaiHarianLengkap', `${complete} / ${jumlah}`);
-    setText('nilaiHarianAvgAfektif', complete ? Math.round((sumA/complete)*100)/100 : '-');
-    setText('nilaiHarianAvgKognitif', complete ? Math.round((sumK/complete)*100)/100 : '-');
-    setText('nilaiHarianAvgPsikomotorik', complete ? Math.round((sumP/complete)*100)/100 : '-');
-
-    const box = document.getElementById('nilaiHarianRekapBox');
-    if(box){
-        box.style.display = 'block';
-        const final = complete === jumlah ? Math.round((sumDaily/jumlah)*100)/100 : null;
-        setText('nilaiHarianFinal', final === null ? 'Belum final' : final);
-        setText('nilaiHarianRekapAfektif', complete ? Math.round((sumA/complete)*100)/100 : '-');
-        setText('nilaiHarianRekapKognitif', complete ? Math.round((sumK/complete)*100)/100 : '-');
-        setText('nilaiHarianRekapPsikomotorik', complete ? Math.round((sumP/complete)*100)/100 : '-');
-    }
-}
-
-function simpanNilaiHarian(){
-    const user = getCurrentUser();
-    if(!isStaffUser(user)){ alert('Akses ditolak.'); return; }
-
-    const nama = document.getElementById('nilaiHarianNama')?.value || '';
-    const mapel = document.getElementById('nilaiHarianMapel')?.value || '';
-    const jumlah = Math.min(20, Math.max(1, Number(document.getElementById('nilaiHarianJumlahPertemuan')?.value || 10)));
-    if(!nama || !mapel){ alert('Nama siswa dan mata pelajaran belum dipilih.'); return; }
-
-    const pertemuan = [];
-    let complete = 0;
-    for(let i=1; i<=jumlah; i++){
-        const aEl=document.getElementById(`nh_afektif_${i}`);
-        const kEl=document.getElementById(`nh_kognitif_${i}`);
-        const pEl=document.getElementById(`nh_psikomotorik_${i}`);
-        const a=aEl?.value === '' ? null : Number(aEl?.value);
-        const k=kEl?.value === '' ? null : Number(kEl?.value);
-        const p=pEl?.value === '' ? null : Number(pEl?.value);
-
-        for(const v of [a,k,p]){
-            if(v !== null && (!Number.isFinite(v) || v<0 || v>100)){
-                alert(`Nilai pada Pertemuan ke-${i} harus berada pada 0 sampai 100.`);
-                return;
-            }
-        }
-
-        const daily = (a !== null && k !== null && p !== null)
-            ? Math.round(((a+k+p)/3)*100)/100
-            : null;
-        if(daily !== null) complete++;
-        pertemuan.push({pertemuan:i,afektif:a,kognitif:k,psikomotorik:p,nilaiHarian:daily});
-    }
-
-    const final = complete === jumlah
-        ? Math.round((pertemuan.reduce((sum,x)=>sum+(x.nilaiHarian||0),0)/jumlah)*100)/100
-        : null;
-
-    const key=getNilaiHarianKey(nama,mapel);
-    const old=getNilaiHarianRecord(nama,mapel);
-    const rec={
-        id:old?.id || ('nilaiHarian_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),
-        key,nama,mapel,
-        kelas:(siswa.find(s=>normalizeName(s.nama)===normalizeName(nama)) || users.find(u=>u.role==='siswa'&&normalizeName(u.nama)===normalizeName(nama)))?.kelas || '',
-        jumlahPertemuan:jumlah,
-        pertemuan,
-        nilaiAkhir:final,
-        statusFinal: final !== null ? 'selesai' : 'belum_selesai',
-        diperbaruiOleh:user.nama||user.username||'Pengguna',
-        diperbaruiPada:new Date().toISOString()
-    };
-
-    const idx=nilaiHarian.findIndex(x=>getNilaiHarianKey(x.nama,x.mapel)===key);
-    if(idx>=0) nilaiHarian[idx]=rec; else nilaiHarian.push(rec);
-    localStorage.setItem('nilaiHarian',JSON.stringify(nilaiHarian));
-
-    // Masukkan otomatis Nilai Harian Akhir ke baris rekap utama.
-    const mainIdx=nilai.findIndex(n=>getNilaiHarianKey(n.nama,n.mapel)===key);
-    if(mainIdx>=0 && final !== null){
-        nilai[mainIdx]={...nilai[mainIdx],nilaiHarian:final};
-        localStorage.setItem('nilai',JSON.stringify(nilai));
-    }
-
-    updateNilaiHarianPreview();
-    updateNilaiTable();
-    alert(final !== null
-        ? `Nilai Harian berhasil disimpan. Nilai Harian Akhir: ${final}`
-        : `Nilai Harian berhasil disimpan. ${complete} dari ${jumlah} pertemuan sudah lengkap.`);
-}
-
-function getNilaiHarianDisplay(n){
-    const rec=getNilaiHarianRecord(n?.nama,n?.mapel);
-    const final=rec?.nilaiAkhir ?? n?.nilaiHarian;
-    if(final !== null && final !== undefined && final !== ''){
-        return `<button type="button" class="nilai-harian-btn has-score" onclick="bukaNilaiHarian('${escapeHtml(String(n.nama).replace(/'/g,"\\'"))}','${escapeHtml(String(n.mapel).replace(/'/g,"\\'"))}')">✓ ${final}</button>`;
-    }
-    const complete=Array.isArray(rec?.pertemuan) ? rec.pertemuan.filter(x=>getNilaiHarianMeetingScore(x)!==null).length : 0;
-    if(complete>0){
-        return `<button type="button" class="nilai-harian-btn pending" onclick="bukaNilaiHarian('${escapeHtml(String(n.nama).replace(/'/g,"\\'"))}','${escapeHtml(String(n.mapel).replace(/'/g,"\\'"))}')">${complete}/${rec.jumlahPertemuan} Pertemuan</button>`;
-    }
-    return `<button type="button" class="nilai-harian-btn" onclick="bukaNilaiHarian('${escapeHtml(String(n.nama).replace(/'/g,"\\'"))}','${escapeHtml(String(n.mapel).replace(/'/g,"\\'"))}')">＋ Input</button>`;
-}
+let nilaiHarianCurrentKey='';
+let nilaiHarianFormContext={nama:'',mapel:''};
+function getNilaiHarianKey(nama,mapel){return String(nama||'').trim().toLowerCase()+'||'+String(mapel||'').trim().toLowerCase();}
+function getNilaiHarianRecord(nama,mapel){const key=getNilaiHarianKey(nama,mapel);return nilaiHarian.find(x=>x.key===key)||nilaiHarian.find(x=>getNilaiHarianKey(x.nama,x.mapel)===key)||null;}
+function nilaiHarianNumber(v){const n=Number(v);return Number.isFinite(n)&&n>=0&&n<=100?n:0;}
+function getNilaiHarianFinal(record){if(!record||!Array.isArray(record.pertemuan))return null;const jumlah=Math.max(1,Number(record.jumlahPertemuan||10));const total=record.pertemuan.slice(0,jumlah).reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0);return Math.round(total/(jumlah*3)*100)/100;}
+function getDaftarKelasNilaiHarian(){const out=[];const add=v=>{v=String(v||'').trim();if(v&&v!=='-'&&!out.some(x=>normalizeName(x)===normalizeName(v)))out.push(v);};siswa.forEach(s=>add(s.kelas));users.filter(u=>u.role==='siswa').forEach(u=>add(u.kelas));nilai.forEach(n=>add(n.kelas));return out.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));}
+function getDaftarMapelNilaiHarian(){const out=[];const add=v=>{v=String(v||'').trim();if(v&&!out.some(x=>normalizeName(x)===normalizeName(v)))out.push(v);};nilai.forEach(n=>add(n.mapel));jadwal.forEach(j=>add(j.mapel));return out.sort((a,b)=>a.localeCompare(b,'id'));}
+function getDaftarSiswaNilaiHarian(){const out=[];const add=(nama,kelas)=>{nama=String(nama||'').trim();if(nama&&!out.some(x=>normalizeName(x.nama)===normalizeName(nama)))out.push({nama,kelas:String(kelas||'').trim()});};siswa.forEach(x=>add(x.nama,x.kelas));users.filter(u=>u.role==='siswa').forEach(x=>add(x.nama,x.kelas));nilai.forEach(x=>add(x.nama,x.kelas));return out.sort((a,b)=>a.nama.localeCompare(b.nama,'id'));}
+function populateNilaiHarianFilters(){const k=document.getElementById('filterNilaiHarianKelas'),m=document.getElementById('filterNilaiHarianMapel'),n=document.getElementById('filterNilaiHarianNama');if(!k||!m||!n)return;const ok=k.value,om=m.value,on=n.value;k.innerHTML='<option value="">-- Semua Kelas --</option>'+getDaftarKelasNilaiHarian().map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');m.innerHTML='<option value="">-- Semua Mata Pelajaran --</option>'+getDaftarMapelNilaiHarian().map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');const list=getDaftarSiswaNilaiHarian().filter(st=>!ok||normalizeName(st.kelas)===normalizeName(ok));n.innerHTML='<option value="">-- Semua Siswa --</option>'+list.map(st=>`<option value="${escapeHtml(st.nama)}">${escapeHtml(st.nama)}</option>`).join('');if([...k.options].some(o=>o.value===ok))k.value=ok;if([...m.options].some(o=>o.value===om))m.value=om;if([...n.options].some(o=>o.value===on))n.value=on;}
+function bukaNilaiHarianDariForm(){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengelola Nilai Harian.');return;}const nama=document.getElementById('nilaiSiswa')?.value||'',mapel=document.getElementById('nilaiMapel')?.value||'';nilaiHarianFormContext={nama,mapel};showContent('nilaiHarian');}
+function bukaNilaiHarian(nama,mapel){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak.');return;}if(!nama||!mapel){alert('Data siswa atau mata pelajaran belum lengkap.');return;}nilaiHarianFormContext={nama,mapel};nilaiHarianCurrentKey=getNilaiHarianKey(nama,mapel);showContent('nilaiHarian');}
+function kembaliDariNilaiHarian(){showContent('nilai');}
+function initNilaiHarianPage(){const user=getCurrentUser();if(!isStaffUser(user))return;const oldK=nilaiHarianFormContext.kelas||'',oldM=nilaiHarianFormContext.mapel||'',oldN=nilaiHarianFormContext.nama||'';populateNilaiHarianFilters();const k=document.getElementById('filterNilaiHarianKelas'),m=document.getElementById('filterNilaiHarianMapel'),n=document.getElementById('filterNilaiHarianNama');let kelas=oldK;if(!kelas&&oldN){const st=getDaftarSiswaNilaiHarian().find(x=>normalizeName(x.nama)===normalizeName(oldN));kelas=st?.kelas||'';}if(k&&kelas&&[...k.options].some(o=>normalizeName(o.value)===normalizeName(kelas)))k.value=kelas;if(m&&oldM&&[...m.options].some(o=>normalizeName(o.value)===normalizeName(oldM)))m.value=oldM;populateNilaiHarianFilters();if(k&&kelas&&[...k.options].some(o=>normalizeName(o.value)===normalizeName(kelas)))k.value=kelas;if(m&&oldM&&[...m.options].some(o=>normalizeName(o.value)===normalizeName(oldM)))m.value=oldM;if(n&&oldN&&[...n.options].some(o=>normalizeName(o.value)===normalizeName(oldN)))n.value=oldN;renderNilaiHarianTable();} 
+function getStudentsForNilaiHarian(){const k=document.getElementById('filterNilaiHarianKelas')?.value||'',n=document.getElementById('filterNilaiHarianNama')?.value||'';return getDaftarSiswaNilaiHarian().filter(st=>(!k||normalizeName(st.kelas)===normalizeName(k))&&(!n||normalizeName(st.nama)===normalizeName(n)));}
+function renderNilaiHarianTable(){const tbody=document.getElementById('dataNilaiHarian');if(!tbody)return;populateNilaiHarianFilters();const jumlah=Math.min(20,Math.max(1,Number(document.getElementById('nilaiHarianJumlahPertemuan')?.value||10))),mapel=document.getElementById('filterNilaiHarianMapel')?.value||'';if(!mapel){tbody.innerHTML='<tr><td colspan="33" style="padding:28px;text-align:center;color:var(--text-muted);">Silakan pilih <b>Mata Pelajaran</b> terlebih dahulu.</td></tr>';updateNilaiHarianSummary([]);return;}const students=getStudentsForNilaiHarian();tbody.innerHTML='';students.forEach((st,rowIndex)=>{const rec=getNilaiHarianRecord(st.nama,mapel),old=Array.isArray(rec?.pertemuan)?rec.pertemuan:[];let total=0,ca='',ck='',cp='';for(let i=1;i<=10;i++){const item=old.find(x=>Number(x.pertemuan)===i)||{},disabled=i>jumlah,a=item.afektif??'',k=item.kognitif??'',p=item.psikomotorik??'';total+=nilaiHarianNumber(a)+nilaiHarianNumber(k)+nilaiHarianNumber(p);ca+=`<td><input ${disabled?'disabled':''} class="nilai-harian-input grid-input" type="number" min="0" max="100" step="0.01" data-nh-row="${rowIndex}" data-nh-type="afektif" data-nh-meeting="${i}" value="${a}" oninput="updateNilaiHarianRow(${rowIndex})"></td>`;ck+=`<td><input ${disabled?'disabled':''} class="nilai-harian-input grid-input" type="number" min="0" max="100" step="0.01" data-nh-row="${rowIndex}" data-nh-type="kognitif" data-nh-meeting="${i}" value="${k}" oninput="updateNilaiHarianRow(${rowIndex})"></td>`;cp+=`<td><input ${disabled?'disabled':''} class="nilai-harian-input grid-input" type="number" min="0" max="100" step="0.01" data-nh-row="${rowIndex}" data-nh-type="psikomotorik" data-nh-meeting="${i}" value="${p}" oninput="updateNilaiHarianRow(${rowIndex})"></td>`;}tbody.innerHTML+=`<tr data-nh-student-row="${rowIndex}" data-nh-nama="${escapeHtml(st.nama)}" data-nh-kelas="${escapeHtml(st.kelas)}"><td>${rowIndex+1}</td><td style="min-width:150px;text-align:left;"><b>${escapeHtml(st.nama)}</b></td>${ca}${ck}${cp}<td id="nh_total_${rowIndex}" class="nilai-harian-total">${Math.round(total*100)/100}</td></tr>`;});updateNilaiHarianSummary(students);}
+function getNilaiHarianRowRecord(rowIndex){const tr=document.querySelector(`tr[data-nh-student-row="${rowIndex}"]`);if(!tr)return null;const nama=tr.dataset.nhNama||'',kelas=tr.dataset.nhKelas||'',mapel=document.getElementById('filterNilaiHarianMapel')?.value||'',jumlah=Math.min(20,Math.max(1,Number(document.getElementById('nilaiHarianJumlahPertemuan')?.value||10))),pertemuan=[];for(let i=1;i<=jumlah;i++){const get=t=>document.querySelector(`input[data-nh-row="${rowIndex}"][data-nh-type="${t}"][data-nh-meeting="${i}"]`);const a=get('afektif'),k=get('kognitif'),p=get('psikomotorik');pertemuan.push({pertemuan:i,afektif:a?.value===''?null:Number(a?.value),kognitif:k?.value===''?null:Number(k?.value),psikomotorik:p?.value===''?null:Number(p?.value)});}return{nama,kelas,mapel,jumlah,pertemuan};}
+function updateNilaiHarianRow(rowIndex){const rec=getNilaiHarianRowRecord(rowIndex);if(!rec)return;const total=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0);const el=document.getElementById(`nh_total_${rowIndex}`);if(el)el.textContent=Math.round(total*100)/100;updateNilaiHarianSummary(getStudentsForNilaiHarian());}
+function updateNilaiHarianSummary(students){let total=0;const jumlah=Math.min(20,Math.max(1,Number(document.getElementById('nilaiHarianJumlahPertemuan')?.value||10)));students.forEach((st,idx)=>{const rec=getNilaiHarianRowRecord(idx);if(rec)total+=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0);});const avg=students.length?Math.round(total/(students.length*jumlah*3)*100)/100:0;const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};set('nilaiHarianJumlahSiswa',students.length);set('nilaiHarianTotalSemua',Math.round(total*100)/100);set('nilaiHarianRataSemua',avg);}
+function simpanNilaiHarianRecord(rec,user){const key=getNilaiHarianKey(rec.nama,rec.mapel),old=getNilaiHarianRecord(rec.nama,rec.mapel),total=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0),final=Math.round(total/(rec.jumlah*3)*100)/100;const saved={id:old?.id||('nilaiHarian_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),key,nama:rec.nama,kelas:rec.kelas,mapel:rec.mapel,jumlahPertemuan:rec.jumlah,pertemuan:rec.pertemuan,jumlah:Math.round(total*100)/100,nilaiAkhir:final,statusFinal:'selesai',diperbaruiOleh:user.nama||user.username||'Pengguna',diperbaruiPada:new Date().toISOString()};const idx=nilaiHarian.findIndex(x=>getNilaiHarianKey(x.nama,x.mapel)===key);if(idx>=0)nilaiHarian[idx]=saved;else nilaiHarian.push(saved);const mainIdx=nilai.findIndex(n=>getNilaiHarianKey(n.nama,n.mapel)===key);if(mainIdx>=0)nilai[mainIdx]={...nilai[mainIdx],nilaiHarian:final};else nilai.push({nama:rec.nama,kelas:rec.kelas,mapel:rec.mapel,kehadiran:'100%',tugas:0,uts:0,uas:0,nilaiHarian:final,angka:0,grade:'C'});}
+function simpanSemuaNilaiHarian(){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak.');return;}const mapel=document.getElementById('filterNilaiHarianMapel')?.value||'';if(!mapel){alert('Pilih Mata Pelajaran terlebih dahulu.');return;}const students=getStudentsForNilaiHarian();if(!students.length){alert('Tidak ada siswa yang sesuai filter.');return;}for(let idx=0;idx<students.length;idx++){const rec=getNilaiHarianRowRecord(idx);if(!rec)continue;for(const x of rec.pertemuan)for(const v of [x.afektif,x.kognitif,x.psikomotorik])if(v!==null&&(!Number.isFinite(v)||v<0||v>100)){alert(`Nilai ${rec.nama}, Pertemuan ke-${x.pertemuan} harus 0 sampai 100.`);return;}simpanNilaiHarianRecord(rec,user);}localStorage.setItem('nilaiHarian',JSON.stringify(nilaiHarian));localStorage.setItem('nilai',JSON.stringify(nilai));updateNilaiTable();renderNilaiHarianTable();alert(`Nilai Harian untuk ${students.length} siswa berhasil disimpan. Kolom kosong dihitung 0.`);}
+function getNilaiHarianDisplay(n){const rec=getNilaiHarianRecord(n?.nama,n?.mapel),final=rec?.nilaiAkhir??n?.nilaiHarian,text=(final!==null&&final!==undefined&&final!=='')?`✓ ${final}`:'＋ Input';return `<button type="button" class="nilai-harian-btn ${final!==null&&final!==undefined?'has-score':''}" onclick="bukaNilaiHarian('${escapeHtml(String(n.nama).replace(/'/g,"\\'"))}','${escapeHtml(String(n.mapel).replace(/'/g,"\\'"))}')">${text}</button>`;}
 
 function getNilaiScopeForUser(user=getCurrentUser()){
     if(!user || !isStaffUser(user)) return [];
