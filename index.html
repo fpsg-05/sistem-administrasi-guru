@@ -1152,7 +1152,7 @@ canvas{ display: none; }
 
 /* PENGUMUMAN SEKOLAH */
 .announcement-list { display:grid; gap:12px; }
-.announcement-item { background:#fefeff; border:1px solid var(--border-color); border-left:4px solid var(--accent-color); border-radius:12px; padding:14px; }
+.announcement-item { background:#0f172a; border:1px solid var(--border-color); border-left:4px solid var(--accent-color); border-radius:12px; padding:14px; }
 .announcement-item h4 { color:var(--text-light); font-size:15px; margin-bottom:6px; }
 .announcement-item p { color:var(--text-muted); font-size:13px; line-height:1.6; white-space:pre-wrap; }
 .announcement-meta { color:var(--text-muted); font-size:11px; margin-top:8px; }
@@ -3733,6 +3733,26 @@ function updateDataSiswaTable(){
     });
 }
 
+/* MASTER DATA MAPEL DARI JADWAL
+   Semua pilihan Mata Pelajaran pada modul terkait mengambil sumber dari Jadwal.
+   Data materi/tugas/nilai yang sudah ada tidak dihapus, tetapi daftar pilihan
+   mengikuti mata pelajaran yang benar-benar terdaftar pada Jadwal. */
+function getDaftarMapelDariJadwal(user=null, kelas=''){
+    const list=[];
+    const add=v=>{
+        v=String(v||'').trim();
+        if(!v || v==='-') return;
+        if(!list.some(x=>normalizeName(x)===normalizeName(v))) list.push(v);
+    };
+    const jadwalScope=(Array.isArray(jadwal)?jadwal:[]).filter(j=>{
+        if(kelas && normalizeName(j.kelas)!==normalizeName(kelas)) return false;
+        if(user && !isAdminUser(user) && normalizeName(getScheduleTeacher(j))!==normalizeName(user.nama)) return false;
+        return true;
+    });
+    jadwalScope.forEach(j=>add(j.mapel));
+    return list.sort((a,b)=>a.localeCompare(b,'id'));
+}
+
 /* MATERI PELAJARAN */
 let pendingDeleteMateriIndex = -1;
 let materiSourceMode = 'file';
@@ -3741,11 +3761,7 @@ function escapeHtml(value){
     return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
 }
 function getDaftarMapelMateri(){
-    const list=[];
-    const add=v=>{v=String(v||'').trim(); if(v && !list.some(x=>x.toLowerCase()===v.toLowerCase())) list.push(v);};
-    ['Fisika','Matematika','Bahasa Indonesia','Bahasa Inggris','Kimia','Biologi','Ekonomi','Geografi','Sosiologi','Sejarah','Pendidikan Agama','Informatika','PJOK','Seni Budaya'].forEach(add);
-    materi.forEach(m=>add(m.mapel)); jadwal.forEach(j=>add(j.mapel));
-    return list.sort((a,b)=>a.localeCompare(b,'id'));
+    return getDaftarMapelDariJadwal(getCurrentUser());
 }
 function getDaftarKelasMateri(){
     const list=[]; const add=v=>{v=String(v||'').trim(); if(v && v!=='-' && !list.some(x=>x.toLowerCase()===v.toLowerCase())) list.push(v);};
@@ -3877,9 +3893,7 @@ function getDaftarKelasTugas(){
     return list.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
 }
 function getDaftarMapelTugas(){
-    const list=[]; const add=v=>{v=String(v||'').trim();if(v&&!list.some(x=>x.toLowerCase()===v.toLowerCase()))list.push(v);};
-    materi.forEach(m=>add(m.mapel)); jadwal.forEach(j=>add(j.mapel));
-    return list.sort((a,b)=>a.localeCompare(b,'id'));
+    return getDaftarMapelDariJadwal(getCurrentUser());
 }
 function populateTugasSelects(selectedMapel='',selectedKelas=''){
     const mapel=document.getElementById('tugasMapel'), kelas=document.getElementById('tugasKelas'); if(!mapel||!kelas)return;
@@ -4003,12 +4017,9 @@ function populateNilaiDropdowns(){
         selectNama.innerHTML += `<option value="${n}">${n}</option>`;
     });
 
-    let daftarMapel = [];
-    materi.forEach(m => { if(m.mapel && !daftarMapel.includes(m.mapel)) daftarMapel.push(m.mapel); });
-    jadwal.forEach(j => { if(j.mapel && !daftarMapel.includes(j.mapel)) daftarMapel.push(j.mapel); });
-
+    const daftarMapel = getDaftarMapelDariJadwal(getCurrentUser());
     daftarMapel.forEach(m => {
-        selectMapel.innerHTML += `<option value="${m}">${m}</option>`;
+        selectMapel.innerHTML += `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`;
     });
 
     if(selectedNama) selectNama.value = selectedNama;
@@ -4312,7 +4323,7 @@ function getNilaiHarianRecord(nama,mapel){const key=getNilaiHarianKey(nama,mapel
 function nilaiHarianNumber(v){const n=Number(v);return Number.isFinite(n)&&n>=0&&n<=100?n:0;}
 function getNilaiHarianFinal(record){if(!record||!Array.isArray(record.pertemuan))return null;const jumlah=Math.max(1,Number(record.jumlahPertemuan||10));const total=record.pertemuan.slice(0,jumlah).reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0);return Math.round(total/(jumlah*3)*100)/100;}
 function getDaftarKelasNilaiHarian(){const out=[];const add=v=>{v=String(v||'').trim();if(v&&v!=='-'&&!out.some(x=>normalizeName(x)===normalizeName(v)))out.push(v);};siswa.forEach(s=>add(s.kelas));users.filter(u=>u.role==='siswa').forEach(u=>add(u.kelas));nilai.forEach(n=>add(n.kelas));return out.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));}
-function getDaftarMapelNilaiHarian(){const out=[];const add=v=>{v=String(v||'').trim();if(v&&!out.some(x=>normalizeName(x)===normalizeName(v)))out.push(v);};nilai.forEach(n=>add(n.mapel));jadwal.forEach(j=>add(j.mapel));return out.sort((a,b)=>a.localeCompare(b,'id'));}
+function getDaftarMapelNilaiHarian(){return getDaftarMapelDariJadwal(getCurrentUser());}
 function getDaftarSiswaNilaiHarian(){const out=[];const add=(nama,kelas)=>{nama=String(nama||'').trim();if(nama&&!out.some(x=>normalizeName(x.nama)===normalizeName(nama)))out.push({nama,kelas:String(kelas||'').trim()});};siswa.forEach(x=>add(x.nama,x.kelas));users.filter(u=>u.role==='siswa').forEach(x=>add(x.nama,x.kelas));nilai.forEach(x=>add(x.nama,x.kelas));return out.sort((a,b)=>a.nama.localeCompare(b.nama,'id'));}
 function populateNilaiHarianFilters(){const k=document.getElementById('filterNilaiHarianKelas'),m=document.getElementById('filterNilaiHarianMapel'),n=document.getElementById('filterNilaiHarianNama');if(!k||!m||!n)return;const ok=k.value,om=m.value,on=n.value;k.innerHTML='<option value="">-- Semua Kelas --</option>'+getDaftarKelasNilaiHarian().map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');m.innerHTML='<option value="">-- Semua Mata Pelajaran --</option>'+getDaftarMapelNilaiHarian().map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');const list=getDaftarSiswaNilaiHarian().filter(st=>!ok||normalizeName(st.kelas)===normalizeName(ok));n.innerHTML='<option value="">-- Semua Siswa --</option>'+list.map(st=>`<option value="${escapeHtml(st.nama)}">${escapeHtml(st.nama)}</option>`).join('');if([...k.options].some(o=>o.value===ok))k.value=ok;if([...m.options].some(o=>o.value===om))m.value=om;if([...n.options].some(o=>o.value===on))n.value=on;}
 function bukaNilaiHarianDariForm(){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengelola Nilai Harian.');return;}const nama=document.getElementById('nilaiSiswa')?.value||'',mapel=document.getElementById('nilaiMapel')?.value||'';nilaiHarianFormContext={nama,mapel};showContent('nilaiHarian');}
@@ -4340,11 +4351,7 @@ function getNilaiScopeForUser(user=getCurrentUser()){
 }
 
 function getDownloadNilaiMapelList(user=getCurrentUser()){
-    const list=[]; const add=v=>{v=String(v||'').trim(); if(v&&!list.some(x=>normalizeName(x)===normalizeName(v)))list.push(v);};
-    getNilaiScopeForUser(user).forEach(n=>add(n.mapel));
-    if(isAdminUser(user)) jadwal.forEach(j=>add(j.mapel));
-    else jadwal.filter(j=>normalizeName(getScheduleTeacher(j))===normalizeName(user?.nama)).forEach(j=>add(j.mapel));
-    return list.sort((a,b)=>a.localeCompare(b,'id'));
+    return getDaftarMapelDariJadwal(user);
 }
 function populateDownloadNilaiMapel(){
     const el=document.getElementById('downloadNilaiMapel'); if(!el)return;
@@ -4573,6 +4580,10 @@ function simpanJadwalModal(){
     closeModalJadwal();
     updateJadwalTable();
     populateNilaiDropdowns();
+    populateMateriSelects(document.getElementById('materiMapel')?.value||'', document.getElementById('materiKelas')?.value||'');
+    populateFilterMateri();
+    populateTugasSelects(document.getElementById('tugasMapel')?.value||'', document.getElementById('tugasKelas')?.value||'');
+    populateTugasFilterOptions();
     renderDashboardJadwal();
 }
 
@@ -4848,11 +4859,7 @@ function getDownloadAbsensiKelasList(user=getCurrentUser()){
     return list.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
 }
 function getDownloadAbsensiMapelList(kelas,user=getCurrentUser()){
-    const list=[]; const add=v=>{v=String(v||'').trim();if(v&&v!=='-'&&!list.some(x=>normalizeName(x)===normalizeName(v)))list.push(v);};
-    const scope=getAttendanceScopeForUser(user).filter(a=>!kelas||normalizeName(a.kelas)===normalizeName(kelas)); scope.forEach(a=>add(a.mapel));
-    const schedules=jadwal.filter(j=>(!kelas||normalizeName(j.kelas)===normalizeName(kelas))&&(isAdminUser(user)||normalizeName(getScheduleTeacher(j))===normalizeName(user?.nama))); schedules.forEach(j=>add(j.mapel));
-    materi.filter(m=>!kelas||normalizeName(m.kelas)===normalizeName(kelas)).forEach(m=>add(m.mapel));
-    return list.sort((a,b)=>a.localeCompare(b,'id'));
+    return getDaftarMapelDariJadwal(user, kelas);
 }
 function bukaHalamanUnduhAbsensi(){
     const user=getCurrentUser(); if(!isStaffUser(user)){alert('Akses ditolak.');return;}
