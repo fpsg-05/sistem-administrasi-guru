@@ -1597,6 +1597,15 @@ hr{border-color:#dbe4ee!important}
 #loginPage,
 #loginPage *{box-sizing:border-box}
 
+
+/* NILAI TUGAS */
+.nilai-tugas-page{color:var(--text-light)}
+.nilai-tugas-table-wrap{overflow:auto;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-card);margin-top:15px}
+.nilai-tugas-table{border-collapse:collapse;min-width:900px;width:100%}
+.nilai-tugas-table th{background:var(--primary-color);color:#fff;padding:9px 6px;border:1px solid rgba(255,255,255,.25);font-size:12px;position:sticky;top:0;z-index:2}
+.nilai-tugas-table td{border:1px solid var(--border-color);padding:5px;text-align:center;background:var(--bg-card)}
+.nilai-tugas-input{width:68px!important;padding:7px!important;margin:0!important;text-align:center}
+.nilai-tugas-avg{font-weight:700;color:var(--accent-color)}
 </style>
 </head>
 
@@ -2238,7 +2247,7 @@ hr{border-color:#dbe4ee!important}
                     </div>
                     <div>
                         <label style="font-size:10px; color:var(--text-muted);">Tugas (0-100)</label>
-                        <input type="number" id="nilaiTugas" placeholder="0" oninput="hitungNilaiOtomatis()">
+                        <input type="number" id="nilaiTugasForm" placeholder="0" oninput="hitungNilaiOtomatis()">
                     </div>
                     <div>
                         <label style="font-size:10px; color:var(--text-muted);">UTS (0-100)</label>
@@ -2254,6 +2263,7 @@ hr{border-color:#dbe4ee!important}
                 <div id="containerKomponenDinamis" class="form-grid-3" style="margin-top: 10px;"></div>
 
                 <button type="button" class="btn-success" style="margin-top:10px; width:auto;" onclick="bukaNilaiHarianDariForm()">📝 Penilaian Harian</button>
+                <button type="button" class="btn-primary" style="margin-top:10px; width:auto;" onclick="bukaNilaiTugasDariForm()">📚 Penilaian Tugas</button>
 
                 <label style="font-size:12px; color:var(--accent-color); margin-top:10px; display:block;">Nilai Akhir & Predikat (Dapat Diubah Manual):</label>
                 <div class="form-grid-2">
@@ -2292,6 +2302,30 @@ hr{border-color:#dbe4ee!important}
         </div>
 
 
+
+        <!-- HALAMAN NILAI TUGAS -->
+        <div class="content nilai-tugas-page" id="nilaiTugas">
+            <div class="page-title-row">
+                <div><h2>📚 INPUT NILAI TUGAS</h2><p class="page-subtitle">Input nilai Tugas 1 sampai Tugas 10 untuk siswa berdasarkan kelas dan mata pelajaran.</p></div>
+                <button class="btn-back" type="button" onclick="kembaliDariNilaiTugas()">⬅ Kembali ke Nilai Siswa</button>
+            </div>
+            <div class="student-form-card nilai-harian-filter-card">
+                <div class="form-grid-3">
+                    <div class="form-field"><label>Filter Kelas</label><select id="filterNilaiTugasKelas" onchange="renderNilaiTugasTable()"><option value="">-- Semua Kelas --</option></select></div>
+                    <div class="form-field"><label>Filter Mata Pelajaran</label><select id="filterNilaiTugasMapel" onchange="renderNilaiTugasTable()"><option value="">-- Pilih Mata Pelajaran --</option></select></div>
+                    <div class="form-field"><label>Filter Nama Siswa</label><select id="filterNilaiTugasNama" onchange="renderNilaiTugasTable()"><option value="">-- Semua Siswa --</option></select></div>
+                </div>
+                <div class="nilai-harian-filter-info"><span>📌 <b>Tugas 1 sampai Tugas 10</b></span><span>Nilai kosong dihitung <b>0</b> dalam rata-rata.</span><span>Hanya <b>Guru/Admin</b> yang dapat menginput dan menyimpan.</span></div>
+            </div>
+            <div class="nilai-tugas-table-wrap">
+                <table class="nilai-tugas-table">
+                    <thead><tr><th rowspan="2">No.</th><th rowspan="2" style="min-width:190px">Nama Siswa</th><th colspan="10">PENILAIAN TUGAS</th><th rowspan="2">Rata-rata</th></tr>
+                    <tr><th>Tugas 1</th><th>Tugas 2</th><th>Tugas 3</th><th>Tugas 4</th><th>Tugas 5</th><th>Tugas 6</th><th>Tugas 7</th><th>Tugas 8</th><th>Tugas 9</th><th>Tugas 10</th></tr></thead>
+                    <tbody id="dataNilaiTugas"></tbody>
+                </table>
+            </div>
+            <div class="nilai-harian-bottom-bar"><div class="nilai-harian-note"><b>Catatan:</b> Tugas yang belum diisi dihitung 0. Rata-rata Tugas otomatis masuk ke kolom <b>Tugas</b> pada Rekap Nilai Siswa.</div><button class="btn-success" type="button" onclick="simpanSemuaNilaiTugas()">💾 SIMPAN NILAI TUGAS</button></div>
+        </div>
 
         <!-- HALAMAN NILAI HARIAN -->
         <div class="content nilai-harian-page" id="nilaiHarian">
@@ -2814,8 +2848,8 @@ hr{border-color:#dbe4ee!important}
 
 <script>
 /* ================= FIREBASE BACKEND =================
-   Firebase dipakai untuk sinkronisasi data lintas perangkat.
-   Data tampilan lama tetap dipertahankan agar UI/fitur tidak berubah.
+   FIRESTORE ADALAH SATU-SATUNYA SUMBER DATA APLIKASI.
+   localStorage HANYA UNTUK SESI loginUser, BUKAN DATABASE.
 */
 const firebaseConfig = {
   apiKey: "AIzaSyAr_FYqd32CE2sx1RIoy3nBV1xSADjfNRM",
@@ -2827,149 +2861,124 @@ const firebaseConfig = {
   measurementId: "G-20FSVF3MZQ"
 };
 
-let firebaseApp = null;
-let firebaseAuth = null;
-let firebaseDb = null;
-let firebaseReady = false;
-let firebaseSyncing = false;
-const FIREBASE_COLLECTIONS = ["users","siswa","jadwal","absensi","materi","nilai","nilaiHarian","komponenTambahan","pengumuman","tugas","pengumpulanTugas"];
+let firebaseApp=null, firebaseAuth=null, firebaseDb=null, firebaseReady=false;
+let firebaseSyncing=false, firebaseListenersStarted=false;
+const FIREBASE_COLLECTIONS=[
+  "users","siswa","jadwal","absensi","materi","nilai","nilaiHarian","nilaiTugas",
+  "komponenTambahan","pengumuman","tugas","pengumpulanTugas"
+];
+
+function cloneData(v){ try{return JSON.parse(JSON.stringify(v??{}));}catch(e){return {};}}
+function firebaseDocId(item,index){
+  if(item && item._firebaseId) return String(item._firebaseId);
+  if(item && item.id!==undefined && item.id!==null && String(item.id).trim()) return String(item.id);
+  if(item && item.nisn) return 'nisn_'+String(item.nisn).replace(/[^a-zA-Z0-9_-]/g,'_');
+  return 'item_'+index;
+}
+
+async function firebaseSaveCollection(name,list){
+  if(!firebaseReady || !firebaseDb || !firebaseAuth?.currentUser) throw new Error('Firebase belum siap.');
+  const arr=Array.isArray(list)?cloneData(list):[];
+  const col=firebaseDb.collection(name);
+  const existing=await col.get();
+  const wanted=new Set();
+  const ops=[];
+  arr.forEach((item,i)=>{
+    const id=firebaseDocId(item,i); wanted.add(id);
+    const data=cloneData(item); data._firebaseId=id;
+    ops.push({type:'set',ref:col.doc(id),data});
+  });
+  existing.forEach(doc=>{if(!wanted.has(doc.id)) ops.push({type:'delete',ref:doc.ref});});
+  for(let i=0;i<ops.length;i+=450){
+    const batch=firebaseDb.batch();
+    ops.slice(i,i+450).forEach(op=>op.type==='delete'?batch.delete(op.ref):batch.set(op.ref,op.data,{merge:true}));
+    await batch.commit();
+  }
+}
+
+function applyFirebaseCollection(name,data){
+  const clean=(Array.isArray(data)?data:[]).map(x=>{const y=cloneData(x);delete y._firebaseId;return y;});
+  firebaseSyncing=true;
+  try{
+    window[name]=clean;
+    if(name==='users') users=clean;
+    if(name==='siswa') siswa=clean;
+    if(name==='jadwal') jadwal=clean;
+    if(name==='absensi') absensi=clean;
+    if(name==='materi') materi=clean;
+    if(name==='nilai') nilai=clean;
+    if(name==='nilaiHarian') nilaiHarian=clean;
+    if(name==='nilaiTugas') nilaiTugas=clean;
+    if(name==='komponenTambahan') komponenTambahan=clean;
+    if(name==='pengumuman') pengumuman=clean;
+    if(name==='tugas') tugas=clean;
+    if(name==='pengumpulanTugas') pengumpulanTugas=clean;
+  }finally{firebaseSyncing=false;}
+  if(typeof updateData==='function') updateData();
+}
+
+function startFirebaseSync(){
+  if(!firebaseReady || !firebaseDb || firebaseListenersStarted) return;
+  firebaseListenersStarted=true;
+  const listen=()=>FIREBASE_COLLECTIONS.forEach(name=>{
+    firebaseDb.collection(name).onSnapshot(snapshot=>{
+      applyFirebaseCollection(name,snapshot.docs.map(d=>d.data()));
+    },err=>console.error('Firebase realtime '+name+' gagal:',err));
+  });
+  if(firebaseAuth?.currentUser){listen();return;}
+  firebaseAuth.signInAnonymously().then(listen).catch(err=>{
+    firebaseListenersStarted=false;
+    console.error('Firebase Anonymous Auth gagal:',err);
+  });
+}
 
 function initFirebaseBackend(){
-    try{
-        if(!window.firebase){ console.warn('Firebase SDK belum termuat.'); return; }
-        firebaseApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
-        firebaseAuth = firebase.auth();
-        firebaseDb = firebase.firestore();
-        firebaseReady = true;
-        console.log('Firebase berhasil diinisialisasi:', firebaseConfig.projectId);
-        startFirebaseSync();
-    }catch(err){
-        console.error('Gagal inisialisasi Firebase:', err);
-        firebaseReady = false;
+  try{
+    if(!window.firebase) throw new Error('Firebase SDK belum termuat.');
+    firebaseApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
+    firebaseAuth=firebase.auth(); firebaseDb=firebase.firestore(); firebaseReady=true;
+    startFirebaseSync();
+  }catch(err){firebaseReady=false;console.error('Firebase gagal diinisialisasi:',err);}
+}
+
+/* Semua penulisan koleksi diarahkan ke Firestore. Tidak ada cache koleksi di localStorage. */
+const originalLocalStorageSetItem=localStorage.setItem.bind(localStorage);
+localStorage.setItem=function(key,value){
+  if(FIREBASE_COLLECTIONS.includes(key)){
+    if(firebaseReady && firebaseAuth?.currentUser && !firebaseSyncing){
+      try{firebaseSaveCollection(key,JSON.parse(value)).catch(e=>console.error('Gagal menyimpan '+key,e));}catch(e){console.error(e);}
     }
-}
-
-function firebaseUserPathKey(){
-    return firebaseAuth && firebaseAuth.currentUser ? firebaseAuth.currentUser.uid : 'anonymous';
-}
-
-function firebaseDocId(item, index){
-    if(item && item._firebaseId) return String(item._firebaseId);
-    if(item && item.id !== undefined && item.id !== null && String(item.id).trim()) return String(item.id);
-    if(item && item.nisn) return 'nisn_'+String(item.nisn).replace(/[^a-zA-Z0-9_-]/g,'_');
-    return 'item_'+index;
-}
-
-async function firebaseSaveCollection(name, list){
-    if(!firebaseReady || !firebaseDb || firebaseSyncing) return;
-    try{
-        // Satu dokumen per record agar perubahan dapat disinkronkan realtime.
-        const col = firebaseDb.collection(name);
-        const existing = await col.get();
-        const wanted = new Set();
-        const batch = firebaseDb.batch();
-        (Array.isArray(list) ? list : []).forEach((item,index)=>{
-            const id = firebaseDocId(item,index);
-            wanted.add(id);
-            const data = JSON.parse(JSON.stringify(item || {}));
-            data._firebaseId = id;
-            batch.set(col.doc(id), data, {merge:true});
-        });
-        existing.forEach(doc=>{
-            if(!wanted.has(doc.id)) batch.delete(doc.ref);
-        });
-        await batch.commit();
-    }catch(err){
-        console.error('Firebase save '+name+' gagal:', err);
-    }
-}
-
-function applyFirebaseCollection(name, data){
-    firebaseSyncing = true;
-    try{
-        const clean = data.map(x=>{ const y={...x}; delete y._firebaseId; return y; });
-        localStorage.setItem(name, JSON.stringify(clean));
-        window[name] = clean;
-        if(typeof updateData === 'function') updateData();
-    }finally{
-        firebaseSyncing = false;
-    }
-}
-
-const firebaseCollectionInitialized = {};
-function startFirebaseSync(){
-    if(!firebaseReady || !firebaseDb) return;
-    // Tahap awal memakai akun anonymous bila provider Anonymous diaktifkan.
-    // Jika belum diaktifkan, aplikasi tetap berjalan dalam mode lokal tanpa merusak UI.
-    const start = ()=>{
-        FIREBASE_COLLECTIONS.forEach(name=>{
-            firebaseDb.collection(name).onSnapshot(snapshot=>{
-                const remoteData = snapshot.docs.map(d=>d.data());
-                let localData = [];
-                try{ localData = JSON.parse(localStorage.getItem(name) || '[]'); }catch(e){}
-
-                // Migrasi aman: jika Firestore masih kosong tetapi data lokal sudah ada,
-                // kirim data lokal terlebih dahulu. Jangan menimpa data lokal dengan array kosong.
-                if(snapshot.empty && Array.isArray(localData) && localData.length > 0 && !firebaseCollectionInitialized[name]){
-                    firebaseCollectionInitialized[name] = true;
-                    firebaseSaveCollection(name,localData);
-                    return;
-                }
-
-                firebaseCollectionInitialized[name] = true;
-                applyFirebaseCollection(name,remoteData);
-            }, err=>console.warn('Realtime '+name+' tidak aktif:',err.message));
-        });
-    };
-    if(firebaseAuth && firebaseAuth.currentUser){ start(); return; }
-    firebaseAuth.signInAnonymously().then(start).catch(err=>{
-        console.warn('Firebase Auth belum siap. Aktifkan Anonymous Sign-in untuk sinkronisasi realtime:', err.code);
-    });
-}
-
-function syncAllToFirebase(){
-    if(!firebaseReady || !firebaseAuth || !firebaseAuth.currentUser) return;
-    FIREBASE_COLLECTIONS.forEach(name=>{
-        try{
-            const list = JSON.parse(localStorage.getItem(name) || '[]');
-            firebaseSaveCollection(name,list);
-        }catch(e){ console.warn('Sync '+name+' gagal:',e); }
-    });
-}
-
-// Intersep penyimpanan data lama: setiap setItem koleksi otomatis dikirim ke Firestore.
-const originalLocalStorageSetItem = localStorage.setItem.bind(localStorage);
-localStorage.setItem = function(key,value){
-    originalLocalStorageSetItem(key,value);
-    if(!firebaseSyncing && FIREBASE_COLLECTIONS.includes(key) && firebaseReady && firebaseAuth && firebaseAuth.currentUser){
-        try{ firebaseSaveCollection(key, JSON.parse(value)); }catch(e){ console.warn('Sync '+key+' gagal:',e); }
-    }
+    return;
+  }
+  originalLocalStorageSetItem(key,value);
 };
 
-// Inisialisasi setelah SDK dan DOM tersedia.
+function syncCollection(name,list){
+  if(!FIREBASE_COLLECTIONS.includes(name)) return Promise.resolve();
+  return firebaseSaveCollection(name,list);
+}
+function syncAllToFirebase(){
+  if(!firebaseReady || !firebaseAuth?.currentUser) return;
+  FIREBASE_COLLECTIONS.forEach(name=>{if(Array.isArray(window[name])) syncCollection(name,window[name]).catch(console.error);});
+}
+
+/* Data aplikasi dimulai kosong. Data hanya akan terisi dari snapshot Firestore. */
+let defaultUsers=[];
+let defaultJadwal=[];
+let users=[];
+let siswa=[];
+let jadwal=[];
+let absensi=[];
+let materi=[];
+let nilai=[];
+let nilaiHarian=[];
+let nilaiTugas=[];
+let komponenTambahan=[];
+let pengumuman=[];
+let tugas=[];
+let pengumpulanTugas=[];
 initFirebaseBackend();
 
-let defaultUsers = [
-    { nama: "Admin Guru", username: "admin", password: "123", role: "admin", kelas: "-", status: "aktif", jenisKelamin: "" }
-];
-
-let defaultJadwal = [
-    { hari: "Senin", mapel: "Bahasa Indonesia", kelas: "X IPA 1", jam: "07.30 - 09.00", ruangan: "Ruang 101", guru: "" },
-    { hari: "Senin", mapel: "Matematika", kelas: "XI IPA 2", jam: "09.15 - 10.45", ruangan: "Ruang 102", guru: "" },
-    { hari: "Selasa", mapel: "Fisika", kelas: "XII IPA 1", jam: "07.30 - 09.00", ruangan: "Lab Fisika", guru: "" }
-];
-
-let users = JSON.parse(localStorage.getItem("users")) || defaultUsers;
-let siswa = JSON.parse(localStorage.getItem("siswa")) || [];
-let jadwal = JSON.parse(localStorage.getItem("jadwal")) || defaultJadwal;
-let absensi = JSON.parse(localStorage.getItem("absensi")) || [];
-let materi = JSON.parse(localStorage.getItem("materi")) || [];
-let nilai = JSON.parse(localStorage.getItem("nilai")) || [];
-let nilaiHarian = JSON.parse(localStorage.getItem("nilaiHarian")) || [];
-let komponenTambahan = JSON.parse(localStorage.getItem("komponenTambahan")) || [];
-let pengumuman = JSON.parse(localStorage.getItem("pengumuman")) || [];
-let tugas = JSON.parse(localStorage.getItem("tugas")) || [];
-let pengumpulanTugas = JSON.parse(localStorage.getItem("pengumpulanTugas")) || [];
 let pendingDeletePengumumanIndex = -1;
 let pendingDeleteTugasIndex = -1;
 let tugasSourceMode = "file";
@@ -2984,8 +2993,6 @@ function isStaffUser(user){
 }
 
 window.onload = function(){
-    if(!localStorage.getItem("users")){ localStorage.setItem("users", JSON.stringify(defaultUsers)); }
-    if(!localStorage.getItem("jadwal")){ localStorage.setItem("jadwal", JSON.stringify(defaultJadwal)); }
     formatToday();
     const user = localStorage.getItem("loginUser");
     if(user){
@@ -3319,7 +3326,7 @@ function showContent(id, fromHistory=false){
     if(id === 'siswa' && !(isAdminUser(user)||isGuruUser(user))){ alert('Akses ditolak. Data Siswa hanya dapat diakses Admin atau Guru.'); return; }
     if(id === 'akunSaya' && !(isSiswaUser(user)||isGuruUser(user))){ alert('Akses ditolak.'); return; }
     if(isSiswaUser(user) && !isStudentProfileComplete(user) && id!=='akunSaya'){ alert('Lengkapi Data Saya terlebih dahulu. Kelas wajib dipilih dari kelas yang tersedia pada Jadwal.'); showContent('akunSaya', true); return; }
-    if(id === 'nilaiHarian' && !isStaffUser(user)){ alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengelola Nilai Harian.'); return; }
+    if((id === 'nilaiHarian' || id === 'nilaiTugas') && !isStaffUser(user)){ alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengelola penilaian.'); return; }
 
     const target=document.getElementById(id);
     if(!target) return;
@@ -3327,6 +3334,7 @@ function showContent(id, fromHistory=false){
     if(id === 'materi' && typeof bukaDaftarMateri === 'function'){ bukaDaftarMateri(); }
     if(id === 'absensi' && typeof initAbsensiPage === 'function'){ initAbsensiPage(); }
     if(id === 'nilaiHarian' && typeof initNilaiHarianPage === 'function'){ initNilaiHarianPage(); }
+    if(id === 'nilaiTugas' && typeof initNilaiTugasPage === 'function'){ initNilaiTugasPage(); }
 
     document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
     target.classList.add("active");
@@ -4132,7 +4140,7 @@ function renderKomponenDinamisForm(){
 }
 
 function hitungNilaiOtomatis(){
-    let tugas = parseFloat(document.getElementById("nilaiTugas").value) || 0;
+    let tugas = parseFloat(document.getElementById("nilaiTugasForm").value) || 0;
     let uts = parseFloat(document.getElementById("nilaiUTS").value) || 0;
     let uas = parseFloat(document.getElementById("nilaiUAS").value) || 0;
 
@@ -4174,7 +4182,7 @@ function simpanNilai(){
     let nama = document.getElementById("nilaiNama").value;
     let mapel = document.getElementById("nilaiMapel").value;
     let kehadiran = document.getElementById("nilaiKehadiran").value || "100%";
-    let tugas = document.getElementById("nilaiTugas").value || 0;
+    let tugas = document.getElementById("nilaiTugasForm").value || 0;
     let uts = document.getElementById("nilaiUTS").value || 0;
     let uas = document.getElementById("nilaiUAS").value || 0;
     let nilaiAkhir = document.getElementById("nilaiAkhir").value || 0;
@@ -4214,7 +4222,7 @@ function editNilai(i){
     document.getElementById("nilaiNama").value = n.nama;
     document.getElementById("nilaiMapel").value = n.mapel;
     document.getElementById("nilaiKehadiran").value = n.kehadiran || "100%";
-    document.getElementById("nilaiTugas").value = n.tugas || 0;
+    document.getElementById("nilaiTugasForm").value = n.tugas || 0;
     document.getElementById("nilaiUTS").value = n.uts || 0;
     document.getElementById("nilaiUAS").value = n.uas || 0;
 
@@ -4236,7 +4244,7 @@ function resetFormNilai(){
     document.getElementById("nilaiNama").value = "";
     document.getElementById("nilaiMapel").value = "";
     document.getElementById("nilaiKehadiran").value = "";
-    document.getElementById("nilaiTugas").value = "";
+    document.getElementById("nilaiTugasForm").value = "";
     document.getElementById("nilaiUTS").value = "";
     document.getElementById("nilaiUAS").value = "";
 
@@ -4302,7 +4310,7 @@ function updateNilaiTable(){
             <td>${n.mapel}</td>
             <td><span style="color:var(--success-color); font-weight:bold;">${n.kehadiran || '100%'}</span></td>
             <td class="nilai-harian-cell">${getNilaiHarianDisplay(n)}</td>
-            <td>${n.tugas || 0}</td>
+            <td>${getNilaiTugasRecord(n.nama,n.mapel)?.rataRata ?? n.tugas ?? 0}</td>
             <td>${n.uts || 0}</td>
             <td>${n.uas || 0}</td>
             ${extraTd}
@@ -4326,7 +4334,7 @@ function getDaftarKelasNilaiHarian(){const out=[];const add=v=>{v=String(v||'').
 function getDaftarMapelNilaiHarian(){return getDaftarMapelDariJadwal(getCurrentUser());}
 function getDaftarSiswaNilaiHarian(){const out=[];const add=(nama,kelas)=>{nama=String(nama||'').trim();if(nama&&!out.some(x=>normalizeName(x.nama)===normalizeName(nama)))out.push({nama,kelas:String(kelas||'').trim()});};siswa.forEach(x=>add(x.nama,x.kelas));users.filter(u=>u.role==='siswa').forEach(x=>add(x.nama,x.kelas));nilai.forEach(x=>add(x.nama,x.kelas));return out.sort((a,b)=>a.nama.localeCompare(b.nama,'id'));}
 function populateNilaiHarianFilters(){const k=document.getElementById('filterNilaiHarianKelas'),m=document.getElementById('filterNilaiHarianMapel'),n=document.getElementById('filterNilaiHarianNama');if(!k||!m||!n)return;const ok=k.value,om=m.value,on=n.value;k.innerHTML='<option value="">-- Semua Kelas --</option>'+getDaftarKelasNilaiHarian().map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');m.innerHTML='<option value="">-- Semua Mata Pelajaran --</option>'+getDaftarMapelNilaiHarian().map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');const list=getDaftarSiswaNilaiHarian().filter(st=>!ok||normalizeName(st.kelas)===normalizeName(ok));n.innerHTML='<option value="">-- Semua Siswa --</option>'+list.map(st=>`<option value="${escapeHtml(st.nama)}">${escapeHtml(st.nama)}</option>`).join('');if([...k.options].some(o=>o.value===ok))k.value=ok;if([...m.options].some(o=>o.value===om))m.value=om;if([...n.options].some(o=>o.value===on))n.value=on;}
-function bukaNilaiHarianDariForm(){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengelola Nilai Harian.');return;}const nama=document.getElementById('nilaiSiswa')?.value||'',mapel=document.getElementById('nilaiMapel')?.value||'';nilaiHarianFormContext={nama,mapel};showContent('nilaiHarian');}
+function bukaNilaiHarianDariForm(){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengelola Nilai Harian.');return;}const nama=document.getElementById('nilaiNama')?.value||'',mapel=document.getElementById('nilaiMapel')?.value||'';nilaiHarianFormContext={nama,mapel};showContent('nilaiHarian');}
 function bukaNilaiHarian(nama,mapel){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak.');return;}if(!nama||!mapel){alert('Data siswa atau mata pelajaran belum lengkap.');return;}nilaiHarianFormContext={nama,mapel};nilaiHarianCurrentKey=getNilaiHarianKey(nama,mapel);showContent('nilaiHarian');}
 function kembaliDariNilaiHarian(){showContent('nilai');}
 function initNilaiHarianPage(){const user=getCurrentUser();if(!isStaffUser(user))return;const oldK=nilaiHarianFormContext.kelas||'',oldM=nilaiHarianFormContext.mapel||'',oldN=nilaiHarianFormContext.nama||'';populateNilaiHarianFilters();const k=document.getElementById('filterNilaiHarianKelas'),m=document.getElementById('filterNilaiHarianMapel'),n=document.getElementById('filterNilaiHarianNama');let kelas=oldK;if(!kelas&&oldN){const st=getDaftarSiswaNilaiHarian().find(x=>normalizeName(x.nama)===normalizeName(oldN));kelas=st?.kelas||'';}if(k&&kelas&&[...k.options].some(o=>normalizeName(o.value)===normalizeName(kelas)))k.value=kelas;if(m&&oldM&&[...m.options].some(o=>normalizeName(o.value)===normalizeName(oldM)))m.value=oldM;populateNilaiHarianFilters();if(k&&kelas&&[...k.options].some(o=>normalizeName(o.value)===normalizeName(kelas)))k.value=kelas;if(m&&oldM&&[...m.options].some(o=>normalizeName(o.value)===normalizeName(oldM)))m.value=oldM;if(n&&oldN&&[...n.options].some(o=>normalizeName(o.value)===normalizeName(oldN)))n.value=oldN;renderNilaiHarianTable();} 
@@ -4336,8 +4344,88 @@ function getNilaiHarianRowRecord(rowIndex){const tr=document.querySelector(`tr[d
 function updateNilaiHarianRow(rowIndex){const rec=getNilaiHarianRowRecord(rowIndex);if(!rec)return;const total=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0);const el=document.getElementById(`nh_total_${rowIndex}`);if(el)el.textContent=Math.round(total*100)/100;updateNilaiHarianSummary(getStudentsForNilaiHarian());}
 function updateNilaiHarianSummary(students){let total=0;const jumlah=Math.min(20,Math.max(1,Number(document.getElementById('nilaiHarianJumlahPertemuan')?.value||10)));students.forEach((st,idx)=>{const rec=getNilaiHarianRowRecord(idx);if(rec)total+=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0);});const avg=students.length?Math.round(total/(students.length*jumlah*3)*100)/100:0;const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};set('nilaiHarianJumlahSiswa',students.length);set('nilaiHarianTotalSemua',Math.round(total*100)/100);set('nilaiHarianRataSemua',avg);}
 function simpanNilaiHarianRecord(rec,user){const key=getNilaiHarianKey(rec.nama,rec.mapel),old=getNilaiHarianRecord(rec.nama,rec.mapel),total=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0),final=Math.round(total/(rec.jumlah*3)*100)/100;const saved={id:old?.id||('nilaiHarian_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),key,nama:rec.nama,kelas:rec.kelas,mapel:rec.mapel,jumlahPertemuan:rec.jumlah,pertemuan:rec.pertemuan,jumlah:Math.round(total*100)/100,nilaiAkhir:final,statusFinal:'selesai',diperbaruiOleh:user.nama||user.username||'Pengguna',diperbaruiPada:new Date().toISOString()};const idx=nilaiHarian.findIndex(x=>getNilaiHarianKey(x.nama,x.mapel)===key);if(idx>=0)nilaiHarian[idx]=saved;else nilaiHarian.push(saved);const mainIdx=nilai.findIndex(n=>getNilaiHarianKey(n.nama,n.mapel)===key);if(mainIdx>=0)nilai[mainIdx]={...nilai[mainIdx],nilaiHarian:final};else nilai.push({nama:rec.nama,kelas:rec.kelas,mapel:rec.mapel,kehadiran:'100%',tugas:0,uts:0,uas:0,nilaiHarian:final,angka:0,grade:'C'});}
-function simpanSemuaNilaiHarian(){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak.');return;}const mapel=document.getElementById('filterNilaiHarianMapel')?.value||'';if(!mapel){alert('Pilih Mata Pelajaran terlebih dahulu.');return;}const students=getStudentsForNilaiHarian();if(!students.length){alert('Tidak ada siswa yang sesuai filter.');return;}for(let idx=0;idx<students.length;idx++){const rec=getNilaiHarianRowRecord(idx);if(!rec)continue;for(const x of rec.pertemuan)for(const v of [x.afektif,x.kognitif,x.psikomotorik])if(v!==null&&(!Number.isFinite(v)||v<0||v>100)){alert(`Nilai ${rec.nama}, Pertemuan ke-${x.pertemuan} harus 0 sampai 100.`);return;}simpanNilaiHarianRecord(rec,user);}localStorage.setItem('nilaiHarian',JSON.stringify(nilaiHarian));localStorage.setItem('nilai',JSON.stringify(nilai));updateNilaiTable();renderNilaiHarianTable();alert(`Nilai Harian untuk ${students.length} siswa berhasil disimpan. Kolom kosong dihitung 0.`);}
+function simpanSemuaNilaiHarian(){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak.');return;}const mapel=document.getElementById('filterNilaiHarianMapel')?.value||'';if(!mapel){alert('Pilih Mata Pelajaran terlebih dahulu.');return;}const students=getStudentsForNilaiHarian();if(!students.length){alert('Tidak ada siswa yang sesuai filter.');return;}for(let idx=0;idx<students.length;idx++){const rec=getNilaiHarianRowRecord(idx);if(!rec)continue;for(const x of rec.pertemuan)for(const v of [x.afektif,x.kognitif,x.psikomotorik])if(v!==null&&(!Number.isFinite(v)||v<0||v>100)){alert(`Nilai ${rec.nama}, Pertemuan ke-${x.pertemuan} harus 0 sampai 100.`);return;}simpanNilaiHarianRecord(rec,user);}firebaseSaveCollection('nilaiHarian',nilaiHarian).catch(console.error); firebaseSaveCollection('nilai',nilai).catch(console.error); updateNilaiTable();renderNilaiHarianTable();alert(`Nilai Harian untuk ${students.length} siswa berhasil disimpan. Kolom kosong dihitung 0.`);}
 function getNilaiHarianDisplay(n){const rec=getNilaiHarianRecord(n?.nama,n?.mapel),final=rec?.nilaiAkhir??n?.nilaiHarian,text=(final!==null&&final!==undefined&&final!=='')?`✓ ${final}`:'＋ Input';return `<button type="button" class="nilai-harian-btn ${final!==null&&final!==undefined?'has-score':''}" onclick="bukaNilaiHarian('${escapeHtml(String(n.nama).replace(/'/g,"\\'"))}','${escapeHtml(String(n.mapel).replace(/'/g,"\\'"))}')">${text}</button>`;}
+
+function getNilaiTugasKey(nama,mapel){return String(nama||'').trim().toLowerCase()+'||'+String(mapel||'').trim().toLowerCase();}
+function getNilaiTugasRecord(nama,mapel){const key=getNilaiTugasKey(nama,mapel);return nilaiTugas.find(x=>x.key===key)||nilaiTugas.find(x=>getNilaiTugasKey(x.nama,x.mapel)===key)||null;}
+function getDaftarKelasNilaiTugas(){const out=[];const add=v=>{v=String(v||'').trim();if(v&&v!=='-'&&!out.some(x=>normalizeName(x)===normalizeName(v)))out.push(v);};siswa.forEach(x=>add(x.kelas));users.filter(x=>x.role==='siswa').forEach(x=>add(x.kelas));jadwal.forEach(x=>add(x.kelas));return out.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));}
+function getDaftarSiswaNilaiTugas(){const out=[];const add=(nama,kelas)=>{nama=String(nama||'').trim();if(nama&&!out.some(x=>normalizeName(x.nama)===normalizeName(nama)))out.push({nama,kelas:String(kelas||'').trim()});};siswa.forEach(x=>add(x.nama,x.kelas));users.filter(x=>x.role==='siswa').forEach(x=>add(x.nama,x.kelas));return out.sort((a,b)=>a.nama.localeCompare(b.nama,'id'));}
+function populateNilaiTugasFilters(){const k=document.getElementById('filterNilaiTugasKelas'),m=document.getElementById('filterNilaiTugasMapel'),n=document.getElementById('filterNilaiTugasNama');if(!k||!m||!n)return;const ok=k.value,om=m.value,on=n.value;const maps=getDaftarMapelDariJadwal(getCurrentUser());k.innerHTML='<option value="">-- Semua Kelas --</option>'+getDaftarKelasNilaiTugas().map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');m.innerHTML='<option value="">-- Pilih Mata Pelajaran --</option>'+maps.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');const ss=getDaftarSiswaNilaiTugas().filter(x=>!ok||normalizeName(x.kelas)===normalizeName(ok));n.innerHTML='<option value="">-- Semua Siswa --</option>'+ss.map(x=>`<option value="${escapeHtml(x.nama)}">${escapeHtml(x.nama)}</option>`).join('');if([...k.options].some(x=>x.value===ok))k.value=ok;if([...m.options].some(x=>x.value===om))m.value=om;if([...n.options].some(x=>x.value===on))n.value=on;}
+function initNilaiTugasPage(){if(!isStaffUser(getCurrentUser()))return;populateNilaiTugasFilters();renderNilaiTugasTable();}
+function bukaNilaiTugasDariForm(){if(!isStaffUser(getCurrentUser())){alert('Akses ditolak.');return;}showContent('nilaiTugas');}
+function kembaliDariNilaiTugas(){showContent('nilai');}
+function renderNilaiTugasTable(){const tb=document.getElementById('dataNilaiTugas');if(!tb)return;populateNilaiTugasFilters();const k=document.getElementById('filterNilaiTugasKelas')?.value||'',m=document.getElementById('filterNilaiTugasMapel')?.value||'',n=document.getElementById('filterNilaiTugasNama')?.value||'';if(!m){tb.innerHTML='<tr><td colspan="13" style="padding:28px;text-align:center;color:var(--text-muted)">Silakan pilih <b>Mata Pelajaran</b> terlebih dahulu.</td></tr>';return;}const students=getDaftarSiswaNilaiTugas().filter(x=>(!k||normalizeName(x.kelas)===normalizeName(k))&&(!n||normalizeName(x.nama)===normalizeName(n)));tb.innerHTML=students.length?students.map((st,ri)=>{const rec=getNilaiTugasRecord(st.nama,m);const vals=Array.from({length:10},(_,i)=>rec?.tugas?.[i]??'');const avg=vals.reduce((a,v)=>a+(Number(v)||0),0)/10;return `<tr data-nt-row="${ri}" data-nt-nama="${escapeHtml(st.nama)}" data-nt-kelas="${escapeHtml(st.kelas)}"><td>${ri+1}</td><td style="text-align:left;min-width:170px"><b>${escapeHtml(st.nama)}</b></td>${vals.map((v,i)=>`<td><input class="nilai-tugas-input" type="number" min="0" max="100" step="0.01" value="${v}" data-nt-row="${ri}" data-nt-i="${i}" oninput="updateNilaiTugasRow(${ri})"></td>`).join('')}<td id="nt_avg_${ri}" class="nilai-tugas-avg">${Math.round(avg*100)/100}</td></tr>`;}).join(''):'<tr><td colspan="13" style="padding:28px;text-align:center;color:var(--text-muted)">Tidak ada siswa yang sesuai filter.</td></tr>';}
+function updateNilaiTugasRow(ri){let total=0;for(let i=0;i<10;i++){const e=document.querySelector(`input[data-nt-row="${ri}"][data-nt-i="${i}"]`);total+=Number(e?.value)||0;}const e=document.getElementById(`nt_avg_${ri}`);if(e)e.textContent=Math.round(total/10*100)/100;}
+async function simpanSemuaNilaiTugas(){
+    const user=getCurrentUser();
+    if(!isStaffUser(user)){alert('Akses ditolak.');return;}
+    const m=document.getElementById('filterNilaiTugasMapel')?.value||'';
+    if(!m){alert('Pilih Mata Pelajaran terlebih dahulu.');return;}
+    const rows=[...document.querySelectorAll('tr[data-nt-row]')];
+    if(!rows.length){alert('Tidak ada siswa.');return;}
+
+    const updatedAt=new Date().toISOString();
+    rows.forEach(tr=>{
+        const nama=tr.dataset.ntNama||'';
+        const kelas=tr.dataset.ntKelas||'';
+        const rowIndex=tr.dataset.ntRow;
+        const tugasNilai=Array.from({length:10},(_,i)=>{
+            const el=document.querySelector(`input[data-nt-row="${rowIndex}"][data-nt-i="${i}"]`);
+            const value=el?.value??'';
+            if(value==='') return 0;
+            const num=Number(value);
+            return Number.isFinite(num)?Math.max(0,Math.min(100,num)):0;
+        });
+        const key=getNilaiTugasKey(nama,m);
+        const old=getNilaiTugasRecord(nama,m);
+        const rataRata=Math.round((tugasNilai.reduce((a,b)=>a+b,0)/10)*100)/100;
+        const saved={
+            id:old?.id||('nilaiTugas_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),
+            key,nama,kelas,mapel:m,tugas:tugasNilai,rataRata,
+            diperbaruiOleh:user.nama||user.username||'Pengguna',
+            diperbaruiPada:updatedAt
+        };
+        const idx=nilaiTugas.findIndex(x=>getNilaiTugasKey(x.nama,x.mapel)===key);
+        if(idx>=0) nilaiTugas[idx]=saved; else nilaiTugas.push(saved);
+
+        // Sinkronkan otomatis ke tabel Rekap Nilai.
+        // Jika record nilai utama belum ada, buat record baru agar nilai Tugas langsung muncul.
+        let mainIdx=nilai.findIndex(x=>getNilaiTugasKey(x.nama,x.mapel)===key);
+        if(mainIdx<0){
+            nilai.push({
+                id:'nilai_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),
+                nama,kelas,mapel:m,kehadiran:'100%',tugas:rataRata,uts:0,uas:0,
+                nilaiHarian:getNilaiHarianRecord(nama,m)?.nilaiAkhir||0,
+                angka:Math.round(rataRata*0.2),grade:'D',
+                extra:{},dibuatOleh:user.nama||user.username||'Pengguna'
+            });
+            mainIdx=nilai.length-1;
+        }else{
+            nilai[mainIdx]={...nilai[mainIdx],kelas:kelas||nilai[mainIdx].kelas||'',tugas:rataRata};
+        }
+
+        // Hitung ulang Nilai Akhir setelah nilai Tugas berubah.
+        const main=nilai[mainIdx];
+        const tugasAvg=Number(main.tugas)||0;
+        const uts=Number(main.uts)||0;
+        const uas=Number(main.uas)||0;
+        const nilaiAkhir=Math.round((tugasAvg*0.2)+(uts*0.3)+(uas*0.5));
+        main.angka=nilaiAkhir;
+        main.grade=nilaiAkhir>=85?'A':nilaiAkhir>=75?'B':nilaiAkhir>=60?'C':'D';
+    });
+
+    try{
+        await firebaseSaveCollection('nilaiTugas',nilaiTugas);
+        await firebaseSaveCollection('nilai',nilai);
+        updateNilaiTable();
+        renderNilaiTugasTable();
+        alert(`Nilai Tugas untuk ${rows.length} siswa berhasil disimpan dan disinkronkan ke Rekap Nilai.`);
+    }catch(error){
+        console.error('Gagal menyimpan Nilai Tugas ke Firebase:',error);
+        alert('Nilai Tugas gagal disimpan ke Firebase. Periksa koneksi Firebase lalu coba lagi.');
+    }
+}
 
 function getNilaiScopeForUser(user=getCurrentUser()){
     if(!user || !isStaffUser(user)) return [];
@@ -5120,6 +5208,7 @@ function updateData(){
     updateMateriTable();
     updateNilaiTable();
     if(isStaffUser(user) && document.getElementById('nilaiHarian')?.classList.contains('active')) initNilaiHarianPage();
+    if(isStaffUser(user) && document.getElementById('nilaiTugas')?.classList.contains('active')) initNilaiTugasPage();
     updateAkunTable();
     populateNilaiDropdowns();
     updateDashboardStats();
