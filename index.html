@@ -1039,7 +1039,7 @@ canvas{ display: none; }
 @media(max-width:700px){.nilai-harian-bottom-bar{flex-direction:column;align-items:stretch}.nilai-harian-bottom-bar .btn-success{width:100%}}
 
 /* AKSES & HALAMAN UNDUH */
-.student-data-access,.announcement-access,.self-account-access{display:none}
+.student-data-access,.announcement-access,.self-account-access,.guru-wali-access{display:none}
 .staff-only{display:none}
 .account-download-access{width:auto;margin:0;padding:11px 18px;white-space:nowrap}
 .download-choice-note{color:var(--text-muted);font-size:12px;line-height:1.6}
@@ -1396,14 +1396,15 @@ canvas{ display: none; }
 
 body:not(:has(#loginPage)),
 body:has(.dashboard[style*="display: block"]){
-    background:#eef3f9;
+    background:#0b2345;
     color:#17355f;
 }
 
-.dashboard{background:#eef3f9;color:#17355f;}
+.dashboard{background:#0b2345;color:#17355f;}
+.main{background:#0b2345!important;}
 .sidebar{
     background:linear-gradient(180deg,#ffffff 0%,#f7faff 100%);
-    border-right:1px solid #d7e2ef;
+    border-right:1px solid #000080;
     box-shadow:4px 0 18px rgba(31,73,125,.05);
 }
 .sidebar h2,.sidebar-brand-title{color:#112f5d!important}
@@ -1596,6 +1597,43 @@ hr{border-color:#dbe4ee!important}
 /* Jangan ubah halaman Login modern */
 #loginPage,
 #loginPage *{box-sizing:border-box}
+.dashboard,.dashboard .main{background:#0b2345!important;}
+#loginPage .visual-bottom{
+    background:transparent!important;
+    color:#fff!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:7px!important;
+    padding:0!important;
+    border:0!important;
+    box-shadow:none!important;
+}
+#loginPage .visual-bottom .footer-credit{
+    display:inline-block!important;
+    width:max-content!important;
+    max-width:100%!important;
+    padding:9px 12px!important;
+    border-radius:12px!important;
+    background:rgba(8,34,68,.72)!important;
+    border:1px solid rgba(255,255,255,.14)!important;
+    box-shadow:0 8px 20px rgba(0,0,0,.12)!important;
+    backdrop-filter:blur(8px)!important;
+    -webkit-backdrop-filter:blur(8px)!important;
+    color:#fff!important;
+    line-height:1.35!important;
+}
+#loginPage .visual-bottom .footer-copyright{
+    font-size:11px!important;
+    font-weight:500!important;
+}
+#loginPage .visual-bottom .footer-author{
+    font-size:11px!important;
+    font-weight:600!important;
+}
+@media(max-width:700px){
+    #loginPage .visual-bottom .footer-credit{max-width:calc(100vw - 42px)!important;white-space:normal!important;}
+}
 
 
 /* NILAI TUGAS */
@@ -1606,6 +1644,10 @@ hr{border-color:#dbe4ee!important}
 .nilai-tugas-table td{border:1px solid var(--border-color);padding:5px;text-align:center;background:var(--bg-card)}
 .nilai-tugas-input{width:68px!important;padding:7px!important;margin:0!important;text-align:center}
 .nilai-tugas-avg{font-weight:700;color:var(--accent-color)}
+.guru-wali-access a{cursor:pointer;}
+#guruWaliBiodataBody small{display:block;color:#70829d;font-size:10px;margin-bottom:3px;}
+#guruWaliBiodataBody strong{display:block;color:#17355f;font-size:13px;}
+@media(max-width:700px){#guruWaliBiodataBody>div{grid-template-columns:1fr!important;}#guruWaliBiodataBody>div>div>div{grid-template-columns:1fr!important;}}
 </style>
 </head>
 
@@ -1637,7 +1679,10 @@ hr{border-color:#dbe4ee!important}
                 <div class="feature-card"><span class="feature-icon">♢</span><span>Akses Aman<br>&amp; Terpercaya</span></div>
             </div>
 
-            <div class="visual-bottom">© 2026 SMA Negeri 1 Ma'u • Sistem Administrasi Guru Digital</div>
+            <div class="visual-bottom">
+                <div class="footer-credit footer-copyright">© 2026 SMA Negeri 1 Ma'u • Sistem Administrasi Guru Digital</div>
+                <div class="footer-credit footer-author">Pembuat Aplikasi : SU@R GULO &amp; Fpsg-06</div>
+            </div>
         </section>
 
         <section class="login-panel">
@@ -1730,6 +1775,9 @@ hr{border-color:#dbe4ee!important}
             
             <div class="student-data-access">
                 <a onclick="showContent('siswa')" id="nav-siswa"><span>👨‍🎓</span> <span class="nav-text">Data Siswa</span></a>
+            </div>
+            <div class="guru-wali-access">
+                <a onclick="showContent('guruWali')" id="nav-guruWali"><span>👨‍🏫</span> <span class="nav-text">Guru Wali</span></a>
             </div>
             <div class="announcement-access">
                 <a onclick="showContent('pengumuman')" id="nav-pengumuman"><span>📢</span> <span class="nav-text">Pengumuman Sekolah</span></a>
@@ -2013,7 +2061,7 @@ hr{border-color:#dbe4ee!important}
                 <div class="page-title-row">
                     <div>
                         <h2>👨‍🎓 DATA SISWA SMAN 1 MA'U</h2>
-                        <p class="page-subtitle">Admin dapat mengelola data. Guru dapat melihat data siswa.</p>
+                        <p class="page-subtitle">Admin dan Guru dapat mengelola data siswa sesuai hak akses.</p>
                     </div>
                     <button class="btn-primary btn-add-student admin-only" onclick="bukaFormSiswa()">+ TAMBAH SISWA</button>
                 </div>
@@ -2110,6 +2158,37 @@ hr{border-color:#dbe4ee!important}
                                 <label for="siswaHP">Nomor HP</label>
                                 <input type="tel" id="siswaHP" inputmode="tel" placeholder="Contoh: 081234567890">
                             </div>
+
+                            <div class="form-field">
+                                <label for="siswaNIK">NIK</label>
+                                <input type="text" id="siswaNIK" inputmode="numeric" maxlength="20" placeholder="Nomor Induk Kependudukan">
+                            </div>
+
+                            <div class="form-field">
+                                <label for="siswaGuruWali">Guru Wali</label>
+                                <select id="siswaGuruWali"><option value="">Belum ditentukan</option></select>
+                                <small>Siswa ini akan muncul pada daftar siswa bimbingan Guru Wali yang dipilih.</small>
+                            </div>
+
+                            <div class="form-field">
+                                <label>Data Orang Tua</label>
+                                <div class="birth-grid">
+                                    <input type="text" id="siswaNamaAyah" placeholder="Nama Ayah">
+                                    <input type="text" id="siswaNamaIbu" placeholder="Nama Ibu">
+                                </div>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="siswaHPOrtu">Nomor HP Orang Tua</label>
+                                <input type="tel" id="siswaHPOrtu" inputmode="tel" placeholder="Nomor HP Ayah / Ibu">
+                            </div>
+
+                            <div class="form-field">
+                                <label for="siswaPasFoto">Pasfoto</label>
+                                <input type="file" id="siswaPasFoto" accept="image/*" onchange="previewStudentPhoto(this)">
+                                <small>Pasfoto akan tersimpan pada biodata siswa.</small>
+                                <div id="siswaPasFotoPreview" style="margin-top:10px;"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -2118,6 +2197,26 @@ hr{border-color:#dbe4ee!important}
                         <button class="btn-primary btn-save-student" id="btnSimpanDataSiswa" type="button" onclick="simpanDataSiswa()">Simpan Data</button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- GURU WALI -->
+        <div class="content" id="guruWali">
+            <div class="page-title-row">
+                <div>
+                    <h2>👨‍🏫 GURU WALI</h2>
+                    <p class="page-subtitle">Daftar siswa yang menjadi tanggung jawab Guru Wali.</p>
+                </div>
+            </div>
+            <div class="student-filter-bar" style="margin-bottom:15px;">
+                <input type="text" id="filterGuruWaliSiswa" placeholder="🔎 Cari nama, NISN, atau kelas..." oninput="renderGuruWaliTable()">
+                <select id="filterGuruWaliKelas" onchange="renderGuruWaliTable()"><option value="">Semua Kelas</option></select>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>No</th><th>Nama Siswa</th><th>NISN</th><th>Kelas</th><th>Jenis Kelamin</th><th>No. HP</th><th>Aksi</th></tr></thead>
+                    <tbody id="dataGuruWali"></tbody>
+                </table>
             </div>
         </div>
 
@@ -2566,7 +2665,7 @@ hr{border-color:#dbe4ee!important}
                     <table>
                         <thead>
                             <tr>
-                                <th>No</th><th>Nama</th><th>Username</th><th>NIP / NIS</th>
+                                <th>No</th><th>Nama</th><th>Gelar</th><th>Username</th><th>NIP / NIS</th>
                                 <th>Role</th><th>Kelas</th><th>Status</th><th>Aksi</th>
                             </tr>
                         </thead>
@@ -2591,6 +2690,7 @@ hr{border-color:#dbe4ee!important}
                         <div class="account-form-section">
                             <div class="account-form-section-title">👤 INFORMASI PRIBADI</div>
                             <div class="account-field"><label for="accNama">Nama Lengkap <span>*</span></label><input type="text" id="accNama" placeholder="NAMA LENGKAP" oninput="this.value=this.value.toUpperCase()"></div>
+                            <div class="account-field" id="accGelarWrap"><label for="accGelar">Gelar / Gelar Akademik</label><input type="text" id="accGelar" placeholder="Contoh: S.Pd., M.Pd."><small>Isi khusus untuk akun Guru.</small></div>
                             <div class="account-field"><label for="accUser">Username <span>*</span></label><input type="text" id="accUser" placeholder="Username huruf kecil" oninput="this.value=this.value.toLowerCase()"><small>Username harus unik dan digunakan saat login.</small></div>
                             <div class="account-field"><label for="accPass">Password <span>*</span></label><div class="account-password-wrap"><input type="password" id="accPass" placeholder="Masukkan password"><button class="account-password-toggle" type="button" onclick="togglePasswordAkun()">👁</button></div><small id="passwordHint">Gunakan password yang mudah diingat tetapi tidak mudah ditebak.</small></div>
                             <div class="account-field"><label for="accNipNis">NIP / NIS</label><input type="text" id="accNipNis" inputmode="numeric" placeholder="NIP (Guru) atau NIS (Siswa)"></div>
@@ -2610,7 +2710,7 @@ hr{border-color:#dbe4ee!important}
             </div>
         </div>
 
-<!-- AKUN SAYA (SISWA) -->
+<!-- AKUN SAYA (SISWA / GURU) -->
 <div class="content" id="akunSaya">
     <div class="account-form-header">
         <div><h2>👤 AKUN SAYA</h2><p id="selfAccountSubtitle" class="page-subtitle">Lengkapi dan perbarui data akun Anda sendiri.</p></div>
@@ -2622,13 +2722,37 @@ hr{border-color:#dbe4ee!important}
                 <div class="account-field"><label for="selfNama">Nama Lengkap <span>*</span></label><input id="selfNama" type="text" placeholder="NAMA LENGKAP" oninput="this.value=this.value.toUpperCase()"></div>
                 <div class="account-field"><label for="selfUsername">Username <span>*</span></label><input id="selfUsername" type="text" placeholder="Username huruf kecil" oninput="this.value=this.value.toLowerCase()"></div>
                 <div class="account-field"><label for="selfPassword">Password Baru</label><div class="account-password-wrap"><input id="selfPassword" type="password" placeholder="Kosongkan jika tidak diubah"><button class="account-password-toggle" type="button" onclick="toggleSelfPassword()">👁</button></div></div>
+                <div class="account-field"><label for="selfNis" id="selfNisLabel">NIS / NISN</label><input id="selfNis" type="text" placeholder="NIS atau NISN"></div>
+                <div class="account-field" id="selfGelarWrap" style="display:none;"><label for="selfGelar">Gelar / Gelar Akademik</label><input id="selfGelar" type="text" placeholder="Contoh: S.Pd., M.Pd."></div>
             </div>
             <div class="account-form-section">
                 <div class="account-form-section-title" id="selfDataSectionTitle">🎓 DATA PENGGUNA</div>
-                <div class="account-field"><label for="selfNis" id="selfNisLabel">NIS / NISN</label><input id="selfNis" type="text" placeholder="NIS atau NISN"></div>
                 <div class="account-field" id="selfKelasWrap"><label for="selfKelas">Kelas <span>*</span></label><select id="selfKelas"><option value="">Pilih kelas</option></select></div>
                 <div class="account-field"><label>Jenis Kelamin <span>*</span></label><div class="account-radio-group"><label class="account-radio-option"><input type="radio" name="selfGender" value="Laki-laki"> Laki-laki</label><label class="account-radio-option"><input type="radio" name="selfGender" value="Perempuan"> Perempuan</label></div></div>
                 <div class="account-field"><label for="selfPhoto">Foto Profil</label><input id="selfPhoto" type="file" accept="image/*" onchange="previewSelfPhoto(this)"><small>Foto akan otomatis digunakan pada profil akun.</small><div id="selfPhotoPreview" style="margin-top:10px;"></div></div>
+            </div>
+        </div>
+
+        <!-- BIODATA LENGKAP SISWA -->
+        <div id="selfStudentBiodata" style="display:none;margin-top:18px;">
+            <div class="account-form-section" style="width:100%;">
+                <div class="account-form-section-title">📋 BIODATA LENGKAP SISWA</div>
+                <div class="account-form-grid">
+                    <div>
+                        <div class="account-field"><label for="selfTempatLahir">Tempat Lahir <span>*</span></label><input id="selfTempatLahir" type="text" placeholder="Tempat lahir"></div>
+                        <div class="account-field"><label for="selfTanggalLahir">Tanggal Lahir <span>*</span></label><input id="selfTanggalLahir" type="date"></div>
+                        <div class="account-field"><label for="selfNIK">NIK <span>*</span></label><input id="selfNIK" type="text" inputmode="numeric" maxlength="20" placeholder="Nomor Induk Kependudukan"></div>
+                        <div class="account-field"><label for="selfAlamat">Alamat Lengkap <span>*</span></label><textarea id="selfAlamat" rows="4" placeholder="Alamat lengkap"></textarea></div>
+                        <div class="account-field"><label for="selfNoHP">No. HP <span>*</span></label><input id="selfNoHP" type="tel" inputmode="tel" placeholder="081234567890"></div>
+                    </div>
+                    <div>
+                        <div class="account-field"><label for="selfNamaAyah">Nama Ayah <span>*</span></label><input id="selfNamaAyah" type="text" placeholder="Nama Ayah"></div>
+                        <div class="account-field"><label for="selfNamaIbu">Nama Ibu <span>*</span></label><input id="selfNamaIbu" type="text" placeholder="Nama Ibu"></div>
+                        <div class="account-field"><label for="selfHPOrtu">No. HP Orang Tua <span>*</span></label><input id="selfHPOrtu" type="tel" inputmode="tel" placeholder="Nomor HP Ayah / Ibu"></div>
+                        <div class="account-field"><label for="selfGuruWali">Guru Wali</label><input id="selfGuruWali" type="text" readonly placeholder="Diisi oleh Admin/Guru"></div>
+                        <div class="account-field"><label>Pasfoto</label><small>Gunakan Foto Profil di atas sebagai pasfoto siswa. Foto akan tersimpan di biodata Firebase.</small></div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="account-form-actions"><button class="btn-primary btn-account-save" type="button" onclick="simpanAkunSaya()">Simpan Perubahan</button></div>
@@ -3043,7 +3167,23 @@ function getTodayName(){
 
 function normalizeName(value){ return String(value || '').trim().toLowerCase(); }
 function getStudentProfileRecord(user=getCurrentUser()){if(!user)return null;return siswa.find(st=>(user.nisn&&String(st.nisn)===String(user.nisn))||normalizeName(st.nama)===normalizeName(user.nama))||null;}
-function isStudentProfileComplete(user=getCurrentUser()){if(!isSiswaUser(user))return true;const st=getStudentProfileRecord(user);return !!String(st?.kelas||user.kelas||'').trim()&&!!String(st?.jenisKelamin||user.jenisKelamin||'').trim();}
+function isStudentProfileComplete(user=getCurrentUser()){
+    if(!isSiswaUser(user)) return true;
+    const st=getStudentProfileRecord(user);
+    return !!(String(st?.nisn||user.nipNis||'').trim()
+        && String(st?.nama||user.nama||'').trim()
+        && String(st?.jenisKelamin||user.jenisKelamin||'').trim()
+        && String(st?.tempatLahir||'').trim()
+        && String(st?.tanggalLahir||'').trim()
+        && String(st?.kelas||user.kelas||'').trim()
+        && String(st?.alamat||'').trim()
+        && String(st?.noHP||'').trim()
+        && String(st?.nik||'').trim()
+        && String(st?.namaAyah||'').trim()
+        && String(st?.namaIbu||'').trim()
+        && String(st?.noHPOrtu||'').trim()
+        && String(st?.profilePhoto||user.profilePhoto||'').trim());
+}
 function getKelasTerdaftarDariJadwal(){const list=[];jadwal.forEach(j=>{const v=String(j.kelas||'').trim();if(v&&!list.some(x=>normalizeName(x)===normalizeName(v)))list.push(v);});return list.sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));}
 function compressProfilePhoto(file,callback){if(!file){callback('');return;}const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{const max=500,scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);callback(canvas.toDataURL('image/jpeg',0.82));};img.src=e.target.result;};reader.readAsDataURL(file);}
 function previewSelfPhoto(input){const file=input?.files?.[0];if(!file)return;if(!file.type.startsWith('image/')){alert('File foto harus berupa gambar.');input.value='';return;}compressProfilePhoto(file,data=>{window.pendingSelfProfilePhoto=data;const box=document.getElementById('selfPhotoPreview');if(box)box.innerHTML=`<img src="${data}" alt="Preview foto profil" style="width:90px;height:90px;object-fit:cover;border-radius:50%;border:3px solid var(--accent-color);">`;});}
@@ -3281,7 +3421,10 @@ function openDashboard(resetHistory=true){
     if(resetHistory){
         try { history.replaceState({appPage:'home'}, '', location.pathname + location.search); } catch(e) {}
     }
-    document.getElementById("welcome").innerHTML = escapeHtml(user.nama || 'Pengguna');
+    const namaHeader = user.role === 'guru' && String(user.gelar || '').trim()
+        ? `${user.nama || 'Pengguna'}, ${user.gelar}`
+        : (user.nama || 'Pengguna');
+    document.getElementById("welcome").innerHTML = escapeHtml(namaHeader);
     updateProfileAvatar(user);
     const roleBadge = document.getElementById("userRoleBadge");
     if(user.role === 'admin'){ roleBadge.innerText='Admin'; roleBadge.className='role-badge badge-admin'; }
@@ -3290,6 +3433,7 @@ function openDashboard(resetHistory=true){
 
     document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdminUser(user)?'block':'none');
     document.querySelectorAll('.student-data-access').forEach(el=>el.style.display=(isAdminUser(user)||isGuruUser(user))?'block':'none');
+    document.querySelectorAll('.guru-wali-access').forEach(el=>el.style.display=isStaffUser(user)?'block':'none');
     document.querySelectorAll('.announcement-access').forEach(el=>el.style.display=user?'block':'none');
     document.querySelectorAll('.self-account-access').forEach(el=>el.style.display=(isSiswaUser(user)||isGuruUser(user))?'block':'none');
     document.querySelectorAll('.staff-only').forEach(el=>el.style.display=isStaffUser(user)?(el.classList.contains('form-box')?'block':'inline-flex'):'none');
@@ -3310,7 +3454,7 @@ function openDashboard(resetHistory=true){
     const materiAdd=document.querySelector('.staff-task-action'); if(materiAdd) materiAdd.style.display=isStaffUser(user)?'inline-flex':'none';
     if(isSiswaUser(user)||isGuruUser(user)) renderAkunSaya();
     const accountSubtitle=document.querySelector('#kelolaAkun .account-page-header p');
-    if(accountSubtitle) accountSubtitle.textContent=isAdminUser(user)?'Kelola akun Guru dan Siswa secara terpusat. Sistem hanya mengizinkan satu akun Admin.':'Guru dapat membuat dan mengedit akun Siswa, tetapi tidak dapat membuat akun Guru lain.';
+    if(accountSubtitle) accountSubtitle.textContent=isAdminUser(user)?'Kelola akun Guru dan Siswa secara terpusat. Sistem hanya mengizinkan satu akun Admin.':'Guru dapat mengelola akun Siswa, menghapus akun Siswa, dan mengakses seluruh fitur administrasi.';
     const addAccount=document.getElementById('btnTambahAkun'); if(addAccount) addAccount.textContent=isAdminUser(user)?'＋ Tambah Akun':'＋ Tambah Akun Siswa';
     const roleFilter=document.getElementById('filterRoleAkun'); if(roleFilter&&isGuruUser(user)){ roleFilter.value='siswa'; [...roleFilter.options].forEach(o=>o.hidden=o.value!=='siswa'&&o.value!==''); }
 }
@@ -3399,13 +3543,14 @@ function bukaFormAkun(index=-1){
 }
 function kembaliKeDaftarAkun(){ document.getElementById('akunListView').style.display='block'; document.getElementById('akunFormView').style.display='none'; resetFormAkun(); updateAkunTable(); }
 function applyAccountFormPermissions(){
-    const user=getCurrentUser(), role=document.getElementById('accRole'), hint=document.getElementById('roleHint');
+    const user=getCurrentUser(), role=document.getElementById('accRole'), hint=document.getElementById('roleHint'), gelarWrap=document.getElementById('accGelarWrap');
     if(!role)return;
     const admin=isAdminUser(user);
     [...role.options].forEach(o=>o.hidden=(!admin && o.value!=='siswa'));
     role.disabled=!admin;
     if(!admin){ role.value='siswa'; if(hint)hint.textContent='Guru hanya dapat membuat atau mengedit akun Siswa.'; }
     else if(hint) hint.textContent='Admin memiliki akses penuh. Hanya satu akun Admin yang diperbolehkan.';
+    if(gelarWrap) gelarWrap.style.display=role.value==='guru'?'block':'none';
 }
 function ubahRoleAkun(){
     const role=document.getElementById('accRole').value, kelas=document.getElementById('accKelas'), hint=document.getElementById('kelasHint');
@@ -3415,14 +3560,14 @@ function ubahRoleAkun(){
 }
 function togglePasswordAkun(){ const input=document.getElementById('accPass'); if(input) input.type=input.type==='password'?'text':'password'; }
 function usernameAkunSudahDipakai(username,ignoreIndex=-1){ return users.some((u,i)=>i!==Number(ignoreIndex)&&String(u.username||'').trim().toLowerCase()===String(username||'').trim().toLowerCase()); }
-function simpanAkun(){const actor=getCurrentUser();if(!canManageStudentAccounts(actor)){alert('Akses ditolak.');return;}const index=Number(document.getElementById('editIndex').value),nama=document.getElementById('accNama').value.trim().toUpperCase(),username=document.getElementById('accUser').value.trim().toLowerCase(),password=document.getElementById('accPass').value,nipNis=document.getElementById('accNipNis').value.trim(),kelas=document.getElementById('accKelas').value,role=isAdminUser(actor)?document.getElementById('accRole').value:'siswa',gender=document.querySelector('input[name="accGender"]:checked')?.value||'',status=document.querySelector('input[name="accStatus"]:checked')?.value||'aktif';if(!nama||!username||!role||(index===-1&&!password)){alert('Lengkapi data wajib.');return;}if(!namaLengkapValid(nama)){alert('Nama harus nama lengkap dan menggunakan huruf kapital.');return;}if(!usernameValid(username)){alert('Username harus menggunakan huruf kecil.');return;}if((index===-1&& !passwordAman(password))||(index>=0&&password&&!passwordAman(password))){alert('Password wajib mengandung huruf, angka, dan minimal 1 huruf kapital.');return;}if(users.some((u,i)=>i!==index&&String(u.username||'').trim().toLowerCase()===username)){alert('Username sudah digunakan.');return;}if(index>=0&&!users[index]){alert('Data akun tidak ditemukan.');return;}if(isGuruUser(actor)&&index>=0&&users[index].role!=='siswa'){alert('Guru hanya dapat mengedit akun Siswa.');return;}if(isGuruUser(actor)&&role!=='siswa'){alert('Guru tidak dapat membuat atau mengubah role selain Siswa.');return;}if(index>=0&&users[index].role==='admin'&&role!=='admin'){alert('Akun Admin tidak boleh diturunkan role-nya.');return;}if(index===-1){users.push({nama,username,password,role,kelas:role==='siswa'?(kelas||''):'-',status,jenisKelamin:gender,nipNis,profilePhoto:''});if(role==='siswa'&&!siswa.some(st=>normalizeName(st.nama)===normalizeName(nama)))siswa.push({nama,kelas:kelas||'',jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',profilePhoto:''});alert('Akun berhasil dibuat.');}else{const old=users[index];users[index]={...old,nama,username,password:password||old.password,role,kelas:role==='siswa'?(kelas||''):'-',status,jenisKelamin:gender,nipNis,profilePhoto:old.profilePhoto||''};if(role==='siswa'){let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(old.nama));if(st){st.nama=nama;st.kelas=kelas||st.kelas;st.nisn=nipNis||st.nisn;st.jenisKelamin=gender||st.jenisKelamin;}else siswa.push({nama,kelas:kelas||'',jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',profilePhoto:old.profilePhoto||''});}const current=getCurrentUser();if(current&&current.username===old.username)localStorage.setItem('loginUser',JSON.stringify(users[index]));alert('Akun berhasil diperbarui.');}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));kembaliKeDaftarAkun();updateData();}
+function simpanAkun(){const actor=getCurrentUser();if(!canManageStudentAccounts(actor)){alert('Akses ditolak.');return;}const index=Number(document.getElementById('editIndex').value),nama=document.getElementById('accNama').value.trim().toUpperCase(),username=document.getElementById('accUser').value.trim().toLowerCase(),password=document.getElementById('accPass').value,nipNis=document.getElementById('accNipNis').value.trim(),gelar=document.getElementById('accGelar').value.trim(),kelas=document.getElementById('accKelas').value,role=isAdminUser(actor)?document.getElementById('accRole').value:'siswa',gender=document.querySelector('input[name="accGender"]:checked')?.value||'',status=document.querySelector('input[name="accStatus"]:checked')?.value||'aktif';if(!nama||!username||!role||(index===-1&&!password)){alert('Lengkapi data wajib.');return;}if(!namaLengkapValid(nama)){alert('Nama harus nama lengkap dan menggunakan huruf kapital.');return;}if(!usernameValid(username)){alert('Username harus menggunakan huruf kecil.');return;}if((index===-1&& !passwordAman(password))||(index>=0&&password&&!passwordAman(password))){alert('Password wajib mengandung huruf, angka, dan minimal 1 huruf kapital.');return;}if(users.some((u,i)=>i!==index&&String(u.username||'').trim().toLowerCase()===username)){alert('Username sudah digunakan.');return;}if(index>=0&&!users[index]){alert('Data akun tidak ditemukan.');return;}if(isGuruUser(actor)&&index>=0&&users[index].role!=='siswa'){alert('Guru hanya dapat mengedit akun Siswa.');return;}if(isGuruUser(actor)&&role!=='siswa'){alert('Guru tidak dapat membuat atau mengubah role selain Siswa.');return;}if(index>=0&&users[index].role==='admin'&&role!=='admin'){alert('Akun Admin tidak boleh diturunkan role-nya.');return;}if(index===-1){users.push({nama,username,password,role,kelas:role==='siswa'?(kelas||''):'-',status,jenisKelamin:gender,nipNis,gelar:role==='guru'?(gelar||''):'',profilePhoto:''});if(role==='siswa'&&!siswa.some(st=>normalizeName(st.nama)===normalizeName(nama)))siswa.push({nama,kelas:kelas||'',jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',nik:'',namaAyah:'',namaIbu:'',noHPOrtu:'',guruWali:'',profilePhoto:''});alert('Akun berhasil dibuat.');}else{const old=users[index];users[index]={...old,nama,username,password:password||old.password,role,kelas:role==='siswa'?(kelas||''):'-',status,jenisKelamin:gender,nipNis,gelar:role==='guru'?(gelar||''):'',profilePhoto:old.profilePhoto||''};if(role==='siswa'){let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(old.nama));if(st){st.nama=nama;st.kelas=kelas||st.kelas;st.nisn=nipNis||st.nisn;st.jenisKelamin=gender||st.jenisKelamin;}else siswa.push({nama,kelas:kelas||'',jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',profilePhoto:old.profilePhoto||''});}const current=getCurrentUser();if(current&&current.username===old.username)localStorage.setItem('loginUser',JSON.stringify(users[index]));alert('Akun berhasil diperbarui.');}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));kembaliKeDaftarAkun();updateData();}
 
 function editAkun(index){
     const actor=getCurrentUser(), u=users[index]; if(!u)return;
     if(!canManageStudentAccounts(actor)){ alert('Akses ditolak.'); return; }
     if(isGuruUser(actor)&&u.role!=='siswa'){ alert('Guru hanya dapat mengedit akun Siswa.'); return; }
     document.getElementById('editIndex').value=index; document.getElementById('judulFormAkun').innerText='Edit Akun: '+u.nama; document.getElementById('subjudulFormAkun').innerText='Periksa data akun sebelum menyimpan perubahan.';
-    document.getElementById('accNama').value=u.nama||''; document.getElementById('accUser').value=u.username||''; document.getElementById('accPass').value=''; document.getElementById('accNipNis').value=u.nipNis||u.nis||''; document.getElementById('accRole').value=u.role||'';
+    document.getElementById('accNama').value=u.nama||''; document.getElementById('accGelar').value=u.gelar||''; document.getElementById('accUser').value=u.username||''; document.getElementById('accPass').value=''; document.getElementById('accNipNis').value=u.nipNis||u.nis||''; document.getElementById('accRole').value=u.role||'';
     populateKelasAkun(u.kelas&&u.kelas!=='-'?u.kelas:'');
     document.querySelectorAll('input[name="accGender"]').forEach(r=>r.checked=r.value===(u.jenisKelamin||''));
     document.querySelectorAll('input[name="accStatus"]').forEach(r=>r.checked=r.value===(u.status||'aktif'));
@@ -3431,7 +3576,7 @@ function editAkun(index){
 }
 function resetFormAkun(){
     document.getElementById('editIndex').value='-1'; document.getElementById('judulFormAkun').innerText='Tambah Akun Baru'; document.getElementById('subjudulFormAkun').innerText='Buat akun pengguna baru untuk sistem administrasi.';
-    document.getElementById('accNama').value=''; document.getElementById('accUser').value=''; document.getElementById('accPass').value=''; document.getElementById('accNipNis').value=''; document.getElementById('accRole').value='';
+    document.getElementById('accNama').value=''; document.getElementById('accGelar').value=''; document.getElementById('accUser').value=''; document.getElementById('accPass').value=''; document.getElementById('accNipNis').value=''; document.getElementById('accRole').value='';
     document.querySelectorAll('input[name="accGender"]').forEach(r=>r.checked=false); document.querySelectorAll('input[name="accStatus"]').forEach(r=>r.checked=r.value==='aktif'); populateKelasAkun();
     document.getElementById('btnSimpanAkun').innerText='Simpan Akun'; document.getElementById('passwordHint').innerText='Gunakan password yang mudah diingat tetapi tidak mudah ditebak.'; document.getElementById('accRole').disabled=false; ubahRoleAkun(); applyAccountFormPermissions();
 }
@@ -3442,23 +3587,70 @@ function bukaModalHapusAkun(index){
     const roleLabel=u.role==='admin'?'Admin':u.role==='guru'?'Guru':'Siswa'; document.getElementById('hapusAkunRole').textContent='Role: '+roleLabel+(u.kelas&&u.kelas!=='-'?' • Kelas: '+u.kelas:''); document.getElementById('modalHapusAkun').style.display='flex';
 }
 function tutupModalHapusAkun(){ pendingDeleteAkunIndex=-1; document.getElementById('modalHapusAkun').style.display='none'; }
-function konfirmasiHapusAkun(){
-    if(!isAdminUser(getCurrentUser())){ alert('Hanya Admin yang dapat menghapus akun.'); return; }
-    const index=pendingDeleteAkunIndex; if(index<0||!users[index]) return; const deleted=users[index];
-    if(deleted.role==='admin'){ alert('Akun Admin tidak dapat dihapus. Sistem harus selalu memiliki satu Admin.'); return; } users.splice(index,1);
-    if(deleted.role==='siswa'){ siswa=siswa.filter(s=>String(s.nama||'').toLowerCase()!==String(deleted.nama||'').toLowerCase()); localStorage.setItem('siswa',JSON.stringify(siswa)); }
-    localStorage.setItem('users',JSON.stringify(users)); tutupModalHapusAkun(); alert('Akun '+deleted.nama+' berhasil dihapus.'); updateAkunTable(); updateData();
+async function konfirmasiHapusAkun(){
+    const actor=getCurrentUser();
+    const index=pendingDeleteAkunIndex;
+    if(index<0||!users[index])return;
+    const deleted=users[index];
+    const allowed=isAdminUser(actor)?deleted.role!=='admin':(isGuruUser(actor)&&deleted.role==='siswa');
+    if(!allowed){alert('Guru hanya dapat menghapus akun Siswa.');return;}
+    if(actor&&actor.username===deleted.username){alert('Akun yang sedang digunakan tidak dapat dihapus.');return;}
+    users.splice(index,1);
+    if(deleted.role==='siswa'){siswa=siswa.filter(s=>String(s.nama||'').toLowerCase()!==String(deleted.nama||'').toLowerCase());}
+    try{await firebaseSaveCollection('users',users);await firebaseSaveCollection('siswa',siswa);}catch(e){alert('Gagal menghapus akun dari Firebase: '+e.message);return;}
+    tutupModalHapusAkun(); alert('Akun '+deleted.nama+' berhasil dihapus.'); updateAkunTable(); updateData();
 }
-function updateAkunTable(){const table=document.getElementById('dataAkun');if(!table)return;const keyword=(document.getElementById('filterAkun')?.value||'').trim().toLowerCase(),roleFilter=document.getElementById('filterRoleAkun')?.value||'',actor=getCurrentUser(),visibleUsers=isGuruUser(actor)?users.filter(u=>u.role==='siswa'):users,effectiveRoleFilter=isGuruUser(actor)?'siswa':roleFilter,filtered=visibleUsers.filter(u=>{const text=[u.nama,u.username,u.nipNis,u.nis].map(v=>String(v||'').toLowerCase()).join(' ');return(!keyword||text.includes(keyword))&&(!effectiveRoleFilter||u.role===effectiveRoleFilter);});table.innerHTML='';if(!filtered.length)table.innerHTML='<tr><td colspan="8" class="account-empty">Tidak ada akun yang sesuai dengan pencarian.</td></tr>';else filtered.forEach(u=>{const i=users.indexOf(u),roleLabel=u.role==='admin'?'Admin':u.role==='guru'?'Guru':'Siswa',roleClass=u.role==='admin'?'account-role-admin':u.role==='guru'?'account-role-guru':'account-role-siswa',status=u.status||'aktif',statusLabel=status==='menunggu'?'Menunggu Persetujuan':status==='aktif'?'Aktif':'Nonaktif',statusClass=status==='menunggu'?'account-status-pending':status==='aktif'?'account-status-active':'account-status-inactive',nipnis=u.nipNis||u.nis||'-',initial=String(u.nama||'?').trim().charAt(0).toUpperCase(),photo=u.profilePhoto||siswa.find(st=>normalizeName(st.nama)===normalizeName(u.nama))?.profilePhoto||'',canEdit=isAdminUser(actor)||(isGuruUser(actor)&&u.role==='siswa'),canDelete=isAdminUser(actor)&&u.role!=='admin';let actions='';if(canEdit)actions+=`<button class="btn-account-edit" type="button" onclick="bukaFormAkun(${i})">Edit</button>`;if((isAdminUser(actor)||isGuruUser(actor))&&u.role==='siswa'&&status==='menunggu')actions+=`<button class="btn-success" type="button" onclick="setujuiAkunSiswa(${i})">Setujui</button>`;if(canDelete)actions+=`<button class="btn-danger" type="button" onclick="bukaModalHapusAkun(${i})">Hapus</button>`;const avatar=photo?`<img src="${photo}" alt="Foto" style="width:34px;height:34px;border-radius:50%;object-fit:cover;">`:initial;table.innerHTML+=`<tr><td>${i+1}</td><td><div class="account-name-cell"><div class="account-avatar">${avatar}</div><div class="account-meta"><strong>${escapeHtmlAkun(u.nama||'-')}</strong><small>${roleLabel}</small></div></div></td><td>${escapeHtmlAkun(u.username||'-')}</td><td>${escapeHtmlAkun(nipnis)}</td><td><span class="account-role-badge ${roleClass}">${roleLabel}</span></td><td>${escapeHtmlAkun(u.kelas||'-')}</td><td><span class="account-status-badge ${statusClass}">${statusLabel}</span></td><td><div class="account-actions">${actions||'<span style="color:var(--text-muted);font-size:12px;">Terbatas</span>'}</div></td></tr>`;});const count=document.getElementById('countAkun');if(count)count.textContent=`Menampilkan ${filtered.length} dari ${users.length} akun`;}
-function setujuiAkunSiswa(index){const actor=getCurrentUser();if(!(isAdminUser(actor)||isGuruUser(actor))){alert('Akses ditolak.');return;}const u=users[index];if(!u||u.role!=='siswa'||u.status!=='menunggu')return;u.status='aktif';let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(u.nama));if(!st){st={nama:u.nama,kelas:'',jenisKelamin:'',nisn:u.nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',profilePhoto:u.profilePhoto||''};siswa.push(st);}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));updateAkunTable();alert(`Akun siswa ${u.nama} berhasil disetujui. Siswa sekarang dapat login dan melengkapi Data Saya.`);}
+function updateAkunTable(){const table=document.getElementById('dataAkun');if(!table)return;const keyword=(document.getElementById('filterAkun')?.value||'').trim().toLowerCase(),roleFilter=document.getElementById('filterRoleAkun')?.value||'',actor=getCurrentUser(),visibleUsers=isGuruUser(actor)?users.filter(u=>u.role==='siswa'):users,effectiveRoleFilter=isGuruUser(actor)?'siswa':roleFilter,filtered=visibleUsers.filter(u=>{const text=[u.nama,u.username,u.nipNis,u.nis].map(v=>String(v||'').toLowerCase()).join(' ');return(!keyword||text.includes(keyword))&&(!effectiveRoleFilter||u.role===effectiveRoleFilter);});table.innerHTML='';if(!filtered.length)table.innerHTML='<tr><td colspan="9" class="account-empty">Tidak ada akun yang sesuai dengan pencarian.</td></tr>';else filtered.forEach(u=>{const i=users.indexOf(u),roleLabel=u.role==='admin'?'Admin':u.role==='guru'?'Guru':'Siswa',roleClass=u.role==='admin'?'account-role-admin':u.role==='guru'?'account-role-guru':'account-role-siswa',status=u.status||'aktif',statusLabel=status==='menunggu'?'Menunggu Persetujuan':status==='aktif'?'Aktif':'Nonaktif',statusClass=status==='menunggu'?'account-status-pending':status==='aktif'?'account-status-active':'account-status-inactive',nipnis=u.nipNis||u.nis||'-',initial=String(u.nama||'?').trim().charAt(0).toUpperCase(),photo=u.profilePhoto||siswa.find(st=>normalizeName(st.nama)===normalizeName(u.nama))?.profilePhoto||'',canEdit=isAdminUser(actor)||(isGuruUser(actor)&&u.role==='siswa'),canDelete=(isAdminUser(actor)&&u.role!=='admin')||(isGuruUser(actor)&&u.role==='siswa');let actions='';if(canEdit)actions+=`<button class="btn-account-edit" type="button" onclick="bukaFormAkun(${i})">Edit</button>`;if((isAdminUser(actor)||isGuruUser(actor))&&u.role==='siswa'&&status==='menunggu')actions+=`<button class="btn-success" type="button" onclick="setujuiAkunSiswa(${i})">Setujui</button>`;if(canDelete)actions+=`<button class="btn-danger" type="button" onclick="bukaModalHapusAkun(${i})">Hapus</button>`;const avatar=photo?`<img src="${photo}" alt="Foto" style="width:34px;height:34px;border-radius:50%;object-fit:cover;">`:initial;table.innerHTML+=`<tr><td>${i+1}</td><td><div class="account-name-cell"><div class="account-avatar">${avatar}</div><div class="account-meta"><strong>${escapeHtmlAkun(u.nama||'-')}</strong><small>${roleLabel}</small></div></div></td><td>${escapeHtmlAkun(u.gelar||'-')}</td><td>${escapeHtmlAkun(u.username||'-')}</td><td>${escapeHtmlAkun(nipnis)}</td><td><span class="account-role-badge ${roleClass}">${roleLabel}</span></td><td>${escapeHtmlAkun(u.kelas||'-')}</td><td><span class="account-status-badge ${statusClass}">${statusLabel}</span></td><td><div class="account-actions">${actions||'<span style="color:var(--text-muted);font-size:12px;">Terbatas</span>'}</div></td></tr>`;});const count=document.getElementById('countAkun');if(count)count.textContent=`Menampilkan ${filtered.length} dari ${users.length} akun`;}
+function setujuiAkunSiswa(index){const actor=getCurrentUser();if(!(isAdminUser(actor)||isGuruUser(actor))){alert('Akses ditolak.');return;}const u=users[index];if(!u||u.role!=='siswa'||u.status!=='menunggu')return;u.status='aktif';let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(u.nama));if(!st){st={nama:u.nama,kelas:'',jenisKelamin:'',nisn:u.nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',nik:'',namaAyah:'',namaIbu:'',noHPOrtu:'',guruWali:'',profilePhoto:u.profilePhoto||''};siswa.push(st);}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));updateAkunTable();alert(`Akun siswa ${u.nama} berhasil disetujui. Siswa sekarang dapat login dan melengkapi Data Saya.`);}
 
 function escapeHtmlAkun(value){ return String(value).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
 
-function renderAkunSaya(){const user=getCurrentUser();if(!user||!(isSiswaUser(user)||isGuruUser(user)))return;const st=getStudentProfileRecord(user),set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??''};set('selfNama',user.nama);set('selfUsername',user.username);set('selfNis',user.nipNis||user.nis||st?.nisn||'');const title=document.getElementById('selfDataSectionTitle'),subtitle=document.getElementById('selfAccountSubtitle'),nisLabel=document.getElementById('selfNisLabel'),kelasWrap=document.getElementById('selfKelasWrap');if(isGuruUser(user)){if(title)title.textContent='🎓 DATA GURU';if(subtitle)subtitle.textContent='Perbarui data akun Guru Anda sendiri.';if(nisLabel)nisLabel.textContent='NIP';if(kelasWrap)kelasWrap.style.display='none';}else{if(title)title.textContent='🎓 DATA SISWA';if(subtitle)subtitle.textContent=isStudentProfileComplete(user)?'Lengkapi dan perbarui data akun Anda sendiri.':'⚠️ Lengkapi data Anda terlebih dahulu. Kelas wajib dipilih sebelum fitur sistem dapat digunakan.';if(nisLabel)nisLabel.textContent='NIS / NISN';if(kelasWrap)kelasWrap.style.display='block';populateSelfKelas(st?.kelas||user.kelas||'');}document.querySelectorAll('input[name="selfGender"]').forEach(r=>r.checked=r.value===(st?.jenisKelamin||user.jenisKelamin||''));set('selfPassword','');window.pendingSelfProfilePhoto='';const photo=st?.profilePhoto||user.profilePhoto||'',box=document.getElementById('selfPhotoPreview');if(box)box.innerHTML=photo?`<img src="${photo}" alt="Foto profil" style="width:90px;height:90px;object-fit:cover;border-radius:50%;border:3px solid var(--accent-color);">`:'';}
+function renderAkunSaya(){
+    const user=getCurrentUser();
+    if(!user||!(isSiswaUser(user)||isGuruUser(user)))return;
+    const st=getStudentProfileRecord(user);
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??''};
+    set('selfNama',user.nama);set('selfUsername',user.username);set('selfGelar',user.gelar||'');set('selfNis',user.nipNis||user.nis||st?.nisn||'');
+    set('selfTempatLahir',st?.tempatLahir||'');set('selfTanggalLahir',st?.tanggalLahir||'');set('selfNIK',st?.nik||'');set('selfAlamat',st?.alamat||'');set('selfNoHP',st?.noHP||'');set('selfNamaAyah',st?.namaAyah||'');set('selfNamaIbu',st?.namaIbu||'');set('selfHPOrtu',st?.noHPOrtu||'');
+    const title=document.getElementById('selfDataSectionTitle'),subtitle=document.getElementById('selfAccountSubtitle'),nisLabel=document.getElementById('selfNisLabel'),kelasWrap=document.getElementById('selfKelasWrap'),biodata=document.getElementById('selfStudentBiodata'),guruWali=document.getElementById('selfGuruWali');
+    if(isGuruUser(user)){
+        const gw=document.getElementById('selfGelarWrap');if(gw)gw.style.display='block';if(title)title.textContent='🎓 DATA GURU';if(subtitle)subtitle.textContent='Perbarui data akun Guru Anda sendiri.';if(nisLabel)nisLabel.textContent='NIP';if(kelasWrap)kelasWrap.style.display='none';if(biodata)biodata.style.display='none';
+    }else{
+        const gw=document.getElementById('selfGelarWrap');if(gw)gw.style.display='none';if(title)title.textContent='🎓 DATA SISWA';if(subtitle)subtitle.textContent=isStudentProfileComplete(user)?'Lengkapi dan perbarui data akun Anda sendiri.':'⚠️ Lengkapi seluruh biodata Anda terlebih dahulu sebelum menggunakan fitur sistem.';if(nisLabel)nisLabel.textContent='NISN';if(kelasWrap)kelasWrap.style.display='block';if(biodata)biodata.style.display='block';populateSelfKelas(st?.kelas||user.kelas||'');if(guruWali)guruWali.value=st?.guruWali||'Belum ditentukan';
+    }
+    document.querySelectorAll('input[name="selfGender"]').forEach(r=>r.checked=r.value===(st?.jenisKelamin||user.jenisKelamin||''));
+    set('selfPassword','');window.pendingSelfProfilePhoto='';const photo=st?.profilePhoto||user.profilePhoto||'',box=document.getElementById('selfPhotoPreview');if(box)box.innerHTML=photo?`<img src="${photo}" alt="Foto profil" style="width:90px;height:90px;object-fit:cover;border-radius:50%;border:3px solid var(--accent-color);">`:'';
+}
 function populateSelfKelas(selected=''){const el=document.getElementById('selfKelas');if(!el)return;const list=getKelasTerdaftarDariJadwal();el.innerHTML='<option value="">Pilih kelas</option>'+list.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');el.value=selected||'';}
 function toggleSelfPassword(){const el=document.getElementById('selfPassword');if(el)el.type=el.type==='password'?'text':'password';}
-function simpanAkunSaya(){const actor=getCurrentUser();if(!actor||!(isSiswaUser(actor)||isGuruUser(actor))){alert('Akses ditolak.');return;}const idx=users.findIndex(u=>String(u.username||'')===String(actor.username||''));if(idx<0){alert('Akun tidak ditemukan.');return;}const nama=document.getElementById('selfNama').value.trim().toUpperCase(),username=document.getElementById('selfUsername').value.trim().toLowerCase(),password=document.getElementById('selfPassword').value,nipNis=document.getElementById('selfNis').value.trim(),gender=document.querySelector('input[name="selfGender"]:checked')?.value||'',kelas=isSiswaUser(actor)?(document.getElementById('selfKelas').value||''):actor.kelas||'-';if(!nama||!username){alert('Nama dan username wajib diisi.');return;}if(!namaLengkapValid(nama)){alert('Nama harus nama lengkap dan menggunakan huruf kapital.');return;}if(!usernameValid(username)){alert('Username harus menggunakan huruf kecil.');return;}if(password&&!passwordAman(password)){alert('Password baru wajib mengandung huruf, angka, dan minimal 1 huruf kapital.');return;}if(isSiswaUser(actor)&&!kelas){alert('Kelas wajib dipilih dari daftar kelas yang tersedia pada Jadwal.');return;}if(isSiswaUser(actor)&&!gender){alert('Jenis Kelamin wajib diisi.');return;}if(users.some((u,i)=>i!==idx&&String(u.username||'').trim().toLowerCase()===username)){alert('Username sudah digunakan.');return;}const oldNama=users[idx].nama,photo=window.pendingSelfProfilePhoto||users[idx].profilePhoto||getStudentProfileRecord(actor)?.profilePhoto||'';users[idx]={...users[idx],nama,username,password:password||users[idx].password,kelas,nipNis,jenisKelamin:gender,profilePhoto:photo,status:users[idx].status==='menunggu'?'aktif':users[idx].status};if(isSiswaUser(actor)){let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(oldNama));if(!st){st={nama,kelas,nisn:nipNis,jenisKelamin:gender,tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',profilePhoto:photo};siswa.push(st);}else{st.nama=nama;st.kelas=kelas;st.nisn=nipNis||st.nisn;st.jenisKelamin=gender;st.profilePhoto=photo||st.profilePhoto||'';}}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));localStorage.setItem('loginUser',JSON.stringify(users[idx]));window.pendingSelfProfilePhoto='';updateProfileAvatar(users[idx]);alert('Data Saya berhasil disimpan.');openDashboard();showContent('akunSaya');}
-
+async function simpanAkunSaya(){
+    const actor=getCurrentUser();
+    if(!actor||!(isSiswaUser(actor)||isGuruUser(actor))){alert('Akses ditolak.');return;}
+    const idx=users.findIndex(u=>String(u.username||'')===String(actor.username||''));
+    if(idx<0){alert('Akun tidak ditemukan.');return;}
+    const nama=document.getElementById('selfNama').value.trim().toUpperCase(),gelar=document.getElementById('selfGelar').value.trim(),username=document.getElementById('selfUsername').value.trim().toLowerCase(),password=document.getElementById('selfPassword').value,nipNis=document.getElementById('selfNis').value.trim(),gender=document.querySelector('input[name="selfGender"]:checked')?.value||'',kelas=isSiswaUser(actor)?(document.getElementById('selfKelas').value||''):actor.kelas||'-';
+    if(!nama||!username){alert('Nama dan username wajib diisi.');return;}
+    if(!namaLengkapValid(nama)){alert('Nama harus nama lengkap dan menggunakan huruf kapital.');return;}
+    if(!usernameValid(username)){alert('Username harus menggunakan huruf kecil.');return;}
+    if(password&&!passwordAman(password)){alert('Password baru wajib mengandung huruf, angka, dan minimal 1 huruf kapital.');return;}
+    if(isSiswaUser(actor)){
+        const tempatLahir=document.getElementById('selfTempatLahir').value.trim(),tanggalLahir=document.getElementById('selfTanggalLahir').value,nik=document.getElementById('selfNIK').value.trim(),alamat=document.getElementById('selfAlamat').value.trim(),noHP=document.getElementById('selfNoHP').value.trim(),namaAyah=document.getElementById('selfNamaAyah').value.trim(),namaIbu=document.getElementById('selfNamaIbu').value.trim(),noHPOrtu=document.getElementById('selfHPOrtu').value.trim();
+        if(!nipNis||!nama||!gender||!kelas||!tempatLahir||!tanggalLahir||!nik||!alamat||!noHP||!namaAyah||!namaIbu||!noHPOrtu){alert('Lengkapi seluruh biodata siswa terlebih dahulu.');return;}
+        if(!/^\d+$/.test(nipNis)){alert('NISN hanya boleh berisi angka.');return;}
+        if(!/^\d+$/.test(nik)){alert('NIK hanya boleh berisi angka.');return;}
+    }
+    if(users.some((u,i)=>i!==idx&&String(u.username||'').trim().toLowerCase()===username)){alert('Username sudah digunakan.');return;}
+    const oldNama=users[idx].nama,currentSt=getStudentProfileRecord(actor),photo=window.pendingSelfProfilePhoto||users[idx].profilePhoto||currentSt?.profilePhoto||'';
+    users[idx]={...users[idx],nama,username,password:password||users[idx].password,kelas,nipNis,jenisKelamin:gender,gelar:isGuruUser(actor)?gelar:'',profilePhoto:photo,status:users[idx].status==='menunggu'?'aktif':users[idx].status};
+    if(isSiswaUser(actor)){
+        const stIndex=siswa.findIndex(x=>(nipNis&&String(x.nisn||'')===String(nipNis))||normalizeName(x.nama)===normalizeName(oldNama));
+        const current=stIndex>=0?siswa[stIndex]:{};
+        const updated={...current,nama,nisn:nipNis,nik:document.getElementById('selfNIK').value.trim(),jenisKelamin:gender,tempatLahir:document.getElementById('selfTempatLahir').value.trim(),tanggalLahir:document.getElementById('selfTanggalLahir').value,kelas,alamat:document.getElementById('selfAlamat').value.trim(),noHP:document.getElementById('selfNoHP').value.trim(),namaAyah:document.getElementById('selfNamaAyah').value.trim(),namaIbu:document.getElementById('selfNamaIbu').value.trim(),noHPOrtu:document.getElementById('selfHPOrtu').value.trim(),guruWali:current.guruWali||'',profilePhoto:photo};
+        if(stIndex>=0)siswa[stIndex]=updated;else siswa.push(updated);
+    }
+    try{await firebaseSaveCollection('users',users);await firebaseSaveCollection('siswa',siswa);}catch(e){alert('Gagal menyimpan ke Firebase: '+e.message);return;}
+    localStorage.setItem('loginUser',JSON.stringify(users[idx]));window.pendingSelfProfilePhoto='';updateProfileAvatar(users[idx]);alert(isSiswaUser(actor)?'Biodata Anda berhasil disimpan ke Firebase.':'Data Akun Saya berhasil disimpan.');openDashboard();showContent('akunSaya');
+}
 function bukaHalamanUnduhAkun(){
     const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} showContent('unduhAkun'); const el=document.getElementById('downloadAkunRole'); if(!el)return; el.innerHTML=isAdminUser(user)?'<option value="siswa">Akun Siswa</option><option value="guru">Akun Guru</option>':'<option value="siswa">Akun Siswa</option>'; renderPreviewUnduhAkun();
 }
@@ -3471,15 +3663,16 @@ function renderPreviewUnduhAkun(){
 }
 function downloadAkunExcel(){
     const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} const role=document.getElementById('downloadAkunRole')?.value||'siswa'; const list=getAccountExportList(); if(!list.length){alert('Tidak ada akun untuk diunduh.');return;}
-    const rows=list.map((u,i)=>[i+1,u.nama||'',u.username||'',u.nipNis||u.nis||'',u.role||'',u.kelas||'-',u.jenisKelamin||'',u.status||'aktif']); const ws=XLSX.utils.aoa_to_sheet([["SMA NEGERI 1 MA'U"],[`REKAP AKUN ${role.toUpperCase()}`],[],['No','Nama','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status'],...rows]); ws['!cols']=[{wch:6},{wch:28},{wch:20},{wch:18},{wch:12},{wch:16},{wch:16},{wch:12}]; const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Data Akun');XLSX.writeFile(wb,`Data_Akun_${role}.xlsx`);
+    const rows=list.map((u,i)=>[i+1,u.nama||'',u.gelar||'',u.username||'',u.nipNis||u.nis||'',u.role||'',u.kelas||'-',u.jenisKelamin||'',u.status||'aktif']); const ws=XLSX.utils.aoa_to_sheet([["SMA NEGERI 1 MA'U"],[`REKAP AKUN ${role.toUpperCase()}`],[],['No','Nama','Gelar','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status'],...rows]); ws['!cols']=[{wch:6},{wch:28},{wch:20},{wch:18},{wch:12},{wch:16},{wch:16},{wch:12}]; const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Data Akun');XLSX.writeFile(wb,`Data_Akun_${role}.xlsx`);
 }
 function downloadAkunPDF(){
-    const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} const role=document.getElementById('downloadAkunRole')?.value||'siswa'; const list=getAccountExportList(); if(!list.length){alert('Tidak ada akun untuk diunduh.');return;} const {jsPDF}=window.jspdf; const doc=new jsPDF('l','mm','a4'); doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text("SMA NEGERI 1 MA'U",148,12,{align:'center'});doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text(`REKAP DATA AKUN ${role.toUpperCase()}`,148,19,{align:'center'}); const body=list.map((u,i)=>[i+1,u.nama||'-',u.username||'-',u.nipNis||u.nis||'-',u.role||'-',u.kelas||'-',u.jenisKelamin||'-',u.status||'aktif']); doc.autoTable({head:[['No','Nama','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status']],body,startY:26,theme:'grid',styles:{fontSize:8},headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold'}}); doc.setFontSize(8);doc.text('Catatan: Password tidak ditampilkan dalam rekap untuk menjaga keamanan akun.',18,(doc.lastAutoTable?.finalY||180)+10); doc.save(`Data_Akun_${role}.pdf`);
+    const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} const role=document.getElementById('downloadAkunRole')?.value||'siswa'; const list=getAccountExportList(); if(!list.length){alert('Tidak ada akun untuk diunduh.');return;} const {jsPDF}=window.jspdf; const doc=new jsPDF('l','mm','a4'); doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text("SMA NEGERI 1 MA'U",148,12,{align:'center'});doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text(`REKAP DATA AKUN ${role.toUpperCase()}`,148,19,{align:'center'}); const body=list.map((u,i)=>[i+1,u.nama||'-',u.username||'-',u.nipNis||u.nis||'-',u.role||'-',u.kelas||'-',u.jenisKelamin||'-',u.status||'aktif']); doc.autoTable({head:[['No','Nama','Gelar','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status']],body,startY:26,theme:'grid',styles:{fontSize:8},headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold'}}); doc.setFontSize(8);doc.text('Catatan: Password tidak ditampilkan dalam rekap untuk menjaga keamanan akun.',18,(doc.lastAutoTable?.finalY||180)+10); doc.save(`Data_Akun_${role}.pdf`);
 }
 function kembaliDariUnduhAkun(){showContent('kelolaAkun');}
 
 /* DATA SISWA */
 let pendingDeleteSiswaIndex = -1;
+let pendingStudentPhoto='';
 
 function getDaftarKelasSiswa(){
     const daftar = [];
@@ -3533,10 +3726,25 @@ function populateFilterKelasSiswa(){
     if(kelasList.includes(current)) select.value = current;
 }
 
+function populateGuruWaliSelect(selected=''){
+    const el=document.getElementById('siswaGuruWali'); if(!el)return;
+    const list=users.filter(u=>u.role==='guru').sort((a,b)=>String(a.nama||'').localeCompare(String(b.nama||''),'id'));
+    el.innerHTML='<option value="">Belum ditentukan</option>'+list.map(u=>`<option value="${escapeHtml(u.username||u.nama||'')}">${escapeHtml((u.nama||'-')+(u.gelar?', '+u.gelar:''))}</option>`).join('');
+    el.value=selected||'';
+}
+function previewStudentPhoto(input){
+    const file=input?.files?.[0]; if(!file)return;
+    if(!file.type.startsWith('image/')){alert('Pasfoto harus berupa gambar.');input.value='';return;}
+    compressProfilePhoto(file,data=>{pendingStudentPhoto=data;const box=document.getElementById('siswaPasFotoPreview');if(box)box.innerHTML=`<img src="${data}" alt="Pasfoto" style="width:100px;height:125px;object-fit:cover;border-radius:8px;border:2px solid var(--accent-color);">`;});
+}
+
 function bukaFormSiswa(index = -1){
-    if(!isAdminUser(getCurrentUser())){ alert('Hanya Admin yang dapat mengelola Data Siswa.'); return; }
+    const actor=getCurrentUser();
+    if(!(isAdminUser(actor)||isGuruUser(actor))){ alert('Akses ditolak.'); return; }
+    if(isGuruUser(actor) && index===-1){ alert('Guru hanya dapat mengedit data siswa yang sudah ada.'); return; }
     resetFormSiswa();
     populateKelasSiswa();
+    populateGuruWaliSelect();
 
     document.getElementById('editSiswaIndex').value = index;
     document.getElementById('siswaListView').style.display = 'none';
@@ -3554,6 +3762,13 @@ function bukaFormSiswa(index = -1){
         document.getElementById('siswaTanggalLahir').value = s.tanggalLahir || '';
         document.getElementById('siswaAlamat').value = s.alamat || '';
         document.getElementById('siswaHP').value = s.noHP || '';
+        document.getElementById('siswaNIK').value = s.nik || '';
+        document.getElementById('siswaNamaAyah').value = s.namaAyah || '';
+        document.getElementById('siswaNamaIbu').value = s.namaIbu || '';
+        document.getElementById('siswaHPOrtu').value = s.noHPOrtu || '';
+        populateGuruWaliSelect(s.guruWali || '');
+        pendingStudentPhoto=s.profilePhoto||'';
+        document.getElementById('siswaPasFotoPreview').innerHTML=pendingStudentPhoto?`<img src="${pendingStudentPhoto}" alt="Pasfoto" style="width:100px;height:125px;object-fit:cover;border-radius:8px;border:2px solid var(--accent-color);">`:'';
         document.querySelectorAll('input[name="siswaGender"]').forEach(r => r.checked = r.value === (s.jenisKelamin || ''));
         populateKelasSiswa(s.kelas || '');
 
@@ -3581,6 +3796,15 @@ function resetFormSiswa(){
     document.getElementById('siswaTanggalLahir').value = '';
     document.getElementById('siswaAlamat').value = '';
     document.getElementById('siswaHP').value = '';
+    document.getElementById('siswaNIK').value = '';
+    document.getElementById('siswaNamaAyah').value = '';
+    document.getElementById('siswaNamaIbu').value = '';
+    document.getElementById('siswaHPOrtu').value = '';
+    document.getElementById('siswaGuruWali').value = '';
+    document.getElementById('siswaPasFoto').value = '';
+    document.getElementById('siswaPasFotoPreview').innerHTML = '';
+    pendingStudentPhoto='';
+    populateGuruWaliSelect();
     document.getElementById('siswaNISN').readOnly = false;
     document.getElementById('siswaNISN').classList.remove('student-key-readonly');
     document.getElementById('nisnHint').textContent = 'NISN menjadi identitas utama siswa.';
@@ -3592,10 +3816,12 @@ function kembaliKeDaftarSiswa(){
     document.getElementById('siswaListView').style.display = 'block';
     resetFormSiswa();
     updateDataSiswaTable();
+    renderGuruWaliTable();
 }
 
 function simpanDataSiswa(){
-    if(!isAdminUser(getCurrentUser())){ alert('Hanya Admin yang dapat mengelola Data Siswa.'); return; }
+    const actor=getCurrentUser();
+    if(!(isAdminUser(actor)||isGuruUser(actor))){ alert('Akses ditolak.'); return; }
     const index = parseInt(document.getElementById('editSiswaIndex').value, 10);
     const nisn = document.getElementById('siswaNISN').value.trim();
     const nama = document.getElementById('siswaNamaLengkap').value.trim();
@@ -3606,6 +3832,13 @@ function simpanDataSiswa(){
     const tanggalLahir = document.getElementById('siswaTanggalLahir').value;
     const alamat = document.getElementById('siswaAlamat').value.trim();
     const noHP = document.getElementById('siswaHP').value.trim();
+    const nik = document.getElementById('siswaNIK').value.trim();
+    const namaAyah = document.getElementById('siswaNamaAyah').value.trim();
+    const namaIbu = document.getElementById('siswaNamaIbu').value.trim();
+    const noHPOrtu = document.getElementById('siswaHPOrtu').value.trim();
+    const guruWali = document.getElementById('siswaGuruWali').value || '';
+    const oldStudent = index >= 0 ? siswa[index] : null;
+    const profilePhoto = pendingStudentPhoto || oldStudent?.profilePhoto || '';
 
     if(!nisn || !nama || !jenisKelamin || !kelas){
         alert('Lengkapi NISN, Nama Lengkap, Jenis Kelamin, dan Kelas!');
@@ -3623,7 +3856,6 @@ function simpanDataSiswa(){
         return;
     }
 
-    const oldStudent = index >= 0 ? siswa[index] : null;
     const data = {
         ...(oldStudent || {}),
         nisn,
@@ -3633,7 +3865,13 @@ function simpanDataSiswa(){
         tempatLahir,
         tanggalLahir,
         alamat,
-        noHP
+        noHP,
+        nik,
+        namaAyah,
+        namaIbu,
+        noHPOrtu,
+        guruWali,
+        profilePhoto
     };
 
     if(index === -1){
@@ -3734,12 +3972,41 @@ function updateDataSiswaTable(){
             <td>${s.kelas || '-'}</td>
             <td>${s.noHP || '-'}</td>
             <td style="white-space:nowrap;">
-                ${isAdminUser(getCurrentUser()) ? `<button class="btn-edit-student" onclick="bukaFormSiswa(${originalIndex})">Edit</button>
-                <button class="btn-danger" onclick="bukaModalHapusSiswa(${originalIndex})">Hapus</button>` : '<span style="color:var(--text-muted);font-size:12px;">Lihat saja</span>'}
+                ${(isAdminUser(getCurrentUser())||isGuruUser(getCurrentUser())) ? `<button class="btn-edit-student" onclick="bukaFormSiswa(${originalIndex})">Edit</button>${isAdminUser(getCurrentUser()) ? `<button class="btn-danger" onclick="bukaModalHapusSiswa(${originalIndex})">Hapus</button>` : ''}` : '<span style="color:var(--text-muted);font-size:12px;">Lihat saja</span>'}
             </td>
         </tr>`;
     });
 }
+
+/* GURU WALI */
+function getGuruWaliUsername(user){ return String(user?.username||'').trim().toLowerCase(); }
+function getGuruWaliStudents(user=getCurrentUser()){
+    if(!user || !isStaffUser(user)) return [];
+    if(isAdminUser(user)) return [...siswa];
+    const key=getGuruWaliUsername(user);
+    return siswa.filter(s=>String(s.guruWali||'').trim().toLowerCase()===key);
+}
+function populateGuruWaliKelasFilter(){
+    const el=document.getElementById('filterGuruWaliKelas'); if(!el)return;
+    const current=el.value; const list=[...new Set(getGuruWaliStudents().map(s=>String(s.kelas||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
+    el.innerHTML='<option value="">Semua Kelas</option>'+list.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join(''); if(list.includes(current))el.value=current;
+}
+function renderGuruWaliTable(){
+    const tb=document.getElementById('dataGuruWali'); if(!tb)return; const user=getCurrentUser();
+    if(!isStaffUser(user)){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-muted)">Akses ditolak.</td></tr>';return;}
+    populateGuruWaliKelasFilter(); const key=(document.getElementById('filterGuruWaliSiswa')?.value||'').trim().toLowerCase(); const kelas=document.getElementById('filterGuruWaliKelas')?.value||'';
+    const list=getGuruWaliStudents(user).filter(s=>(!kelas||s.kelas===kelas)&&(!key||[s.nama,s.nisn,s.kelas].some(v=>String(v||'').toLowerCase().includes(key))));
+    tb.innerHTML=list.length?list.map((s,i)=>{const idx=siswa.indexOf(s);return `<tr><td>${i+1}</td><td><b>${escapeHtml(s.nama||'-')}</b></td><td>${escapeHtml(s.nisn||'-')}</td><td>${escapeHtml(s.kelas||'-')}</td><td>${escapeHtml(s.jenisKelamin||'-')}</td><td>${escapeHtml(s.noHP||'-')}</td><td><button class="btn-account-edit" type="button" onclick="lihatBiodataGuruWali(${idx})">Lihat Biodata</button> <button class="btn-edit-student" type="button" onclick="bukaFormSiswa(${idx})">Edit</button></td></tr>`;}).join(''):'<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-muted)">Belum ada siswa yang dibimbing.</td></tr>';
+}
+function lihatBiodataGuruWali(index){
+    const user=getCurrentUser(), s=siswa[index]; if(!s||!isStaffUser(user))return;
+    if(isGuruUser(user)&&String(s.guruWali||'').trim().toLowerCase()!==getGuruWaliUsername(user)){alert('Siswa ini bukan siswa bimbingan Anda.');return;}
+    const photo=s.profilePhoto?`<img src="${s.profilePhoto}" alt="Pasfoto" style="width:110px;height:140px;object-fit:cover;border-radius:8px;border:2px solid #0e68c8;">`:'<div style="width:110px;height:140px;border:1px dashed #9fb5cf;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#70829d;font-size:12px;text-align:center;">Belum ada pasfoto</div>';
+    const body=document.getElementById('guruWaliBiodataBody'); if(!body)return;
+    body.innerHTML=`<div style="display:grid;grid-template-columns:140px 1fr;gap:20px;align-items:start;"><div>${photo}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;"><div><small>NAMA LENGKAP</small><strong>${escapeHtml(s.nama||'-')}</strong></div><div><small>NISN</small><strong>${escapeHtml(s.nisn||'-')}</strong></div><div><small>NIK</small><strong>${escapeHtml(s.nik||'-')}</strong></div><div><small>JENIS KELAMIN</small><strong>${escapeHtml(s.jenisKelamin||'-')}</strong></div><div><small>TEMPAT, TANGGAL LAHIR</small><strong>${escapeHtml([s.tempatLahir,s.tanggalLahir].filter(Boolean).join(', ')||'-')}</strong></div><div><small>KELAS</small><strong>${escapeHtml(s.kelas||'-')}</strong></div><div><small>ALAMAT</small><strong>${escapeHtml(s.alamat||'-')}</strong></div><div><small>NO. HP SISWA</small><strong>${escapeHtml(s.noHP||'-')}</strong></div><div><small>NAMA AYAH</small><strong>${escapeHtml(s.namaAyah||'-')}</strong></div><div><small>NAMA IBU</small><strong>${escapeHtml(s.namaIbu||'-')}</strong></div><div><small>NO. HP ORANG TUA</small><strong>${escapeHtml(s.noHPOrtu||'-')}</strong></div></div></div>`;
+    document.getElementById('modalGuruWaliBiodata').style.display='flex';
+}
+function tutupBiodataGuruWali(){const el=document.getElementById('modalGuruWaliBiodata');if(el)el.style.display='none';}
 
 /* MASTER DATA MAPEL DARI JADWAL
    Semua pilihan Mata Pelajaran pada modul terkait mengambil sumber dari Jadwal.
@@ -5221,5 +5488,14 @@ function updateData(){
 /* TANGGAL */
 formatToday();
 </script>
+
+<div class="modal-overlay" id="modalGuruWaliBiodata" style="display:none;">
+  <div class="modal-card" style="max-width:900px;width:calc(100% - 30px);">
+    <div class="modal-header"><h3>👨‍🎓 Biodata Siswa Bimbingan</h3><button class="modal-close" type="button" onclick="tutupBiodataGuruWali()">×</button></div>
+    <div id="guruWaliBiodataBody" style="padding:18px;"></div>
+    <div class="modal-footer"><button class="btn-primary" type="button" onclick="tutupBiodataGuruWali()">Tutup</button></div>
+  </div>
+</div>
+
 </body>
 </html>
