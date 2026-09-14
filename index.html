@@ -1628,8 +1628,23 @@ hr{border-color:#dbe4ee!important}
     font-weight:500!important;
 }
 #loginPage .visual-bottom .footer-author{
+    align-self:flex-end!important;
+    text-align:right!important;
     font-size:11px!important;
-    font-weight:600!important;
+    font-weight:500!important;
+    line-height:1.5!important;
+    padding:0!important;
+    margin-top:2px!important;
+    width:max-content!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    color:#fff!important;
+}
+#loginPage .visual-bottom .footer-author strong{
+    font-weight:800!important;
 }
 @media(max-width:700px){
     #loginPage .visual-bottom .footer-credit{max-width:calc(100vw - 42px)!important;white-space:normal!important;}
@@ -1681,7 +1696,7 @@ hr{border-color:#dbe4ee!important}
 
             <div class="visual-bottom">
                 <div class="footer-credit footer-copyright">© 2026 SMA Negeri 1 Ma'u • Sistem Administrasi Guru Digital</div>
-                <div class="footer-credit footer-author">Pembuat Aplikasi : SU@R GULO &amp; Fpsg-06</div>
+                <div class="footer-credit footer-author">developer :<br><strong>SU@R GULO</strong><br><strong>Fpsg-06</strong></div>
             </div>
         </section>
 
@@ -2063,7 +2078,10 @@ hr{border-color:#dbe4ee!important}
                         <h2>👨‍🎓 DATA SISWA SMAN 1 MA'U</h2>
                         <p class="page-subtitle">Admin dan Guru dapat mengelola data siswa sesuai hak akses.</p>
                     </div>
-                    <button class="btn-primary btn-add-student admin-only" onclick="bukaFormSiswa()">+ TAMBAH SISWA</button>
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
+                        <button class="btn-success" type="button" onclick="bukaHalamanUnduhBiodata()">📥 UNDUH BIODATA</button>
+                        <button class="btn-primary btn-add-student admin-only" onclick="bukaFormSiswa()">+ TAMBAH SISWA</button>
+                    </div>
                 </div>
 
                 <div class="student-filter-bar">
@@ -2079,6 +2097,7 @@ hr{border-color:#dbe4ee!important}
                             <tr>
                                 <th>No</th>
                                 <th>NISN</th>
+                                <th>No. KK</th>
                                 <th>Nama Lengkap</th>
                                 <th>Jenis Kelamin</th>
                                 <th>Kelas</th>
@@ -2165,6 +2184,11 @@ hr{border-color:#dbe4ee!important}
                             </div>
 
                             <div class="form-field">
+                                <label for="siswaNoKK">Nomor Kartu Keluarga (KK)</label>
+                                <input type="text" id="siswaNoKK" inputmode="numeric" maxlength="20" placeholder="Nomor Kartu Keluarga">
+                            </div>
+
+                            <div class="form-field">
                                 <label for="siswaGuruWali">Guru Wali</label>
                                 <select id="siswaGuruWali"><option value="">Belum ditentukan</option></select>
                                 <small>Siswa ini akan muncul pada daftar siswa bimbingan Guru Wali yang dipilih.</small>
@@ -2207,14 +2231,16 @@ hr{border-color:#dbe4ee!important}
                     <h2>👨‍🏫 GURU WALI</h2>
                     <p class="page-subtitle">Daftar siswa yang menjadi tanggung jawab Guru Wali.</p>
                 </div>
+                <button class="btn-success" type="button" onclick="bukaHalamanUnduhBiodata()">📥 UNDUH BIODATA</button>
             </div>
             <div class="student-filter-bar" style="margin-bottom:15px;">
-                <input type="text" id="filterGuruWaliSiswa" placeholder="🔎 Cari nama, NISN, atau kelas..." oninput="renderGuruWaliTable()">
+                <input type="text" id="filterGuruWaliSiswa" placeholder="🔎 Cari nama, NISN, NIK, atau kelas..." oninput="renderGuruWaliTable()">
                 <select id="filterGuruWaliKelas" onchange="renderGuruWaliTable()"><option value="">Semua Kelas</option></select>
+                <select id="filterGuruWaliGuru" onchange="renderGuruWaliTable()"><option value="">Semua Guru Wali</option></select>
             </div>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>No</th><th>Nama Siswa</th><th>NISN</th><th>Kelas</th><th>Jenis Kelamin</th><th>No. HP</th><th>Aksi</th></tr></thead>
+                    <thead><tr><th>No</th><th>Nama Siswa</th><th>NISN</th><th>No. KK</th><th>Kelas</th><th>Guru Wali</th><th>Jenis Kelamin</th><th>No. HP</th><th>Aksi</th></tr></thead>
                     <tbody id="dataGuruWali"></tbody>
                 </table>
             </div>
@@ -2231,9 +2257,10 @@ hr{border-color:#dbe4ee!important}
             </div>
 
             <div id="absensiSiswaMenu" style="display:none;">
-                <div class="quick-actions-list" style="margin-top:10px;">
-                    <div class="action-btn" onclick="bukaHalamanAbsensiKamera()"><span>📸</span><p>Absensi Kamera / Webcam</p></div>
-                    <div class="action-btn" onclick="bukaHalamanAbsensiManual()"><span>📝</span><p>Absensi Manual</p></div>
+                <div class="student-form-card">
+                    <h3 style="margin-bottom:6px;">📋 Absensi Aktif</h3>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Hanya form absensi yang sudah dibuat dan diaktifkan Guru untuk kelas Anda yang akan muncul.</p>
+                    <div id="daftarSesiAbsensiSiswa"></div>
                 </div>
             </div>
 
@@ -2286,18 +2313,25 @@ hr{border-color:#dbe4ee!important}
             <div id="absensiStaffView" style="display:none;">
                 <div class="student-form-card">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
-                        <div><strong>📝 Input Absensi Siswa</strong><div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Pilih status setiap siswa, lalu simpan sekaligus.</div></div>
-                        <button class="btn-success" type="button" onclick="simpanAbsensiKelasStaff()">💾 Simpan Absensi Kelas</button>
+                        <div><strong>📝 Buat Form Absensi</strong><div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Guru membuat sesi terlebih dahulu. Siswa baru dapat absen setelah sesi aktif.</div></div>
+                        <button class="btn-success" type="button" onclick="buatSesiAbsensi()">＋ Buat & Aktifkan</button>
                     </div>
                     <div class="form-grid-4">
-                        <div class="form-field"><label>Kelas</label><select id="staffAbsensiKelas" onchange="populateStaffAbsensiMapel();renderAbsensiStaff()"></select></div>
-                        <div class="form-field"><label>Mata Pelajaran</label><select id="staffAbsensiMapel" onchange="renderAbsensiStaff()"></select></div>
-                        <div class="form-field"><label>Tanggal</label><input type="date" id="staffAbsensiTanggal" onchange="renderAbsensiStaff()"></div>
-                        <div class="form-field"><label>Pertemuan</label><select id="staffAbsensiPertemuan" onchange="renderAbsensiStaff()"></select></div>
+                        <div class="form-field"><label>Kelas</label><select id="staffAbsensiKelas" onchange="populateStaffAbsensiMapel()"></select></div>
+                        <div class="form-field"><label>Mata Pelajaran</label><select id="staffAbsensiMapel"></select></div>
+                        <div class="form-field"><label>Pertemuan</label><select id="staffAbsensiPertemuan"></select></div>
+                        <div class="form-field"><label>Tanggal</label><input type="date" id="staffAbsensiTanggal"></div>
+                        <div class="form-field"><label>Jam Mulai</label><input type="time" id="staffAbsensiJamMulai" value="07:00"></div>
+                        <div class="form-field"><label>Jam Selesai</label><input type="time" id="staffAbsensiJamSelesai" value="23:00"></div>
+                        <div class="form-field" style="grid-column:1/-1;"><label>Keterangan</label><input id="staffAbsensiKeterangan" placeholder="Contoh: Pertemuan materi gelombang"></div>
                     </div>
                 </div>
-                <h3 style="margin-top:25px;font-size:16px;">Rekapitulasi Presensi</h3>
-                <table><thead><tr><th>No</th><th>NISN</th><th>Nama</th><th>Kelas</th><th>Mata Pelajaran</th><th>Status Absensi</th><th>Waktu</th><th>Aksi</th></tr></thead><tbody id="dataAbsensi"></tbody></table>
+                <div class="student-form-card" style="margin-top:18px;">
+                    <div style="margin-bottom:12px;"><strong>📋 Form Absensi yang Dibuat</strong><div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Kelola sesi dan lihat siswa yang sudah mengisi.</div></div>
+                    <div id="daftarSesiAbsensiGuru"></div>
+                </div>
+                <h3 style="margin-top:25px;font-size:16px;">Rekapitulasi Presensi Sesi</h3>
+                <table><thead><tr><th>No</th><th>NISN</th><th>Nama</th><th>Kelas</th><th>Mata Pelajaran</th><th>Pertemuan</th><th>Status</th><th>Waktu</th><th>Aksi</th></tr></thead><tbody id="dataAbsensi"></tbody></table>
             </div>
 
             <div id="absensiSiswaRiwayat" style="display:none;margin-top:25px;">
@@ -2605,6 +2639,57 @@ hr{border-color:#dbe4ee!important}
             </div>
         </div>
 
+        <!-- HALAMAN UNDUH BIODATA SISWA -->
+        <div class="content" id="unduhBiodata">
+            <div class="page-title-row">
+                <div>
+                    <h2>📥 UNDUH BIODATA SISWA</h2>
+                    <p class="page-subtitle">Pilih jenis biodata dan filter data sebelum mengunduh PDF atau Excel.</p>
+                </div>
+                <button class="btn-back" type="button" onclick="kembaliDariUnduhBiodata()">⬅ Kembali</button>
+            </div>
+
+            <div class="student-form-card">
+                <div id="unduhBiodataStudentOnly" style="display:none;">
+                    <div style="padding:14px 16px;background:rgba(15,23,42,.72);border:1px solid var(--border-color);border-radius:12px;line-height:1.7;">
+                        <b>Mode Siswa</b><br>
+                        Anda hanya dapat mengunduh biodata milik sendiri.
+                    </div>
+                </div>
+
+                <div id="unduhBiodataStaff" style="display:none;">
+                    <div class="form-field">
+                        <label>Jenis Unduhan <span style="color:#f87171">*</span></label>
+                        <select id="downloadBiodataMode" onchange="ubahModeUnduhBiodata()">
+                            <option value="individu">Biodata Individu Siswa</option>
+                            <option value="semua">Rekap Seluruh Siswa</option>
+                        </select>
+                    </div>
+
+                    <div id="downloadBiodataIndividu" style="margin-top:15px;">
+                        <div class="form-grid-2">
+                            <div class="form-field"><label>Filter Kelas</label><select id="downloadBiodataKelas" onchange="populateDownloadBiodataSiswa()"><option value="">Semua Kelas</option></select></div>
+                            <div class="form-field"><label>Nama Siswa <span style="color:#f87171">*</span></label><select id="downloadBiodataSiswa" onchange="renderPreviewUnduhBiodata()"><option value="">Pilih siswa</option></select></div>
+                        </div>
+                    </div>
+
+                    <div id="downloadBiodataSemua" style="display:none;margin-top:15px;">
+                        <div class="form-grid-2">
+                            <div class="form-field"><label>Filter Guru Wali <span style="color:#f87171">*</span></label><select id="downloadBiodataGuruWali" onchange="renderPreviewUnduhBiodata()"><option value="">Pilih Guru Wali</option></select></div>
+                            <div class="form-field"><label>Filter Kelas</label><select id="downloadBiodataKelasSemua" onchange="renderPreviewUnduhBiodata()"><option value="">Semua Kelas</option></select></div>
+                        </div>
+                        <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">Untuk rekap seluruh siswa, pilih Guru Wali terlebih dahulu. Admin dapat memilih semua Guru Wali, sedangkan Guru hanya dapat memilih data bimbingannya sendiri.</div>
+                    </div>
+                </div>
+
+                <div id="previewUnduhBiodata" style="margin-top:18px;"></div>
+                <div class="student-form-actions">
+                    <button class="btn-success" type="button" onclick="downloadBiodataExcel()">📊 Unduh Excel</button>
+                    <button class="btn-primary" type="button" style="width:auto;min-width:170px;" onclick="downloadBiodataPDF()">📄 Unduh PDF</button>
+                </div>
+            </div>
+        </div>
+
         <!-- HALAMAN UNDUH AKUN -->
         <div class="content" id="unduhAkun">
             <div class="page-title-row">
@@ -2742,6 +2827,7 @@ hr{border-color:#dbe4ee!important}
                         <div class="account-field"><label for="selfTempatLahir">Tempat Lahir <span>*</span></label><input id="selfTempatLahir" type="text" placeholder="Tempat lahir"></div>
                         <div class="account-field"><label for="selfTanggalLahir">Tanggal Lahir <span>*</span></label><input id="selfTanggalLahir" type="date"></div>
                         <div class="account-field"><label for="selfNIK">NIK <span>*</span></label><input id="selfNIK" type="text" inputmode="numeric" maxlength="20" placeholder="Nomor Induk Kependudukan"></div>
+                        <div class="account-field"><label for="selfNoKK">Nomor Kartu Keluarga (KK) <span>*</span></label><input id="selfNoKK" type="text" inputmode="numeric" maxlength="20" placeholder="Nomor Kartu Keluarga"></div>
                         <div class="account-field"><label for="selfAlamat">Alamat Lengkap <span>*</span></label><textarea id="selfAlamat" rows="4" placeholder="Alamat lengkap"></textarea></div>
                         <div class="account-field"><label for="selfNoHP">No. HP <span>*</span></label><input id="selfNoHP" type="tel" inputmode="tel" placeholder="081234567890"></div>
                     </div>
@@ -2749,13 +2835,17 @@ hr{border-color:#dbe4ee!important}
                         <div class="account-field"><label for="selfNamaAyah">Nama Ayah <span>*</span></label><input id="selfNamaAyah" type="text" placeholder="Nama Ayah"></div>
                         <div class="account-field"><label for="selfNamaIbu">Nama Ibu <span>*</span></label><input id="selfNamaIbu" type="text" placeholder="Nama Ibu"></div>
                         <div class="account-field"><label for="selfHPOrtu">No. HP Orang Tua <span>*</span></label><input id="selfHPOrtu" type="tel" inputmode="tel" placeholder="Nomor HP Ayah / Ibu"></div>
-                        <div class="account-field"><label for="selfGuruWali">Guru Wali</label><input id="selfGuruWali" type="text" readonly placeholder="Diisi oleh Admin/Guru"></div>
+                        <div class="account-field"><label for="selfGuruWali">Guru Wali <small style="font-weight:400;color:var(--text-muted);">(opsional)</small></label><select id="selfGuruWali" onchange="toggleSelfGuruWaliLainnya()"><option value="">Tidak memilih</option></select><small>Pilih Guru Wali dari daftar. Jika tidak ada, pilih <b>Guru lainnya</b> dan isi nama guru sendiri.</small></div>
+                        <div class="account-field" id="selfGuruWaliLainnyaWrap" style="display:none;"><label for="selfGuruWaliLainnya">Nama Guru Lainnya</label><input id="selfGuruWaliLainnya" type="text" placeholder="Nama guru yang belum ada di daftar" oninput="this.value=this.value.toUpperCase()"><small>Pengisian ini bersifat opsional.</small></div>
                         <div class="account-field"><label>Pasfoto</label><small>Gunakan Foto Profil di atas sebagai pasfoto siswa. Foto akan tersimpan di biodata Firebase.</small></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="account-form-actions"><button class="btn-primary btn-account-save" type="button" onclick="simpanAkunSaya()">Simpan Perubahan</button></div>
+        <div class="account-form-actions">
+            <button class="btn-success" type="button" onclick="bukaHalamanUnduhBiodata()">📥 Unduh Biodata Saya</button>
+            <button class="btn-primary btn-account-save" type="button" onclick="simpanAkunSaya()">Simpan Perubahan</button>
+        </div>
     </div>
 </div>
 
@@ -2989,7 +3079,7 @@ let firebaseApp=null, firebaseAuth=null, firebaseDb=null, firebaseReady=false;
 let firebaseSyncing=false, firebaseListenersStarted=false;
 const FIREBASE_COLLECTIONS=[
   "users","siswa","jadwal","absensi","materi","nilai","nilaiHarian","nilaiTugas",
-  "komponenTambahan","pengumuman","tugas","pengumpulanTugas"
+  "komponenTambahan","pengumuman","tugas","pengumpulanTugas","absensiSesi"
 ];
 
 function cloneData(v){ try{return JSON.parse(JSON.stringify(v??{}));}catch(e){return {};}}
@@ -3037,6 +3127,7 @@ function applyFirebaseCollection(name,data){
     if(name==='pengumuman') pengumuman=clean;
     if(name==='tugas') tugas=clean;
     if(name==='pengumpulanTugas') pengumpulanTugas=clean;
+    if(name==='absensiSesi') absensiSesi=clean;
   }finally{firebaseSyncing=false;}
   if(typeof updateData==='function') updateData();
 }
@@ -3101,6 +3192,7 @@ let komponenTambahan=[];
 let pengumuman=[];
 let tugas=[];
 let pengumpulanTugas=[];
+let absensiSesi=[];
 initFirebaseBackend();
 
 let pendingDeletePengumumanIndex = -1;
@@ -3191,7 +3283,24 @@ function updateProfileAvatar(user=getCurrentUser()){const el=document.getElement
 
 
 function getScheduleTeacher(j){
-    return j.guru || j.namaGuru || j.pengajar || j.teacher || '';
+    return j.guru || j.namaGuru || j.pengajar || j.teacher || j.guruPengajar || j['Guru Pengajar'] || '';
+}
+function normalizeTeacherName(value){
+    let n=String(value||'').trim().toLowerCase().replace(/\s+/g,' ');
+    n=n.replace(/,?\s*(s\.pd\.?|s\.si\.?|s\.kom\.?|s\.t\.?|s\.e\.?|m\.pd\.?|m\.si\.?|m\.kom\.?|m\.t\.?|m\.e\.?|gr\.?|dr\.?|dra\.?|ir\.?)\s*$/gi,'').trim();
+    return n;
+}
+function isScheduleForGuru(schedule,user){
+    if(!user)return false;
+    const raw=String(getScheduleTeacher(schedule)||'').trim();
+    if(!raw)return false;
+    const targetName=normalizeTeacherName(user.nama);
+    const scheduleName=normalizeTeacherName(raw);
+    if(scheduleName===targetName)return true;
+    if(normalizeName(raw)===normalizeName(user.username))return true;
+    if(user.nipNis&&normalizeName(raw)===normalizeName(user.nipNis))return true;
+    const matched=users.find(u=>u.role==='guru'&&(normalizeName(u.nama)===normalizeName(raw)||normalizeTeacherName(u.nama)===scheduleName||normalizeName(u.username)===normalizeName(raw)||String(u.nipNis||'')===raw));
+    return !!matched && (normalizeName(matched.username)===normalizeName(user.username)||normalizeTeacherName(matched.nama)===targetName);
 }
 
 function populateDashboardAdminFilters(){
@@ -3243,11 +3352,10 @@ function renderDashboardJadwal(){
     const kelasFilter = user.role === 'admin' ? (document.getElementById('dashboardFilterKelas')?.value || '') : '';
     const guruFilter = user.role === 'admin' ? (document.getElementById('dashboardFilterGuru')?.value || '') : '';
 
-    let filtered = jadwal.filter(j => String(j.hari||'').toLowerCase() === today.toLowerCase());
+    let filtered = jadwal.filter(j => normalizeName(j.hari) === normalizeName(today));
 
     if(user.role === 'guru'){
-        const loggedName = normalizeName(user.nama);
-        filtered = filtered.filter(j => normalizeName(getScheduleTeacher(j)) === loggedName);
+        filtered = filtered.filter(j => isScheduleForGuru(j,user));
         contextEl.innerHTML = `👨‍🏫 <b>${escapeHtml(user.nama)}</b> · Jadwal mengajar saya hari ini`;
     } else if(user.role === 'admin'){
         if(kelasFilter) filtered = filtered.filter(j => String(j.kelas||'') === kelasFilter);
@@ -3440,6 +3548,7 @@ function openDashboard(resetHistory=true){
     document.querySelectorAll('.account-download-access').forEach(el=>el.style.display=(isAdminUser(user)||isGuruUser(user))?'inline-flex':'none');
     document.querySelectorAll('.account-manager-only').forEach(el=>el.style.display=canManageStudentAccounts(user)?'block':'none');
     document.querySelectorAll('.student-only').forEach(el=>el.style.display=isSiswaUser(user)?'block':'none');
+    if(document.getElementById('guruWali')?.classList.contains('active')) renderGuruWaliTable();
     document.querySelectorAll('.admin-only.btn-success,.admin-only.form-box').forEach(el=>el.style.display=isAdminUser(user)?'':'none');
 
     formatToday();
@@ -3465,6 +3574,7 @@ function showContent(id, fromHistory=false){
     const user=getCurrentUser();
     if(id === 'pengumuman' && !user){ alert('Silakan login terlebih dahulu.'); return; }
     if(id === 'unduhAbsensi' && !isStaffUser(user)){ alert('Akses ditolak. Hanya Guru atau Admin yang dapat mengunduh rekap presensi.'); return; }
+    if(id === 'unduhBiodata' && !user){ alert('Silakan login terlebih dahulu.'); return; }
     if(id === 'unduhAkun' && !(isAdminUser(user)||isGuruUser(user))){ alert('Akses ditolak.'); return; }
     if(id === 'kelolaAkun' && !canManageStudentAccounts(user)){ alert('Akses ditolak.'); return; }
     if(id === 'siswa' && !(isAdminUser(user)||isGuruUser(user))){ alert('Akses ditolak. Data Siswa hanya dapat diakses Admin atau Guru.'); return; }
@@ -3478,6 +3588,7 @@ function showContent(id, fromHistory=false){
     if(id === 'materi' && typeof bukaDaftarMateri === 'function'){ bukaDaftarMateri(); }
     if(id === 'absensi' && typeof initAbsensiPage === 'function'){ initAbsensiPage(); }
     if(id === 'nilaiHarian' && typeof initNilaiHarianPage === 'function'){ initNilaiHarianPage(); }
+    if(id === 'unduhBiodata' && typeof renderPreviewUnduhBiodata === 'function'){ renderPreviewUnduhBiodata(); }
     if(id === 'nilaiTugas' && typeof initNilaiTugasPage === 'function'){ initNilaiTugasPage(); }
 
     document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
@@ -3560,7 +3671,7 @@ function ubahRoleAkun(){
 }
 function togglePasswordAkun(){ const input=document.getElementById('accPass'); if(input) input.type=input.type==='password'?'text':'password'; }
 function usernameAkunSudahDipakai(username,ignoreIndex=-1){ return users.some((u,i)=>i!==Number(ignoreIndex)&&String(u.username||'').trim().toLowerCase()===String(username||'').trim().toLowerCase()); }
-function simpanAkun(){const actor=getCurrentUser();if(!canManageStudentAccounts(actor)){alert('Akses ditolak.');return;}const index=Number(document.getElementById('editIndex').value),nama=document.getElementById('accNama').value.trim().toUpperCase(),username=document.getElementById('accUser').value.trim().toLowerCase(),password=document.getElementById('accPass').value,nipNis=document.getElementById('accNipNis').value.trim(),gelar=document.getElementById('accGelar').value.trim(),kelas=document.getElementById('accKelas').value,role=isAdminUser(actor)?document.getElementById('accRole').value:'siswa',gender=document.querySelector('input[name="accGender"]:checked')?.value||'',status=document.querySelector('input[name="accStatus"]:checked')?.value||'aktif';if(!nama||!username||!role||(index===-1&&!password)){alert('Lengkapi data wajib.');return;}if(!namaLengkapValid(nama)){alert('Nama harus nama lengkap dan menggunakan huruf kapital.');return;}if(!usernameValid(username)){alert('Username harus menggunakan huruf kecil.');return;}if((index===-1&& !passwordAman(password))||(index>=0&&password&&!passwordAman(password))){alert('Password wajib mengandung huruf, angka, dan minimal 1 huruf kapital.');return;}if(users.some((u,i)=>i!==index&&String(u.username||'').trim().toLowerCase()===username)){alert('Username sudah digunakan.');return;}if(index>=0&&!users[index]){alert('Data akun tidak ditemukan.');return;}if(isGuruUser(actor)&&index>=0&&users[index].role!=='siswa'){alert('Guru hanya dapat mengedit akun Siswa.');return;}if(isGuruUser(actor)&&role!=='siswa'){alert('Guru tidak dapat membuat atau mengubah role selain Siswa.');return;}if(index>=0&&users[index].role==='admin'&&role!=='admin'){alert('Akun Admin tidak boleh diturunkan role-nya.');return;}if(index===-1){users.push({nama,username,password,role,kelas:role==='siswa'?(kelas||''):'-',status,jenisKelamin:gender,nipNis,gelar:role==='guru'?(gelar||''):'',profilePhoto:''});if(role==='siswa'&&!siswa.some(st=>normalizeName(st.nama)===normalizeName(nama)))siswa.push({nama,kelas:kelas||'',jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',nik:'',namaAyah:'',namaIbu:'',noHPOrtu:'',guruWali:'',profilePhoto:''});alert('Akun berhasil dibuat.');}else{const old=users[index];users[index]={...old,nama,username,password:password||old.password,role,kelas:role==='siswa'?(kelas||''):'-',status,jenisKelamin:gender,nipNis,gelar:role==='guru'?(gelar||''):'',profilePhoto:old.profilePhoto||''};if(role==='siswa'){let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(old.nama));if(st){st.nama=nama;st.kelas=kelas||st.kelas;st.nisn=nipNis||st.nisn;st.jenisKelamin=gender||st.jenisKelamin;}else siswa.push({nama,kelas:kelas||'',jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',profilePhoto:old.profilePhoto||''});}const current=getCurrentUser();if(current&&current.username===old.username)localStorage.setItem('loginUser',JSON.stringify(users[index]));alert('Akun berhasil diperbarui.');}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));kembaliKeDaftarAkun();updateData();}
+function simpanAkun(){const actor=getCurrentUser();if(!canManageStudentAccounts(actor)){alert('Akses ditolak.');return;}const index=Number(document.getElementById('editIndex').value),nama=document.getElementById('accNama').value.trim().toUpperCase(),username=document.getElementById('accUser').value.trim().toLowerCase(),password=document.getElementById('accPass').value,nipNis=document.getElementById('accNipNis').value.trim(),gelar=document.getElementById('accGelar').value.trim(),kelas=document.getElementById('accKelas').value,role=isAdminUser(actor)?document.getElementById('accRole').value:'siswa',gender=document.querySelector('input[name="accGender"]:checked')?.value||'',status=document.querySelector('input[name="accStatus"]:checked')?.value||'aktif';if(!nama||!username||!role||(index===-1&&!password)){alert('Lengkapi data wajib.');return;}if(!namaLengkapValid(nama)){alert('Nama harus nama lengkap dan menggunakan huruf kapital.');return;}if(!usernameValid(username)){alert('Username harus menggunakan huruf kecil.');return;}if((index===-1&& !passwordAman(password))||(index>=0&&password&&!passwordAman(password))){alert('Password wajib mengandung huruf, angka, dan minimal 1 huruf kapital.');return;}if(users.some((u,i)=>i!==index&&String(u.username||'').trim().toLowerCase()===username)){alert('Username sudah digunakan.');return;}if(index>=0&&!users[index]){alert('Data akun tidak ditemukan.');return;}if(isGuruUser(actor)&&index>=0&&users[index].role!=='siswa'){alert('Guru hanya dapat mengedit akun Siswa.');return;}if(isGuruUser(actor)&&role!=='siswa'){alert('Guru tidak dapat membuat atau mengubah role selain Siswa.');return;}if(index>=0&&users[index].role==='admin'&&role!=='admin'){alert('Akun Admin tidak boleh diturunkan role-nya.');return;}if(index===-1){users.push({nama,username,password,role,kelas:role==='siswa'?(kelas||''):'-',status,jenisKelamin:gender,nipNis,gelar:role==='guru'?(gelar||''):'',profilePhoto:''});if(role==='siswa'&&!siswa.some(st=>normalizeName(st.nama)===normalizeName(nama)))siswa.push({nama,kelas:kelas||'',jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',nik:'',noKK:'',namaAyah:'',namaIbu:'',noHPOrtu:'',guruWali:'',profilePhoto:''});alert('Akun berhasil dibuat.');}else{const old=users[index];users[index]={...old,nama,username,password:password||old.password,role,kelas:role==='siswa'?(kelas||''):'-',status,jenisKelamin:gender,nipNis,gelar:role==='guru'?(gelar||''):'',profilePhoto:old.profilePhoto||''};if(role==='siswa'){let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(old.nama));if(st){st.nama=nama;st.kelas=kelas||st.kelas;st.nisn=nipNis||st.nisn;st.jenisKelamin=gender||st.jenisKelamin;}else siswa.push({nama,kelas:kelas||'',jenisKelamin:gender,nisn:nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',profilePhoto:old.profilePhoto||''});}const current=getCurrentUser();if(current&&current.username===old.username)localStorage.setItem('loginUser',JSON.stringify(users[index]));alert('Akun berhasil diperbarui.');}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));kembaliKeDaftarAkun();updateData();}
 
 function editAkun(index){
     const actor=getCurrentUser(), u=users[index]; if(!u)return;
@@ -3601,7 +3712,7 @@ async function konfirmasiHapusAkun(){
     tutupModalHapusAkun(); alert('Akun '+deleted.nama+' berhasil dihapus.'); updateAkunTable(); updateData();
 }
 function updateAkunTable(){const table=document.getElementById('dataAkun');if(!table)return;const keyword=(document.getElementById('filterAkun')?.value||'').trim().toLowerCase(),roleFilter=document.getElementById('filterRoleAkun')?.value||'',actor=getCurrentUser(),visibleUsers=isGuruUser(actor)?users.filter(u=>u.role==='siswa'):users,effectiveRoleFilter=isGuruUser(actor)?'siswa':roleFilter,filtered=visibleUsers.filter(u=>{const text=[u.nama,u.username,u.nipNis,u.nis].map(v=>String(v||'').toLowerCase()).join(' ');return(!keyword||text.includes(keyword))&&(!effectiveRoleFilter||u.role===effectiveRoleFilter);});table.innerHTML='';if(!filtered.length)table.innerHTML='<tr><td colspan="9" class="account-empty">Tidak ada akun yang sesuai dengan pencarian.</td></tr>';else filtered.forEach(u=>{const i=users.indexOf(u),roleLabel=u.role==='admin'?'Admin':u.role==='guru'?'Guru':'Siswa',roleClass=u.role==='admin'?'account-role-admin':u.role==='guru'?'account-role-guru':'account-role-siswa',status=u.status||'aktif',statusLabel=status==='menunggu'?'Menunggu Persetujuan':status==='aktif'?'Aktif':'Nonaktif',statusClass=status==='menunggu'?'account-status-pending':status==='aktif'?'account-status-active':'account-status-inactive',nipnis=u.nipNis||u.nis||'-',initial=String(u.nama||'?').trim().charAt(0).toUpperCase(),photo=u.profilePhoto||siswa.find(st=>normalizeName(st.nama)===normalizeName(u.nama))?.profilePhoto||'',canEdit=isAdminUser(actor)||(isGuruUser(actor)&&u.role==='siswa'),canDelete=(isAdminUser(actor)&&u.role!=='admin')||(isGuruUser(actor)&&u.role==='siswa');let actions='';if(canEdit)actions+=`<button class="btn-account-edit" type="button" onclick="bukaFormAkun(${i})">Edit</button>`;if((isAdminUser(actor)||isGuruUser(actor))&&u.role==='siswa'&&status==='menunggu')actions+=`<button class="btn-success" type="button" onclick="setujuiAkunSiswa(${i})">Setujui</button>`;if(canDelete)actions+=`<button class="btn-danger" type="button" onclick="bukaModalHapusAkun(${i})">Hapus</button>`;const avatar=photo?`<img src="${photo}" alt="Foto" style="width:34px;height:34px;border-radius:50%;object-fit:cover;">`:initial;table.innerHTML+=`<tr><td>${i+1}</td><td><div class="account-name-cell"><div class="account-avatar">${avatar}</div><div class="account-meta"><strong>${escapeHtmlAkun(u.nama||'-')}</strong><small>${roleLabel}</small></div></div></td><td>${escapeHtmlAkun(u.gelar||'-')}</td><td>${escapeHtmlAkun(u.username||'-')}</td><td>${escapeHtmlAkun(nipnis)}</td><td><span class="account-role-badge ${roleClass}">${roleLabel}</span></td><td>${escapeHtmlAkun(u.kelas||'-')}</td><td><span class="account-status-badge ${statusClass}">${statusLabel}</span></td><td><div class="account-actions">${actions||'<span style="color:var(--text-muted);font-size:12px;">Terbatas</span>'}</div></td></tr>`;});const count=document.getElementById('countAkun');if(count)count.textContent=`Menampilkan ${filtered.length} dari ${users.length} akun`;}
-function setujuiAkunSiswa(index){const actor=getCurrentUser();if(!(isAdminUser(actor)||isGuruUser(actor))){alert('Akses ditolak.');return;}const u=users[index];if(!u||u.role!=='siswa'||u.status!=='menunggu')return;u.status='aktif';let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(u.nama));if(!st){st={nama:u.nama,kelas:'',jenisKelamin:'',nisn:u.nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',nik:'',namaAyah:'',namaIbu:'',noHPOrtu:'',guruWali:'',profilePhoto:u.profilePhoto||''};siswa.push(st);}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));updateAkunTable();alert(`Akun siswa ${u.nama} berhasil disetujui. Siswa sekarang dapat login dan melengkapi Data Saya.`);}
+function setujuiAkunSiswa(index){const actor=getCurrentUser();if(!(isAdminUser(actor)||isGuruUser(actor))){alert('Akses ditolak.');return;}const u=users[index];if(!u||u.role!=='siswa'||u.status!=='menunggu')return;u.status='aktif';let st=siswa.find(x=>normalizeName(x.nama)===normalizeName(u.nama));if(!st){st={nama:u.nama,kelas:'',jenisKelamin:'',nisn:u.nipNis||'',tempatLahir:'',tanggalLahir:'',alamat:'',noHP:'',nik:'',noKK:'',namaAyah:'',namaIbu:'',noHPOrtu:'',guruWali:'',profilePhoto:u.profilePhoto||''};siswa.push(st);}localStorage.setItem('users',JSON.stringify(users));localStorage.setItem('siswa',JSON.stringify(siswa));updateAkunTable();alert(`Akun siswa ${u.nama} berhasil disetujui. Siswa sekarang dapat login dan melengkapi Data Saya.`);}
 
 function escapeHtmlAkun(value){ return String(value).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
 
@@ -3611,46 +3722,225 @@ function renderAkunSaya(){
     const st=getStudentProfileRecord(user);
     const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??''};
     set('selfNama',user.nama);set('selfUsername',user.username);set('selfGelar',user.gelar||'');set('selfNis',user.nipNis||user.nis||st?.nisn||'');
-    set('selfTempatLahir',st?.tempatLahir||'');set('selfTanggalLahir',st?.tanggalLahir||'');set('selfNIK',st?.nik||'');set('selfAlamat',st?.alamat||'');set('selfNoHP',st?.noHP||'');set('selfNamaAyah',st?.namaAyah||'');set('selfNamaIbu',st?.namaIbu||'');set('selfHPOrtu',st?.noHPOrtu||'');
+    set('selfTempatLahir',st?.tempatLahir||'');set('selfTanggalLahir',st?.tanggalLahir||'');set('selfNIK',st?.nik||'');set('selfNoKK',st?.noKK||'');set('selfAlamat',st?.alamat||'');set('selfNoHP',st?.noHP||'');set('selfNamaAyah',st?.namaAyah||'');set('selfNamaIbu',st?.namaIbu||'');set('selfHPOrtu',st?.noHPOrtu||'');
     const title=document.getElementById('selfDataSectionTitle'),subtitle=document.getElementById('selfAccountSubtitle'),nisLabel=document.getElementById('selfNisLabel'),kelasWrap=document.getElementById('selfKelasWrap'),biodata=document.getElementById('selfStudentBiodata'),guruWali=document.getElementById('selfGuruWali');
     if(isGuruUser(user)){
         const gw=document.getElementById('selfGelarWrap');if(gw)gw.style.display='block';if(title)title.textContent='🎓 DATA GURU';if(subtitle)subtitle.textContent='Perbarui data akun Guru Anda sendiri.';if(nisLabel)nisLabel.textContent='NIP';if(kelasWrap)kelasWrap.style.display='none';if(biodata)biodata.style.display='none';
     }else{
-        const gw=document.getElementById('selfGelarWrap');if(gw)gw.style.display='none';if(title)title.textContent='🎓 DATA SISWA';if(subtitle)subtitle.textContent=isStudentProfileComplete(user)?'Lengkapi dan perbarui data akun Anda sendiri.':'⚠️ Lengkapi seluruh biodata Anda terlebih dahulu sebelum menggunakan fitur sistem.';if(nisLabel)nisLabel.textContent='NISN';if(kelasWrap)kelasWrap.style.display='block';if(biodata)biodata.style.display='block';populateSelfKelas(st?.kelas||user.kelas||'');if(guruWali)guruWali.value=st?.guruWali||'Belum ditentukan';
+        const gw=document.getElementById('selfGelarWrap');if(gw)gw.style.display='none';if(title)title.textContent='🎓 DATA SISWA';if(subtitle)subtitle.textContent=isStudentProfileComplete(user)?'Lengkapi dan perbarui data akun Anda sendiri.':'⚠️ Lengkapi seluruh biodata Anda terlebih dahulu sebelum menggunakan fitur sistem.';if(nisLabel)nisLabel.textContent='NISN';if(kelasWrap)kelasWrap.style.display='block';if(biodata)biodata.style.display='block';populateSelfKelas(st?.kelas||user.kelas||'');populateSelfGuruWali(st?.guruWali||'',st?.guruWaliManual||'');
     }
     document.querySelectorAll('input[name="selfGender"]').forEach(r=>r.checked=r.value===(st?.jenisKelamin||user.jenisKelamin||''));
     set('selfPassword','');window.pendingSelfProfilePhoto='';const photo=st?.profilePhoto||user.profilePhoto||'',box=document.getElementById('selfPhotoPreview');if(box)box.innerHTML=photo?`<img src="${photo}" alt="Foto profil" style="width:90px;height:90px;object-fit:cover;border-radius:50%;border:3px solid var(--accent-color);">`:'';
 }
+function populateSelfGuruWali(selected='',manual=''){
+    const el=document.getElementById('selfGuruWali'), wrap=document.getElementById('selfGuruWaliLainnyaWrap'), input=document.getElementById('selfGuruWaliLainnya');
+    if(!el)return;
+    const current=selected||el.value||'';
+    const list=users.filter(u=>u.role==='guru'&&(u.status||'aktif')==='aktif').sort((a,b)=>String(a.nama||'').localeCompare(String(b.nama||''),'id'));
+    el.innerHTML='<option value="">Tidak memilih</option>'+list.map(u=>`<option value="${escapeHtml(u.username||'')}">${escapeHtml((u.nama||'-')+(u.gelar?', '+u.gelar:''))}</option>`).join('')+'<option value="__lainnya__">Guru lainnya</option>';
+    if(current==='__lainnya__' || manual){el.value='__lainnya__';if(wrap)wrap.style.display='block';if(input)input.value=manual||'';}else{el.value=current||'';if(wrap)wrap.style.display='none';if(input)input.value='';}
+}
+function toggleSelfGuruWaliLainnya(){
+    const el=document.getElementById('selfGuruWali'),wrap=document.getElementById('selfGuruWaliLainnyaWrap'),input=document.getElementById('selfGuruWaliLainnya');
+    const other=el?.value==='__lainnya__'; if(wrap)wrap.style.display=other?'block':'none'; if(!other&&input)input.value='';
+}
+function getGuruWaliDisplayName(s){
+    if(!s)return '-';
+    const u=users.find(x=>x.role==='guru'&&String(x.username||'').trim().toLowerCase()===String(s.guruWali||'').trim().toLowerCase());
+    if(u)return (u.nama||'-')+(u.gelar?', '+u.gelar:'');
+    return s.guruWaliManual||s.guruWali||'-';
+}
+
 function populateSelfKelas(selected=''){const el=document.getElementById('selfKelas');if(!el)return;const list=getKelasTerdaftarDariJadwal();el.innerHTML='<option value="">Pilih kelas</option>'+list.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');el.value=selected||'';}
 function toggleSelfPassword(){const el=document.getElementById('selfPassword');if(el)el.type=el.type==='password'?'text':'password';}
 async function simpanAkunSaya(){
     const actor=getCurrentUser();
     if(!actor||!(isSiswaUser(actor)||isGuruUser(actor))){alert('Akses ditolak.');return;}
-    const idx=users.findIndex(u=>String(u.username||'')===String(actor.username||''));
-    if(idx<0){alert('Akun tidak ditemukan.');return;}
-    const nama=document.getElementById('selfNama').value.trim().toUpperCase(),gelar=document.getElementById('selfGelar').value.trim(),username=document.getElementById('selfUsername').value.trim().toLowerCase(),password=document.getElementById('selfPassword').value,nipNis=document.getElementById('selfNis').value.trim(),gender=document.querySelector('input[name="selfGender"]:checked')?.value||'',kelas=isSiswaUser(actor)?(document.getElementById('selfKelas').value||''):actor.kelas||'-';
+    if(!firebaseReady || !firebaseDb || !firebaseAuth?.currentUser){alert('Firebase belum siap. Tunggu beberapa detik lalu coba lagi.');return;}
+    const idx=users.findIndex(u=>String(u.username||'').trim().toLowerCase()===String(actor.username||'').trim().toLowerCase());
+    if(idx<0){alert('Akun tidak ditemukan di data Firebase.');return;}
+
+    const getVal=id=>document.getElementById(id)?.value?.trim()||'';
+    const nama=getVal('selfNama').toUpperCase();
+    const gelar=getVal('selfGelar');
+    const username=getVal('selfUsername').toLowerCase();
+    const password=document.getElementById('selfPassword')?.value||'';
+    const nipNis=getVal('selfNis');
+    const gender=document.querySelector('input[name="selfGender"]:checked')?.value||'';
+    const kelas=isSiswaUser(actor)?(document.getElementById('selfKelas')?.value||''):actor.kelas||'-';
+
     if(!nama||!username){alert('Nama dan username wajib diisi.');return;}
     if(!namaLengkapValid(nama)){alert('Nama harus nama lengkap dan menggunakan huruf kapital.');return;}
     if(!usernameValid(username)){alert('Username harus menggunakan huruf kecil.');return;}
     if(password&&!passwordAman(password)){alert('Password baru wajib mengandung huruf, angka, dan minimal 1 huruf kapital.');return;}
+
+    let biodata=null;
     if(isSiswaUser(actor)){
-        const tempatLahir=document.getElementById('selfTempatLahir').value.trim(),tanggalLahir=document.getElementById('selfTanggalLahir').value,nik=document.getElementById('selfNIK').value.trim(),alamat=document.getElementById('selfAlamat').value.trim(),noHP=document.getElementById('selfNoHP').value.trim(),namaAyah=document.getElementById('selfNamaAyah').value.trim(),namaIbu=document.getElementById('selfNamaIbu').value.trim(),noHPOrtu=document.getElementById('selfHPOrtu').value.trim();
-        if(!nipNis||!nama||!gender||!kelas||!tempatLahir||!tanggalLahir||!nik||!alamat||!noHP||!namaAyah||!namaIbu||!noHPOrtu){alert('Lengkapi seluruh biodata siswa terlebih dahulu.');return;}
+        const tempatLahir=getVal('selfTempatLahir');
+        const tanggalLahir=document.getElementById('selfTanggalLahir')?.value||'';
+        const nik=getVal('selfNIK');
+        const noKK=getVal('selfNoKK');
+        const alamat=getVal('selfAlamat');
+        const noHP=getVal('selfNoHP');
+        const namaAyah=getVal('selfNamaAyah');
+        const namaIbu=getVal('selfNamaIbu');
+        const noHPOrtu=getVal('selfHPOrtu');
+        const guruWaliSelect=document.getElementById('selfGuruWali')?.value||'';
+        const guruWaliManual=guruWaliSelect==='__lainnya__'?(getVal('selfGuruWaliLainnya').toUpperCase()):'';
+
+        if(!nipNis||!nama||!gender||!kelas||!tempatLahir||!tanggalLahir||!nik||!noKK||!alamat||!noHP||!namaAyah||!namaIbu||!noHPOrtu){
+            alert('Lengkapi seluruh biodata siswa terlebih dahulu.');return;
+        }
         if(!/^\d+$/.test(nipNis)){alert('NISN hanya boleh berisi angka.');return;}
         if(!/^\d+$/.test(nik)){alert('NIK hanya boleh berisi angka.');return;}
+        if(!/^\d+$/.test(noKK)){alert('Nomor Kartu Keluarga hanya boleh berisi angka.');return;}
+        if(guruWaliSelect==='__lainnya__'&&!guruWaliManual){alert('Jika memilih Guru lainnya, isi nama guru tersebut.');return;}
+
+        const currentSt=getStudentProfileRecord(actor);
+        const stIndex=siswa.findIndex(x=>(nipNis&&String(x.nisn||'')===String(nipNis))||normalizeName(x.nama)===normalizeName(actor.nama));
+        const existing=stIndex>=0?siswa[stIndex]:(currentSt||{});
+        const photo=window.pendingSelfProfilePhoto||existing.profilePhoto||users[idx].profilePhoto||'';
+        biodata={
+            ...existing,
+            nama,nisn:nipNis,nik,noKK,jenisKelamin:gender,tempatLahir,tanggalLahir,kelas,alamat,noHP,
+            namaAyah,namaIbu,noHPOrtu,
+            guruWali:guruWaliSelect==='__lainnya__'?'':guruWaliSelect,
+            guruWaliManual,
+            profilePhoto:photo
+        };
+        if(stIndex>=0)siswa[stIndex]=biodata;else siswa.push(biodata);
     }
-    if(users.some((u,i)=>i!==idx&&String(u.username||'').trim().toLowerCase()===username)){alert('Username sudah digunakan.');return;}
-    const oldNama=users[idx].nama,currentSt=getStudentProfileRecord(actor),photo=window.pendingSelfProfilePhoto||users[idx].profilePhoto||currentSt?.profilePhoto||'';
-    users[idx]={...users[idx],nama,username,password:password||users[idx].password,kelas,nipNis,jenisKelamin:gender,gelar:isGuruUser(actor)?gelar:'',profilePhoto:photo,status:users[idx].status==='menunggu'?'aktif':users[idx].status};
-    if(isSiswaUser(actor)){
-        const stIndex=siswa.findIndex(x=>(nipNis&&String(x.nisn||'')===String(nipNis))||normalizeName(x.nama)===normalizeName(oldNama));
-        const current=stIndex>=0?siswa[stIndex]:{};
-        const updated={...current,nama,nisn:nipNis,nik:document.getElementById('selfNIK').value.trim(),jenisKelamin:gender,tempatLahir:document.getElementById('selfTempatLahir').value.trim(),tanggalLahir:document.getElementById('selfTanggalLahir').value,kelas,alamat:document.getElementById('selfAlamat').value.trim(),noHP:document.getElementById('selfNoHP').value.trim(),namaAyah:document.getElementById('selfNamaAyah').value.trim(),namaIbu:document.getElementById('selfNamaIbu').value.trim(),noHPOrtu:document.getElementById('selfHPOrtu').value.trim(),guruWali:current.guruWali||'',profilePhoto:photo};
-        if(stIndex>=0)siswa[stIndex]=updated;else siswa.push(updated);
+
+    const oldUser=users[idx];
+    if(users.some((u,i)=>i!==idx&&String(u.username||'').trim().toLowerCase()===username)){
+        alert('Username sudah digunakan.');return;
     }
-    try{await firebaseSaveCollection('users',users);await firebaseSaveCollection('siswa',siswa);}catch(e){alert('Gagal menyimpan ke Firebase: '+e.message);return;}
-    localStorage.setItem('loginUser',JSON.stringify(users[idx]));window.pendingSelfProfilePhoto='';updateProfileAvatar(users[idx]);alert(isSiswaUser(actor)?'Biodata Anda berhasil disimpan ke Firebase.':'Data Akun Saya berhasil disimpan.');openDashboard();showContent('akunSaya');
+
+    users[idx]={
+        ...oldUser,
+        nama,username,password:password||oldUser.password,
+        kelas,nipNis,jenisKelamin:gender,
+        gelar:isGuruUser(actor)?gelar:'',
+        profilePhoto:biodata?.profilePhoto||oldUser.profilePhoto||'',
+        status:oldUser.status==='menunggu'?'aktif':oldUser.status
+    };
+
+    try{
+        // Tulis langsung ke Firestore melalui satu jalur sinkronisasi yang sama dengan koleksi lain.
+        // Menunggu kedua commit selesai memastikan tombol tidak memberi pesan sukses sebelum data benar-benar tersimpan.
+        await Promise.all([
+            firebaseSaveCollection('users',users),
+            ...(isSiswaUser(actor)?[firebaseSaveCollection('siswa',siswa)]:[])
+        ]);
+        localStorage.setItem('loginUser',JSON.stringify(users[idx]));
+        window.pendingSelfProfilePhoto='';
+        updateProfileAvatar(users[idx]);
+        if(typeof updateData==='function')updateData();
+        alert(isSiswaUser(actor)?'Biodata Anda berhasil disimpan ke Firebase.':'Data Akun Saya berhasil disimpan.');
+        showContent('akunSaya');
+        renderAkunSaya();
+    }catch(e){
+        console.error('Gagal menyimpan Akun Saya:',e);
+        alert('Gagal menyimpan data ke Firebase.\n\n'+(e?.message||e));
+    }
 }
+function getBiodataExportList(user=getCurrentUser()){
+    if(!user)return [];
+    if(isSiswaUser(user)){
+        const st=getStudentProfileRecord(user); return st?[st]:[];
+    }
+    if(isGuruUser(user)) return getGuruWaliStudents(user);
+    return [...siswa];
+}
+function getGuruWaliOptionsForDownload(user=getCurrentUser()){
+    if(isGuruUser(user)) return [user];
+    if(isAdminUser(user)) return users.filter(u=>u.role==='guru').sort((a,b)=>String(a.nama||'').localeCompare(String(b.nama||''),'id'));
+    return [];
+}
+function bukaHalamanUnduhBiodata(){
+    const user=getCurrentUser(); if(!user){alert('Silakan login terlebih dahulu.');return;}
+    showContent('unduhBiodata');
+    const studentOnly=document.getElementById('unduhBiodataStudentOnly'),staff=document.getElementById('unduhBiodataStaff');
+    if(isSiswaUser(user)){
+        if(studentOnly)studentOnly.style.display='block'; if(staff)staff.style.display='none';
+    }else{
+        if(studentOnly)studentOnly.style.display='none'; if(staff)staff.style.display='block';
+        populateDownloadBiodataKelas(); populateDownloadBiodataGuruWali(); populateDownloadBiodataKelasSemua(); populateDownloadBiodataSiswa();
+        ubahModeUnduhBiodata();
+    }
+    renderPreviewUnduhBiodata();
+}
+function kembaliDariUnduhBiodata(){
+    const user=getCurrentUser(); if(isSiswaUser(user)){showContent('akunSaya');return;}
+    if(isStaffUser(user)){showContent('guruWali');return;}
+    showContent('home');
+}
+function populateDownloadBiodataKelas(selected=''){
+    const el=document.getElementById('downloadBiodataKelas'); if(!el)return; const user=getCurrentUser(); const current=selected||el.value||'';
+    const list=getKelasTerdaftarDariJadwal(); el.innerHTML='<option value="">Semua Kelas</option>'+list.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join(''); if(list.includes(current))el.value=current;
+}
+function populateDownloadBiodataKelasSemua(selected=''){
+    const el=document.getElementById('downloadBiodataKelasSemua'); if(!el)return; const current=selected||el.value||''; const list=getKelasTerdaftarDariJadwal(); el.innerHTML='<option value="">Semua Kelas</option>'+list.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join(''); if(list.includes(current))el.value=current;
+}
+function populateDownloadBiodataGuruWali(selected=''){
+    const el=document.getElementById('downloadBiodataGuruWali'); if(!el)return; const user=getCurrentUser(); const current=selected||el.value||''; const list=getGuruWaliOptionsForDownload(user);
+    el.innerHTML='<option value="">Pilih Guru Wali</option>'+list.map(u=>`<option value="${escapeHtml(u.username||'')}">${escapeHtml((u.nama||'-')+(u.gelar?', '+u.gelar:''))}</option>`).join('');
+    if(isGuruUser(user))el.value=user.username||''; else if(list.some(u=>String(u.username||'')===current))el.value=current;
+}
+function populateDownloadBiodataSiswa(selected=''){
+    const el=document.getElementById('downloadBiodataSiswa'); if(!el)return; const user=getCurrentUser(); const kelas=document.getElementById('downloadBiodataKelas')?.value||''; const current=selected||el.value||'';
+    const list=getBiodataExportList(user).filter(s=>!kelas||String(s.kelas||'')===kelas).sort((a,b)=>String(a.nama||'').localeCompare(String(b.nama||''),'id'));
+    el.innerHTML='<option value="">Pilih siswa</option>'+list.map((s,i)=>`<option value="${escapeHtml(String(s.nisn||s.nama||i))}">${escapeHtml(s.nama||'-')} • ${escapeHtml(s.kelas||'-')}</option>`).join('');
+    if(list.some(s=>String(s.nisn||s.nama)===String(current)))el.value=current;
+    renderPreviewUnduhBiodata();
+}
+function ubahModeUnduhBiodata(){
+    const mode=document.getElementById('downloadBiodataMode')?.value||'individu';
+    const a=document.getElementById('downloadBiodataIndividu'),b=document.getElementById('downloadBiodataSemua'); if(a)a.style.display=mode==='individu'?'block':'none'; if(b)b.style.display=mode==='semua'?'block':'none';
+    if(mode==='individu')populateDownloadBiodataSiswa(); else {populateDownloadBiodataGuruWali();populateDownloadBiodataKelasSemua();renderPreviewUnduhBiodata();}
+}
+function getSelectedBiodataDownload(){
+    const user=getCurrentUser(); if(!user)return [];
+    if(isSiswaUser(user))return getBiodataExportList(user);
+    const mode=document.getElementById('downloadBiodataMode')?.value||'individu';
+    if(mode==='individu'){
+        const key=document.getElementById('downloadBiodataSiswa')?.value||''; if(!key)return [];
+        return getBiodataExportList(user).filter(s=>String(s.nisn||s.nama||'')===String(key));
+    }
+    const guru=document.getElementById('downloadBiodataGuruWali')?.value||''; const kelas=document.getElementById('downloadBiodataKelasSemua')?.value||'';
+    if(!guru)return [];
+    return getBiodataExportList(user).filter(s=>String(s.guruWali||'').trim().toLowerCase()===String(guru).trim().toLowerCase()&&(!kelas||String(s.kelas||'')===kelas));
+}
+function renderPreviewUnduhBiodata(){
+    const box=document.getElementById('previewUnduhBiodata'); if(!box)return; const user=getCurrentUser(); if(!user)return;
+    const list=getSelectedBiodataDownload();
+    if(!list.length){box.innerHTML='<div style="padding:18px;border:1px dashed var(--border-color);border-radius:12px;text-align:center;color:var(--text-muted);">Belum ada data yang dipilih untuk diunduh.</div>';return;}
+    box.innerHTML=`<div class="account-table-wrap"><table style="min-width:1050px"><thead><tr><th>No</th><th>Nama</th><th>NISN</th><th>NIK</th><th>No. KK</th><th>JK</th><th>Tempat/Tgl Lahir</th><th>Kelas</th><th>Guru Wali</th><th>No. HP</th></tr></thead><tbody>${list.map((s,i)=>{const gw=users.find(u=>u.role==='guru'&&String(u.username||'').toLowerCase()===String(s.guruWali||'').toLowerCase());return `<tr><td>${i+1}</td><td>${escapeHtml(s.nama||'-')}</td><td>${escapeHtml(s.nisn||'-')}</td><td>${escapeHtml(s.nik||'-')}</td><td>${escapeHtml(s.noKK||'-')}</td><td>${escapeHtml(s.jenisKelamin||'-')}</td><td>${escapeHtml([s.tempatLahir,s.tanggalLahir].filter(Boolean).join(', ')||'-')}</td><td>${escapeHtml(s.kelas||'-')}</td><td>${escapeHtml(getGuruWaliDisplayName(s))}</td><td>${escapeHtml(s.noHP||'-')}</td></tr>`;}).join('')}</tbody></table></div><div class="account-count" style="margin-top:8px;">${list.length} data siswa siap diunduh.</div>`;
+}
+function biodataExportRows(list){
+    return list.map((s,i)=>{const gw=users.find(u=>u.role==='guru'&&String(u.username||'').toLowerCase()===String(s.guruWali||'').toLowerCase());return [i+1,s.nama||'',s.nisn||'',s.nik||'',s.noKK||'',s.jenisKelamin||'',s.tempatLahir||'',s.tanggalLahir||'',s.kelas||'',s.alamat||'',s.noHP||'',s.namaAyah||'',s.namaIbu||'',s.noHPOrtu||'',getGuruWaliDisplayName(s),s.profilePhoto?'Tersedia':'Belum ada'];});
+}
+function downloadBiodataExcel(){
+    const user=getCurrentUser(); if(!user){alert('Silakan login terlebih dahulu.');return;} const list=getSelectedBiodataDownload(); if(!list.length){alert('Pilih data biodata terlebih dahulu.');return;} if(!window.XLSX){alert('Library Excel belum tersedia.');return;}
+    const h=['No','Nama','NISN','NIK','No. Kartu Keluarga','Jenis Kelamin','Tempat Lahir','Tanggal Lahir','Kelas','Alamat','No. HP','Nama Ayah','Nama Ibu','No. HP Orang Tua','Guru Wali','Pasfoto'];
+    const ws=XLSX.utils.aoa_to_sheet([["SMA NEGERI 1 MA'U"],[isSiswaUser(user)?'BIODATA SISWA':'REKAP BIODATA SISWA'],[],h,...biodataExportRows(list)]); ws['!cols']=h.map((_,i)=>({wch:[6,28,16,18,22,16,18,15,14,35,18,24,24,20,28,14][i]||18})); const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Biodata Siswa'); XLSX.writeFile(wb,isSiswaUser(user)?'Biodata_Saya.xlsx':'Rekap_Biodata_Siswa.xlsx');
+}
+function downloadBiodataPDF(){
+    const user=getCurrentUser(); if(!user){alert('Silakan login terlebih dahulu.');return;} const list=getSelectedBiodataDownload(); if(!list.length){alert('Pilih data biodata terlebih dahulu.');return;} const {jsPDF}=window.jspdf; const doc=new jsPDF('p','mm','a4'); const title=isSiswaUser(user)?'BIODATA SISWA':'REKAP BIODATA SISWA';
+    doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text("SMA NEGERI 1 MA'U",105,14,{align:'center'});doc.setFontSize(11);doc.text(title,105,21,{align:'center'});doc.setFont('helvetica','normal');
+    let y=28;
+    list.forEach((s,idx)=>{
+        if(idx>0){doc.addPage();y=18;}
+        const gw=users.find(u=>u.role==='guru'&&String(u.username||'').toLowerCase()===String(s.guruWali||'').toLowerCase()); const photo=s.profilePhoto||'';
+        if(photo){try{doc.addImage(photo,'JPEG',15,y,28,35);}catch(e){}}
+        const x=50; doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(String(s.nama||'-'),x,y+4);doc.setFont('helvetica','normal');doc.setFontSize(9);
+        const rows=[['NISN',s.nisn||'-'],['NIK',s.nik||'-'],['No. Kartu Keluarga',s.noKK||'-'],['Jenis Kelamin',s.jenisKelamin||'-'],['Tempat/Tanggal Lahir',[s.tempatLahir,s.tanggalLahir].filter(Boolean).join(', ')||'-'],['Kelas',s.kelas||'-'],['Alamat',s.alamat||'-'],['No. HP',s.noHP||'-'],['Nama Ayah',s.namaAyah||'-'],['Nama Ibu',s.namaIbu||'-'],['No. HP Orang Tua',s.noHPOrtu||'-'],['Guru Wali',getGuruWaliDisplayName(s)]];
+        let yy=photo?y+12:y+10; rows.forEach(r=>{doc.setFont('helvetica','bold');doc.text(r[0],x,yy);doc.setFont('helvetica','normal');doc.text(': '+String(r[1]),x+43,yy,{maxWidth:145});yy+=6;});
+        y=Math.max(yy+5,y+42); if(y>270&&idx<list.length-1){doc.addPage();y=18;}
+    });
+    doc.save(isSiswaUser(user)?'Biodata_Saya.pdf':'Rekap_Biodata_Siswa.pdf');
+}
+
 function bukaHalamanUnduhAkun(){
     const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} showContent('unduhAkun'); const el=document.getElementById('downloadAkunRole'); if(!el)return; el.innerHTML=isAdminUser(user)?'<option value="siswa">Akun Siswa</option><option value="guru">Akun Guru</option>':'<option value="siswa">Akun Siswa</option>'; renderPreviewUnduhAkun();
 }
@@ -3763,6 +4053,7 @@ function bukaFormSiswa(index = -1){
         document.getElementById('siswaAlamat').value = s.alamat || '';
         document.getElementById('siswaHP').value = s.noHP || '';
         document.getElementById('siswaNIK').value = s.nik || '';
+        document.getElementById('siswaNoKK').value = s.noKK || '';
         document.getElementById('siswaNamaAyah').value = s.namaAyah || '';
         document.getElementById('siswaNamaIbu').value = s.namaIbu || '';
         document.getElementById('siswaHPOrtu').value = s.noHPOrtu || '';
@@ -3797,6 +4088,7 @@ function resetFormSiswa(){
     document.getElementById('siswaAlamat').value = '';
     document.getElementById('siswaHP').value = '';
     document.getElementById('siswaNIK').value = '';
+    document.getElementById('siswaNoKK').value = '';
     document.getElementById('siswaNamaAyah').value = '';
     document.getElementById('siswaNamaIbu').value = '';
     document.getElementById('siswaHPOrtu').value = '';
@@ -3833,6 +4125,7 @@ function simpanDataSiswa(){
     const alamat = document.getElementById('siswaAlamat').value.trim();
     const noHP = document.getElementById('siswaHP').value.trim();
     const nik = document.getElementById('siswaNIK').value.trim();
+    const noKK = document.getElementById('siswaNoKK').value.trim();
     const namaAyah = document.getElementById('siswaNamaAyah').value.trim();
     const namaIbu = document.getElementById('siswaNamaIbu').value.trim();
     const noHPOrtu = document.getElementById('siswaHPOrtu').value.trim();
@@ -3867,6 +4160,7 @@ function simpanDataSiswa(){
         alamat,
         noHP,
         nik,
+        noKK,
         namaAyah,
         namaIbu,
         noHPOrtu,
@@ -3956,7 +4250,7 @@ function updateDataSiswaTable(){
 
     table.innerHTML = '';
     if(filtered.length === 0){
-        table.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:28px;">Tidak ada data siswa yang sesuai.</td></tr>';
+        table.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:28px;">Tidak ada data siswa yang sesuai.</td></tr>';
         return;
     }
 
@@ -3967,6 +4261,7 @@ function updateDataSiswaTable(){
         table.innerHTML += `<tr>
             <td>${originalIndex + 1}</td>
             <td>${s.nisn || '<span style="color:var(--text-muted)">Belum diisi</span>'}</td>
+            <td>${s.noKK || '-'}</td>
             <td><strong>${s.nama || '-'}</strong></td>
             <td>${genderLabel}</td>
             <td>${s.kelas || '-'}</td>
@@ -3988,22 +4283,27 @@ function getGuruWaliStudents(user=getCurrentUser()){
 }
 function populateGuruWaliKelasFilter(){
     const el=document.getElementById('filterGuruWaliKelas'); if(!el)return;
-    const current=el.value; const list=[...new Set(getGuruWaliStudents().map(s=>String(s.kelas||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
+    const current=el.value; const fromJadwal=getKelasTerdaftarDariJadwal(); const fromSiswa=getGuruWaliStudents().map(s=>String(s.kelas||'').trim()).filter(Boolean); const list=[...new Set([...fromJadwal,...fromSiswa])].sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
     el.innerHTML='<option value="">Semua Kelas</option>'+list.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join(''); if(list.includes(current))el.value=current;
+}
+function populateGuruWaliGuruFilter(){
+    const el=document.getElementById('filterGuruWaliGuru'); if(!el)return; const user=getCurrentUser(); const current=el.value;
+    const list=isAdminUser(user)?users.filter(u=>u.role==='guru'):isGuruUser(user)?[user]:[];
+    el.innerHTML='<option value="">Semua Guru Wali</option>'+list.sort((a,b)=>String(a.nama||'').localeCompare(String(b.nama||''),'id')).map(u=>`<option value="${escapeHtml(u.username||'')}">${escapeHtml((u.nama||'-')+(u.gelar?', '+u.gelar:''))}</option>`).join(''); if(list.some(u=>String(u.username||'')===current))el.value=current;
 }
 function renderGuruWaliTable(){
     const tb=document.getElementById('dataGuruWali'); if(!tb)return; const user=getCurrentUser();
-    if(!isStaffUser(user)){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-muted)">Akses ditolak.</td></tr>';return;}
-    populateGuruWaliKelasFilter(); const key=(document.getElementById('filterGuruWaliSiswa')?.value||'').trim().toLowerCase(); const kelas=document.getElementById('filterGuruWaliKelas')?.value||'';
-    const list=getGuruWaliStudents(user).filter(s=>(!kelas||s.kelas===kelas)&&(!key||[s.nama,s.nisn,s.kelas].some(v=>String(v||'').toLowerCase().includes(key))));
-    tb.innerHTML=list.length?list.map((s,i)=>{const idx=siswa.indexOf(s);return `<tr><td>${i+1}</td><td><b>${escapeHtml(s.nama||'-')}</b></td><td>${escapeHtml(s.nisn||'-')}</td><td>${escapeHtml(s.kelas||'-')}</td><td>${escapeHtml(s.jenisKelamin||'-')}</td><td>${escapeHtml(s.noHP||'-')}</td><td><button class="btn-account-edit" type="button" onclick="lihatBiodataGuruWali(${idx})">Lihat Biodata</button> <button class="btn-edit-student" type="button" onclick="bukaFormSiswa(${idx})">Edit</button></td></tr>`;}).join(''):'<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-muted)">Belum ada siswa yang dibimbing.</td></tr>';
+    if(!isStaffUser(user)){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text-muted)">Akses ditolak.</td></tr>';return;}
+    populateGuruWaliKelasFilter(); populateGuruWaliGuruFilter(); const key=(document.getElementById('filterGuruWaliSiswa')?.value||'').trim().toLowerCase(); const kelas=document.getElementById('filterGuruWaliKelas')?.value||''; const guruFilter=document.getElementById('filterGuruWaliGuru')?.value||'';
+    const list=getGuruWaliStudents(user).filter(s=>(!kelas||s.kelas===kelas)&&(!guruFilter||String(s.guruWali||'').trim().toLowerCase()===String(guruFilter).trim().toLowerCase())&&(!key||[s.nama,s.nisn,s.nik,s.noKK,s.kelas].some(v=>String(v||'').toLowerCase().includes(key))));
+    tb.innerHTML=list.length?list.map((s,i)=>{const idx=siswa.indexOf(s);return `<tr><td>${i+1}</td><td><b>${escapeHtml(s.nama||'-')}</b></td><td>${escapeHtml(s.nisn||'-')}</td><td>${escapeHtml(s.noKK||'-')}</td><td>${escapeHtml(s.kelas||'-')}</td><td>${escapeHtml(getGuruWaliDisplayName(s))}</td><td>${escapeHtml(s.jenisKelamin||'-')}</td><td>${escapeHtml(s.noHP||'-')}</td><td><button class="btn-account-edit" type="button" onclick="lihatBiodataGuruWali(${idx})">Lihat Biodata</button> <button class="btn-edit-student" type="button" onclick="bukaFormSiswa(${idx})">Edit</button></td></tr>`;}).join(''):'<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--text-muted)">Belum ada siswa yang dibimbing.</td></tr>';
 }
 function lihatBiodataGuruWali(index){
     const user=getCurrentUser(), s=siswa[index]; if(!s||!isStaffUser(user))return;
     if(isGuruUser(user)&&String(s.guruWali||'').trim().toLowerCase()!==getGuruWaliUsername(user)){alert('Siswa ini bukan siswa bimbingan Anda.');return;}
     const photo=s.profilePhoto?`<img src="${s.profilePhoto}" alt="Pasfoto" style="width:110px;height:140px;object-fit:cover;border-radius:8px;border:2px solid #0e68c8;">`:'<div style="width:110px;height:140px;border:1px dashed #9fb5cf;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#70829d;font-size:12px;text-align:center;">Belum ada pasfoto</div>';
     const body=document.getElementById('guruWaliBiodataBody'); if(!body)return;
-    body.innerHTML=`<div style="display:grid;grid-template-columns:140px 1fr;gap:20px;align-items:start;"><div>${photo}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;"><div><small>NAMA LENGKAP</small><strong>${escapeHtml(s.nama||'-')}</strong></div><div><small>NISN</small><strong>${escapeHtml(s.nisn||'-')}</strong></div><div><small>NIK</small><strong>${escapeHtml(s.nik||'-')}</strong></div><div><small>JENIS KELAMIN</small><strong>${escapeHtml(s.jenisKelamin||'-')}</strong></div><div><small>TEMPAT, TANGGAL LAHIR</small><strong>${escapeHtml([s.tempatLahir,s.tanggalLahir].filter(Boolean).join(', ')||'-')}</strong></div><div><small>KELAS</small><strong>${escapeHtml(s.kelas||'-')}</strong></div><div><small>ALAMAT</small><strong>${escapeHtml(s.alamat||'-')}</strong></div><div><small>NO. HP SISWA</small><strong>${escapeHtml(s.noHP||'-')}</strong></div><div><small>NAMA AYAH</small><strong>${escapeHtml(s.namaAyah||'-')}</strong></div><div><small>NAMA IBU</small><strong>${escapeHtml(s.namaIbu||'-')}</strong></div><div><small>NO. HP ORANG TUA</small><strong>${escapeHtml(s.noHPOrtu||'-')}</strong></div></div></div>`;
+    body.innerHTML=`<div style="display:grid;grid-template-columns:140px 1fr;gap:20px;align-items:start;"><div>${photo}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;"><div><small>NAMA LENGKAP</small><strong>${escapeHtml(s.nama||'-')}</strong></div><div><small>NISN</small><strong>${escapeHtml(s.nisn||'-')}</strong></div><div><small>NIK</small><strong>${escapeHtml(s.nik||'-')}</strong></div><div><small>NOMOR KARTU KELUARGA</small><strong>${escapeHtml(s.noKK||'-')}</strong></div><div><small>JENIS KELAMIN</small><strong>${escapeHtml(s.jenisKelamin||'-')}</strong></div><div><small>TEMPAT, TANGGAL LAHIR</small><strong>${escapeHtml([s.tempatLahir,s.tanggalLahir].filter(Boolean).join(', ')||'-')}</strong></div><div><small>KELAS</small><strong>${escapeHtml(s.kelas||'-')}</strong></div><div><small>ALAMAT</small><strong>${escapeHtml(s.alamat||'-')}</strong></div><div><small>GURU WALI</small><strong>${escapeHtml(getGuruWaliDisplayName(s))}</strong></div><div><small>NO. HP SISWA</small><strong>${escapeHtml(s.noHP||'-')}</strong></div><div><small>NAMA AYAH</small><strong>${escapeHtml(s.namaAyah||'-')}</strong></div><div><small>NAMA IBU</small><strong>${escapeHtml(s.namaIbu||'-')}</strong></div><div><small>NO. HP ORANG TUA</small><strong>${escapeHtml(s.noHPOrtu||'-')}</strong></div></div></div>`;
     document.getElementById('modalGuruWaliBiodata').style.display='flex';
 }
 function tutupBiodataGuruWali(){const el=document.getElementById('modalGuruWaliBiodata');if(el)el.style.display='none';}
@@ -5230,201 +5530,143 @@ function populateDownloadAbsensiMapel(selected=''){
     el.innerHTML='<option value="">Pilih mata pelajaran</option>'+list.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join(''); if(old&&list.some(v=>normalizeName(v)===normalizeName(old)))el.value=old;
 }
 function getSelectedAttendanceExport(){
-    const kelas=document.getElementById('downloadAbsensiKelas')?.value||'', mapel=document.getElementById('downloadAbsensiMapel')?.value||''; if(!kelas||!mapel){alert('Pilih kelas dan mata pelajaran terlebih dahulu.');return null;}
-    const user=getCurrentUser(); const scope=getAttendanceScopeForUser(user).filter(a=>normalizeName(a.kelas)===normalizeName(kelas)&&normalizeName(a.mapel)===normalizeName(mapel));
-    const students=getDaftarSiswaAbsensiByClass(kelas); const dates=[...new Set(scope.map(a=>a.tanggalISO||a.tanggal).filter(Boolean))].sort();
-    return {user,kelas,mapel,scope,students,dates};
+    const kelas=document.getElementById('downloadAbsensiKelas')?.value||'',mapel=document.getElementById('downloadAbsensiMapel')?.value||'';if(!kelas||!mapel){alert('Pilih kelas dan mata pelajaran terlebih dahulu.');return null;}const user=getCurrentUser();const scope=getAttendanceScopeForUser(user).filter(a=>normalizeName(a.kelas)===normalizeName(kelas)&&normalizeName(a.mapel)===normalizeName(mapel));const students=getDaftarSiswaAbsensiByClass(kelas);const sessions=absensiSesi.filter(s=>normalizeName(s.kelas)===normalizeName(kelas)&&normalizeName(s.mapel)===normalizeName(mapel)&&getAttendanceScopeForUser(user).some(a=>String(a.sessionId||'')===String(s.id)) || (isAdminUser(user)&&normalizeName(s.kelas)===normalizeName(kelas)&&normalizeName(s.mapel)===normalizeName(mapel))).sort((a,b)=>Number(a.pertemuan)-Number(b.pertemuan));return {user,kelas,mapel,scope,students,sessions};
 }
-function buildAttendanceExportRows(data){
-    const rows=[]; const students=data.students.length?data.students:[...new Map(data.scope.map(a=>[String(a.nisn||a.nama),{nisn:a.nisn||'',nama:a.nama,kelas:a.kelas}])).values()];
-    students.forEach((st,i)=>{
-        let hadir=0,sakit=0,izin=0,alpha=0; const row=[i+1,st.nisn||'',st.nama||'',st.kelas||data.kelas];
-        data.dates.forEach(tgl=>{const rec=data.scope.find(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn)||normalizeName(a.nama)===normalizeName(st.nama))&&String(a.tanggalISO||a.tanggal)===String(tgl)); const status=rec?.status||'-'; row.push(status); if(status==='Hadir')hadir++; else if(status==='Sakit')sakit++; else if(status==='Izin')izin++; else if(status==='Alpha')alpha++;});
-        row.push(hadir,sakit,izin,alpha); rows.push(row);
-    }); return rows;
-}
-function downloadRekapAbsensiExcel(){
-    const data=getSelectedAttendanceExport(); if(!data)return; const headers=['No','NISN','Nama Siswa','Kelas',...data.dates.map(d=>`Presensi ${d}`),'Hadir','Sakit','Izin','Alpha']; const rows=buildAttendanceExportRows(data);
-    const ws=XLSX.utils.aoa_to_sheet([['SMA NEGERI 1 MA\'U'],['REKAP PRESENSI'],[`Kelas: ${data.kelas}`],[`Mata Pelajaran: ${data.mapel}`],[],headers,...rows]); ws['!cols']=headers.map((_,i)=>({wch:i<4?18:14})); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Rekap Presensi'); XLSX.writeFile(wb,`Rekap_Presensi_${data.kelas}_${data.mapel}.xlsx`);
-}
-function downloadRekapAbsensiPDF(){
-    const data=getSelectedAttendanceExport(); if(!data)return; const {jsPDF}=window.jspdf; const doc=new jsPDF('l','mm','a4'); doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text("SMA NEGERI 1 MA'U",148,12,{align:'center'});doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text('REKAPITULASI PRESENSI SISWA',148,18,{align:'center'});doc.text(`Kelas: ${data.kelas} | Mata Pelajaran: ${data.mapel}`,148,24,{align:'center'});
-    const headers=['No','NISN','Nama Siswa','Kelas',...data.dates.map((d,i)=>`P${i+1}\n${d}`),'Hadir','Sakit','Izin','Alpha']; const body=buildAttendanceExportRows(data); doc.autoTable({head:[headers],body,startY:30,theme:'grid',styles:{fontSize:7,halign:'center'},headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold'},columnStyles:{2:{halign:'left'}}});
-    doc.setFontSize(9);doc.text(`Guru: ${data.user.nama||'-'}`,18,(doc.lastAutoTable?.finalY||190)+12);doc.save(`Rekap_Presensi_${data.kelas}_${data.mapel}.pdf`);
-}
-function kembaliDariUnduhAbsensi(){showContent('absensi');}
+function buildAttendanceExportRows(data){const rows=[];const students=data.students.length?data.students:[...new Map(data.scope.map(a=>[String(a.nisn||a.nama),{nisn:a.nisn||'',nama:a.nama,kelas:a.kelas}])).values()];students.forEach((st,i)=>{let hadir=0,sakit=0,izin=0,alpha=0;const row=[i+1,st.nisn||'',st.nama||'',st.kelas||data.kelas];data.sessions.forEach(s=>{const rec=data.scope.find(a=>String(a.sessionId||'')===String(s.id)&&((st.nisn&&String(a.nisn||'')===String(st.nisn))||normalizeName(a.nama)===normalizeName(st.nama)));const status=rec?.status||'-';row.push(status);if(status==='Hadir')hadir++;else if(status==='Sakit')sakit++;else if(status==='Izin')izin++;else if(status==='Alpha')alpha++;});row.push(hadir,sakit,izin,alpha);rows.push(row);});return rows;}
+function downloadRekapAbsensiExcel(){const data=getSelectedAttendanceExport();if(!data||!window.XLSX)return;const headers=['No','NISN','Nama Siswa','Kelas',...data.sessions.map(s=>`P${s.pertemuan}`),'Hadir','Sakit','Izin','Alpha'];const rows=buildAttendanceExportRows(data);const ws=XLSX.utils.aoa_to_sheet([['SMA NEGERI 1 MA\'U'],['REKAP PRESENSI'],[`Kelas: ${data.kelas}`],[`Mata Pelajaran: ${data.mapel}`],[],headers,...rows]);ws['!cols']=headers.map((_,i)=>({wch:i<4?20:12}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Rekap Presensi');XLSX.writeFile(wb,`Rekap_Presensi_${data.kelas}_${data.mapel}_P1-P16.xlsx`.replace(/[\\/:*?"<>|]/g,'_'));}
+function downloadRekapAbsensiPDF(){const data=getSelectedAttendanceExport();if(!data)return;const {jsPDF}=window.jspdf;const doc=new jsPDF('l','mm','a4');doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text("SMA NEGERI 1 MA'U",148,12,{align:'center'});doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text('REKAPITULASI PRESENSI SISWA',148,18,{align:'center'});doc.text(`Kelas: ${data.kelas} | Mata Pelajaran: ${data.mapel}`,148,24,{align:'center'});const headers=['No','NISN','Nama Siswa','Kelas',...data.sessions.map(s=>`P${s.pertemuan}`),'Hadir','Sakit','Izin','Alpha'];const body=buildAttendanceExportRows(data);doc.autoTable({head:[headers],body,startY:30,theme:'grid',styles:{fontSize:7,halign:'center'},headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold'},columnStyles:{2:{halign:'left'}}});doc.setFontSize(9);doc.text(`Guru: ${data.user.nama||'-'}`,18,(doc.lastAutoTable?.finalY||190)+12);doc.save(`Rekap_Presensi_${data.kelas}_${data.mapel}_P1-P16.pdf`.replace(/[\\/:*?"<>|]/g,'_'));}
 
-/* ABSENSI BARU: SISWA SELF-SERVICE + GURU/ADMIN MANAGEMENT */
-
-function formatTanggalISOAbsensi(d){
-    const x=d||new Date();
-    return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
+function formatTanggalISOAbsensi(date){
+    const d=new Date(date); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
 }
 function getCurrentMeetingAbsensi(){
-    const user=getCurrentUser();
-    const today=getTodayName();
-    const now=new Date();
-    let schedules=jadwal.filter(j=>String(j.hari||'').toLowerCase()===today.toLowerCase());
+    const user=getCurrentUser(), today=getTodayName();
+    let schedules=jadwal.slice();
     if(user?.role==='siswa') schedules=schedules.filter(j=>normalizeName(j.kelas)===normalizeName(user.kelas));
     if(user?.role==='guru') schedules=schedules.filter(j=>normalizeName(getScheduleTeacher(j))===normalizeName(user.nama));
+    schedules=schedules.filter(j=>String(j.hari||'').toLowerCase()===String(today||'').toLowerCase());
     schedules.sort((a,b)=>(getMinutesFromJam(a.jam)?.start??9999)-(getMinutesFromJam(b.jam)?.start??9999));
-    const active=schedules.find(j=>{const t=getMinutesFromJam(j.jam);const m=now.getHours()*60+now.getMinutes();return t&&m>=t.start&&m<t.end;});
-    const next=schedules.find(j=>{const t=getMinutesFromJam(j.jam);return t&&now.getHours()*60+now.getMinutes()<t.start;});
-    const chosen=active||next||schedules[0];
-    if(!chosen) return 1;
-    const key='absensiPertemuanCounter_'+today+'_'+String(chosen.mapel||'').toLowerCase().replace(/[^a-z0-9]+/g,'_');
-    const stored=Number(localStorage.getItem(key)||0);
-    if(stored>0) return stored;
-    return Number(chosen.pertemuan||chosen.pertemuanKe||1);
+    return Number(schedules[0]?.pertemuan||schedules[0]?.pertemuanKe||1);
 }
 function getStudentIdentityForAbsensi(user){
     if(!user)return {nama:'',kelas:'',nisn:''};
     const st=siswa.find(s=>(user.nisn&&String(s.nisn)===String(user.nisn)) || normalizeName(s.nama)===normalizeName(user.nama));
     return {nama:st?.nama||user.nama||'',kelas:st?.kelas||user.kelas||'',nisn:st?.nisn||user.nisn||user.nis||''};
 }
-function initAbsensiPage(){
-    const user=getCurrentUser();
-    const menu=document.getElementById('absensiSiswaMenu'), staff=document.getElementById('absensiStaffView'), hist=document.getElementById('absensiSiswaRiwayat');
-    if(!user)return;
-    if(isStaffUser(user)){
-        if(menu)menu.style.display='none';
-        if(staff)staff.style.display='block';
-        if(hist)hist.style.display='none';
-        populateStaffAbsensiControls();
-        renderAbsensiStaff();
-    }else{
-        if(menu)menu.style.display='block';
-        if(staff)staff.style.display='none';
-        if(hist)hist.style.display='block';
-        tutupFormAbsensiSiswa();
-        renderRiwayatAbsensiSiswa();
-    }
+function getActiveStudentAttendanceSessions(){
+    const u=getCurrentUser(), st=getStudentIdentityForAbsensi(u); if(!u||u.role!=='siswa') return [];
+    const now=new Date(); const today=formatTanggalISOAbsensi(now);
+    return absensiSesi.filter(s=>normalizeName(s.kelas)===normalizeName(st.kelas) && s.aktif!==false && String(s.tanggal||'')===today && sessionIsOpen(s));
 }
-function getStudentAttendanceMapelList(kelas){
-    const list=[];
-    const add=v=>{
-        v=String(v||'').trim();
-        if(v && v!=='-' && !list.some(x=>normalizeName(x)===normalizeName(v))) list.push(v);
-    };
-    jadwal.filter(j=>normalizeName(j.kelas)===normalizeName(kelas)).forEach(j=>add(j.mapel));
-    return list.sort((a,b)=>a.localeCompare(b,'id'));
+function sessionIsOpen(session){
+    if(!session || session.aktif===false) return false;
+    const now=new Date();
+    const start=new Date(`${session.tanggal}T${session.jamMulai||'00:00'}:00`);
+    const end=new Date(`${session.tanggal}T${session.jamSelesai||'23:59'}:59`);
+    return now>=start && now<=end;
 }
-function setStudentAttendanceMapelSelect(prefix, kelas, preferred=''){
-    const el=document.getElementById(prefix+'Mapel');
-    if(!el) return '';
-    const list=getStudentAttendanceMapelList(kelas);
-    el.innerHTML=list.length
-        ? list.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('')
-        : '<option value="">Belum ada mata pelajaran pada jadwal</option>';
-    const target=preferred && list.some(m=>normalizeName(m)===normalizeName(preferred)) ? preferred : (list[0]||'');
-    el.value=target;
-    return target;
+function sessionStatusLabel(session){
+    if(session.aktif===false) return 'Ditutup';
+    const now=new Date(), start=new Date(`${session.tanggal}T${session.jamMulai||'00:00'}:00`), end=new Date(`${session.tanggal}T${session.jamSelesai||'23:59'}:59`);
+    if(now<start)return 'Belum Dibuka'; if(now>end)return 'Waktu Habis'; return 'Aktif';
 }
-function setAutoAbsensiFields(prefix){
-    const u=getCurrentUser(), st=getStudentIdentityForAbsensi(u), tanggal=formatTanggalISOAbsensi(new Date()), pertemuan=getCurrentMeetingAbsensi();
-    const mapel=getCurrentStudentAttendanceMapel(st.kelas, pertemuan);
-    document.getElementById(prefix+'Nama').value=st.nama;
-    document.getElementById(prefix+'Kelas').value=st.kelas;
-    setStudentAttendanceMapelSelect(prefix, st.kelas, mapel);
-    document.getElementById(prefix+'Tanggal').value=tanggal;
-    document.getElementById(prefix+'Pertemuan').value='Pertemuan ke-'+pertemuan;
+function renderSesiAbsensiSiswa(){
+    const box=document.getElementById('daftarSesiAbsensiSiswa'); if(!box)return;
+    const u=getCurrentUser(), st=getStudentIdentityForAbsensi(u); if(!u||u.role!=='siswa'){box.innerHTML='';return;}
+    const today=formatTanggalISOAbsensi(new Date());
+    const sessions=absensiSesi.filter(s=>normalizeName(s.kelas)===normalizeName(st.kelas) && String(s.tanggal||'')===today).sort((a,b)=>Number(a.pertemuan)-Number(b.pertemuan));
+    if(!sessions.length){box.innerHTML='<div style="padding:18px;text-align:center;color:var(--text-muted);">Belum ada form absensi dari Guru untuk hari ini.</div>';return;}
+    box.innerHTML=sessions.map(s=>{
+        const rec=absensi.find(a=>String(a.sessionId||'')===String(s.id) && ((st.nisn&&String(a.nisn||'')===String(st.nisn))||normalizeName(a.nama)===normalizeName(st.nama)));
+        const status=rec?.status||''; const state=sessionStatusLabel(s); const canAbsen=!rec && state==='Aktif' && s.aktif!==false;
+        return `<div style="border:1px solid var(--border-color);border-radius:14px;padding:16px;margin-bottom:12px;background:rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;">
+            <div><strong>${escapeHtml(s.mapel||'-')}</strong><div style="font-size:12px;color:var(--text-muted);margin-top:5px;">Kelas ${escapeHtml(s.kelas||'-')} • Pertemuan ${escapeHtml(s.pertemuan||'-')} • ${escapeHtml(s.tanggal||'-')} • ${escapeHtml(s.jamMulai||'-')}–${escapeHtml(s.jamSelesai||'-')}</div><div style="font-size:12px;margin-top:6px;">Status form: <b>${escapeHtml(state)}</b>${rec?` • Kehadiran Anda: <b>${escapeHtml(status)}</b>`:''}</div></div>
+            <button class="btn-primary" type="button" ${canAbsen?'':'disabled'} onclick="pilihSesiAbsensiSiswa('${escapeHtml(String(s.id))}')">${rec?'✓ Sudah Absen':state==='Aktif'?'Absen Sekarang':state}</button>
+        </div>`;
+    }).join('');
+}
+function pilihSesiAbsensiSiswa(sessionId){
+    const u=getCurrentUser(); if(!u||u.role!=='siswa')return;
+    const s=absensiSesi.find(x=>String(x.id)===String(sessionId)); if(!s){alert('Form absensi tidak ditemukan.');return;}
+    const st=getStudentIdentityForAbsensi(u);
+    if(normalizeName(s.kelas)!==normalizeName(st.kelas)){alert('Form absensi bukan untuk kelas Anda.');return;}
+    if(!sessionIsOpen(s)){alert('Form absensi belum dibuka atau waktu absensi sudah berakhir.');renderSesiAbsensiSiswa();return;}
+    document.getElementById('absensiSiswaMenu').style.display='none';
+    document.getElementById('absensiFormKamera').style.display='none';
+    document.getElementById('absensiFormManual').style.display='block';
+    document.getElementById('manualAbsensiNama').value=st.nama;
+    document.getElementById('manualAbsensiKelas').value=st.kelas;
+    document.getElementById('manualAbsensiMapel').innerHTML=`<option value="${escapeHtml(s.mapel||'')}">${escapeHtml(s.mapel||'-')}</option>`;
+    document.getElementById('manualAbsensiTanggal').value=s.tanggal||formatTanggalISOAbsensi(new Date());
+    document.getElementById('manualAbsensiPertemuan').value=String(s.pertemuan||1);
+    document.getElementById('manualAbsensiStatus').value='Hadir';
+    document.getElementById('manualAbsensiStatus').dataset.sessionId=String(s.id);
 }
 function bukaHalamanAbsensiKamera(){
     const u=getCurrentUser(); if(!u||u.role!=='siswa')return;
+    const sessions=getActiveStudentAttendanceSessions(); if(!sessions.length){alert('Belum ada form absensi aktif dari Guru untuk kelas Anda.');return;}
+    const s=sessions[0], st=getStudentIdentityForAbsensi(u);
     document.getElementById('absensiSiswaMenu').style.display='none'; document.getElementById('absensiFormKamera').style.display='block'; document.getElementById('absensiFormManual').style.display='none';
-    setAutoAbsensiFields('kameraAbsensi'); currentPhotoBase64=''; const p=document.getElementById('photo'); if(p){p.src='';p.style.display='none';} startCamera();
+    document.getElementById('kameraAbsensiNama').value=st.nama; document.getElementById('kameraAbsensiKelas').value=st.kelas; document.getElementById('kameraAbsensiMapel').innerHTML=`<option value="${escapeHtml(s.mapel||'')}">${escapeHtml(s.mapel||'-')}</option>`; document.getElementById('kameraAbsensiTanggal').value=s.tanggal; document.getElementById('kameraAbsensiPertemuan').value=String(s.pertemuan||1); document.getElementById('kameraAbsensiStatus').value='Hadir'; document.getElementById('kameraAbsensiStatus').dataset.sessionId=String(s.id); currentPhotoBase64=''; const p=document.getElementById('photo'); if(p){p.src='';p.style.display='none';} startCamera();
 }
 function bukaHalamanAbsensiManual(){
-    const u=getCurrentUser(); if(!u||u.role!=='siswa')return;
-    document.getElementById('absensiSiswaMenu').style.display='none'; document.getElementById('absensiFormKamera').style.display='none'; document.getElementById('absensiFormManual').style.display='block';
-    setAutoAbsensiFields('manualAbsensi'); stopCamera();
+    const sessions=getActiveStudentAttendanceSessions(); if(!sessions.length){alert('Belum ada form absensi aktif dari Guru untuk kelas Anda.');return;} pilihSesiAbsensiSiswa(sessions[0].id);
 }
-function tutupFormAbsensiSiswa(){
-    ['absensiFormKamera','absensiFormManual'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
-    const menu=document.getElementById('absensiSiswaMenu');if(menu)menu.style.display='block'; stopCamera();
-}
-function kembaliKeMenuAbsensiSiswa(){tutupFormAbsensiSiswa();renderRiwayatAbsensiSiswa();}
-function getCurrentStudentAttendanceMapel(kelas,pertemuan){ const u=getCurrentUser(); const today=getTodayName(); const candidates=jadwal.filter(j=>String(j.hari||'').toLowerCase()===today.toLowerCase()&&normalizeName(j.kelas)===normalizeName(kelas)); candidates.sort((a,b)=>(getMinutesFromJam(a.jam)?.start??9999)-(getMinutesFromJam(b.jam)?.start??9999)); const idx=Math.max(0,Number(pertemuan||1)-1); return candidates[idx]?.mapel||candidates[0]?.mapel||''; }
+function tutupFormAbsensiSiswa(){['absensiFormKamera','absensiFormManual'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});const menu=document.getElementById('absensiSiswaMenu');if(menu)menu.style.display='block';stopCamera();}
+function kembaliKeMenuAbsensiSiswa(){tutupFormAbsensiSiswa();renderSesiAbsensiSiswa();renderRiwayatAbsensiSiswa();}
 function simpanAbsensiRecord(data){
-    const idx=absensi.findIndex(a=>String(a.nisn||'')===String(data.nisn||'') && normalizeName(a.nama)===normalizeName(data.nama) && String(a.tanggalISO||a.tanggal||'')===String(data.tanggalISO) && String(a.pertemuan||'')===String(data.pertemuan||'') && normalizeName(a.mapel||'')===normalizeName(data.mapel||''));
+    const idx=absensi.findIndex(a=>String(a.sessionId||'')===String(data.sessionId||'') && String(a.nisn||'')===String(data.nisn||''));
     if(idx>=0) absensi[idx]={...absensi[idx],...data}; else absensi.push(data);
-    localStorage.setItem('absensi',JSON.stringify(absensi));
-    updateData();
+    localStorage.setItem('absensi',JSON.stringify(absensi)); updateData();
 }
 function simpanAbsensiKameraSiswa(){
     const u=getCurrentUser(),st=getStudentIdentityForAbsensi(u);if(!u||u.role!=='siswa')return;
+    const sid=document.getElementById('kameraAbsensiStatus')?.dataset.sessionId; const s=absensiSesi.find(x=>String(x.id)===String(sid)); if(!s||!sessionIsOpen(s)){alert('Form absensi sudah tidak aktif.');return;}
     if(!currentPhotoBase64){alert('Silakan ambil foto terlebih dahulu.');return;}
-    const tanggal=document.getElementById('kameraAbsensiTanggal').value, pertemuan=(document.getElementById('kameraAbsensiPertemuan').value||'').replace('Pertemuan ke-',''); const mapel=document.getElementById('kameraAbsensiMapel')?.value||getCurrentStudentAttendanceMapel(st.kelas,Number(pertemuan)||1);
-    simpanAbsensiRecord({nisn:st.nisn,nama:st.nama,kelas:st.kelas,mapel,status:document.getElementById('kameraAbsensiStatus').value,foto:currentPhotoBase64,tanggal:tanggal,tanggalISO:tanggal,pertemuan:Number(pertemuan)||1,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:u.nama});
-    alert('Absensi kamera berhasil disimpan.');tutupFormAbsensiSiswa();renderRiwayatAbsensiSiswa();
+    const status=document.getElementById('kameraAbsensiStatus').value;
+    simpanAbsensiRecord({sessionId:s.id,nisn:st.nisn,nama:st.nama,kelas:st.kelas,mapel:s.mapel,status,foto:currentPhotoBase64,tanggal:s.tanggal,tanggalISO:s.tanggal,pertemuan:Number(s.pertemuan)||1,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:s.dibuatOleh||s.guru||''});
+    alert('Absensi kamera berhasil disimpan.');tutupFormAbsensiSiswa();renderSesiAbsensiSiswa();renderRiwayatAbsensiSiswa();
 }
 function simpanAbsensiManualSiswa(){
     const u=getCurrentUser(),st=getStudentIdentityForAbsensi(u);if(!u||u.role!=='siswa')return;
-    const tanggal=document.getElementById('manualAbsensiTanggal').value, pertemuan=(document.getElementById('manualAbsensiPertemuan').value||'').replace('Pertemuan ke-',''); const mapel=document.getElementById('manualAbsensiMapel')?.value||getCurrentStudentAttendanceMapel(st.kelas,Number(pertemuan)||1);
-    simpanAbsensiRecord({nisn:st.nisn,nama:st.nama,kelas:st.kelas,mapel,status:document.getElementById('manualAbsensiStatus').value,foto:'',tanggal:tanggal,tanggalISO:tanggal,pertemuan:Number(pertemuan)||1,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:u.nama});
-    alert('Absensi manual berhasil disimpan.');tutupFormAbsensiSiswa();renderRiwayatAbsensiSiswa();
+    const sid=document.getElementById('manualAbsensiStatus')?.dataset.sessionId; const s=absensiSesi.find(x=>String(x.id)===String(sid)); if(!s||!sessionIsOpen(s)){alert('Form absensi sudah tidak aktif.');return;}
+    const status=document.getElementById('manualAbsensiStatus').value;
+    simpanAbsensiRecord({sessionId:s.id,nisn:st.nisn,nama:st.nama,kelas:st.kelas,mapel:s.mapel,status,foto:'',tanggal:s.tanggal,tanggalISO:s.tanggal,pertemuan:Number(s.pertemuan)||1,waktu:new Date().toLocaleTimeString('id-ID'),dibuatOleh:s.dibuatOleh||s.guru||''});
+    alert('Absensi berhasil disimpan.');tutupFormAbsensiSiswa();renderSesiAbsensiSiswa();renderRiwayatAbsensiSiswa();
 }
 function renderRiwayatAbsensiSiswa(){
-    const u=getCurrentUser(),tb=document.getElementById('dataAbsensiSiswa');if(!tb||!u)return;
-    const st=getStudentIdentityForAbsensi(u), rows=absensi.filter(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn)) || (!st.nisn&&normalizeName(a.nama)===normalizeName(st.nama))).sort((a,b)=>new Date((b.tanggalISO||b.tanggal)+' '+(b.waktu||''))-new Date((a.tanggalISO||a.tanggal)+' '+(a.waktu||'')));
-    tb.innerHTML=rows.length?rows.map((a,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(a.tanggalISO||a.tanggal||'-')}</td><td>${escapeHtml(a.pertemuan||'-')}</td><td><span class="status-badge status-${String(a.status||'').toLowerCase()}">${escapeHtml(a.status||'-')}</span></td><td>${escapeHtml(a.waktu||'-')}</td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Belum ada riwayat absensi.</td></tr>';
+    const u=getCurrentUser(),tb=document.getElementById('dataAbsensiSiswa');if(!tb||!u)return;const st=getStudentIdentityForAbsensi(u);const rows=absensi.filter(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn))||(!st.nisn&&normalizeName(a.nama)===normalizeName(st.nama))).sort((a,b)=>String(b.tanggalISO||b.tanggal||'').localeCompare(String(a.tanggalISO||a.tanggal||'')));
+    tb.innerHTML=rows.length?rows.map((a,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(a.tanggalISO||a.tanggal||'-')}</td><td>${escapeHtml(a.pertemuan||'-')}</td><td>${escapeHtml(a.mapel||'-')}</td><td><span class="status-badge status-${String(a.status||'').toLowerCase()}">${escapeHtml(a.status||'-')}</span></td><td>${escapeHtml(a.waktu||'-')}</td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">Belum ada riwayat absensi.</td></tr>';
 }
 function populateStaffAbsensiControls(){
-    const ks=document.getElementById('staffAbsensiKelas'),ms=document.getElementById('staffAbsensiMapel'),ts=document.getElementById('staffAbsensiTanggal'),ps=document.getElementById('staffAbsensiPertemuan');if(!ks||!ms||!ts||!ps)return;
-    const user=getCurrentUser(); const classList=isAdminUser(user)?getDaftarKelasSiswa():[...new Set(jadwal.filter(j=>normalizeName(getScheduleTeacher(j))===normalizeName(user?.nama)).map(j=>j.kelas).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'id',{numeric:true})); const oldK=ks.value||classList[0]||'';ks.innerHTML=classList.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');if(oldK)ks.value=oldK; populateStaffAbsensiMapel();
-    if(!ts.value)ts.value=formatTanggalISOAbsensi(new Date());
-    const oldP=ps.value||String(getCurrentMeetingAbsensi());ps.innerHTML=Array.from({length:16},(_,i)=>`<option value="${i+1}">Pertemuan ke-${i+1}</option>`).join('');ps.value=oldP;
+    const ks=document.getElementById('staffAbsensiKelas'),ms=document.getElementById('staffAbsensiMapel'),ts=document.getElementById('staffAbsensiTanggal'),ps=document.getElementById('staffAbsensiPertemuan');if(!ks||!ms||!ts||!ps)return;const user=getCurrentUser();
+    const classList=isAdminUser(user)?getDaftarKelasSiswa():[...new Set(jadwal.filter(j=>normalizeName(getScheduleTeacher(j))===normalizeName(user?.nama)).map(j=>j.kelas).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
+    const old=ks.value||classList[0]||'';ks.innerHTML=classList.map(k=>`<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');if(old)ks.value=old;populateStaffAbsensiMapel();if(!ts.value)ts.value=formatTanggalISOAbsensi(new Date());if(!ps.options.length)ps.innerHTML=Array.from({length:16},(_,i)=>`<option value="${i+1}">Pertemuan ke-${i+1}</option>`).join('');
 }
-function populateStaffAbsensiMapel(){
-    const user=getCurrentUser(), kelas=document.getElementById('staffAbsensiKelas')?.value||'', ms=document.getElementById('staffAbsensiMapel'); if(!ms)return;
-    const old=ms.value||''; const list=getDownloadAbsensiMapelList(kelas,user); ms.innerHTML=list.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join(''); if(old&&list.some(m=>normalizeName(m)===normalizeName(old)))ms.value=old;
+function populateStaffAbsensiMapel(){const user=getCurrentUser(),kelas=document.getElementById('staffAbsensiKelas')?.value||'',ms=document.getElementById('staffAbsensiMapel');if(!ms)return;const list=getDaftarMapelDariJadwal(user,kelas);ms.innerHTML=list.length?list.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join(''):'<option value="">Belum ada mata pelajaran pada Jadwal</option>';}
+function buatSesiAbsensi(){
+    const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak.');return;}
+    const kelas=document.getElementById('staffAbsensiKelas')?.value||'',mapel=document.getElementById('staffAbsensiMapel')?.value||'',pertemuan=Number(document.getElementById('staffAbsensiPertemuan')?.value||1),tanggal=document.getElementById('staffAbsensiTanggal')?.value||formatTanggalISOAbsensi(new Date()),jamMulai=document.getElementById('staffAbsensiJamMulai')?.value||'07:00',jamSelesai=document.getElementById('staffAbsensiJamSelesai')?.value||'23:00',keterangan=document.getElementById('staffAbsensiKeterangan')?.value||'';
+    if(!kelas||!mapel||!tanggal){alert('Lengkapi kelas, mata pelajaran, dan tanggal.');return;} if(jamMulai>=jamSelesai){alert('Jam selesai harus lebih besar dari jam mulai.');return;}
+    const duplicate=absensiSesi.find(s=>normalizeName(s.kelas)===normalizeName(kelas)&&normalizeName(s.mapel)===normalizeName(mapel)&&Number(s.pertemuan)===pertemuan&&String(s.tanggal)===tanggal);
+    if(duplicate){if(!confirm('Form absensi dengan kelas, mata pelajaran, pertemuan, dan tanggal tersebut sudah ada. Aktifkan kembali form tersebut?'))return;duplicate.aktif=true;duplicate.jamMulai=jamMulai;duplicate.jamSelesai=jamSelesai;duplicate.keterangan=keterangan;duplicate.dibuatOleh=user.nama;}
+    else absensiSesi.push({id:'ABS-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),kelas,mapel,pertemuan,tanggal,jamMulai,jamSelesai,keterangan,aktif:true,dibuatOleh:user.nama,guru:user.nama,createdAt:new Date().toISOString()});
+    localStorage.setItem('absensiSesi',JSON.stringify(absensiSesi));renderAbsensiStaff();renderSesiAbsensiSiswa();alert('Form absensi berhasil dibuat dan diaktifkan.');
 }
-function simpanAbsensiKelasStaff(){
-    const user=getCurrentUser(); if(!isStaffUser(user))return;
-    const kelas=document.getElementById('staffAbsensiKelas')?.value||'';
-    const mapel=document.getElementById('staffAbsensiMapel')?.value||'';
-    const tanggal=document.getElementById('staffAbsensiTanggal')?.value||formatTanggalISOAbsensi(new Date());
-    const pertemuan=Number(document.getElementById('staffAbsensiPertemuan')?.value||1);
-    const list=getDaftarSiswaAbsensiByClass(kelas);
-    if(!kelas||!mapel){alert('Pilih kelas dan mata pelajaran terlebih dahulu.');return;}
-    if(!list.length){alert('Belum ada siswa pada kelas ini.');return;}
-    const waktu=new Date().toLocaleTimeString('id-ID');
-    list.forEach((st,i)=>{
-        const status=document.getElementById('statusAbsensiStaff_'+i)?.value||'Hadir';
-        const idx=absensi.findIndex(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn)||normalizeName(a.nama)===normalizeName(st.nama))&&normalizeName(a.kelas||kelas)===normalizeName(kelas)&&normalizeName(a.mapel||'')===normalizeName(mapel)&&String(a.tanggalISO||a.tanggal||'')===tanggal&&Number(a.pertemuan||1)===pertemuan);
-        const data={nisn:st.nisn||'',nama:st.nama,kelas:st.kelas||kelas,mapel,status,foto:idx>=0?(absensi[idx].foto||''):'',tanggal,tanggalISO:tanggal,pertemuan,waktu:idx>=0?(absensi[idx].waktu||waktu):waktu,dibuatOleh:user.nama};
-        if(idx>=0) absensi[idx]={...absensi[idx],...data}; else absensi.push(data);
-    });
-    localStorage.setItem('absensi',JSON.stringify(absensi));
-    updateData();
-    renderAbsensiStaff();
-    alert(`Absensi ${list.length} siswa berhasil disimpan.`);
-}
-
-function tambahAbsensiStaff(){
-    simpanAbsensiKelasStaff();
-}
-
+function toggleSesiAbsensi(id){const user=getCurrentUser();if(!isStaffUser(user))return;const s=absensiSesi.find(x=>String(x.id)===String(id));if(!s)return;s.aktif=s.aktif===false;localStorage.setItem('absensiSesi',JSON.stringify(absensiSesi));renderAbsensiStaff();renderSesiAbsensiSiswa();}
+function hapusSesiAbsensi(id){const user=getCurrentUser();if(!isStaffUser(user))return;const s=absensiSesi.find(x=>String(x.id)===String(id));if(!s)return;if(!isAdminUser(user)&&normalizeName(s.dibuatOleh)!==normalizeName(user.nama)){alert('Guru hanya dapat menghapus form absensi yang dibuat sendiri.');return;}if(!confirm('Hapus form absensi ini? Data kehadiran siswa pada sesi ini juga akan dihapus.'))return;absensiSesi=absensiSesi.filter(x=>String(x.id)!==String(id));absensi=absensi.filter(a=>String(a.sessionId||'')!==String(id));localStorage.setItem('absensiSesi',JSON.stringify(absensiSesi));localStorage.setItem('absensi',JSON.stringify(absensi));renderAbsensiStaff();}
 function renderAbsensiStaff(){
-    const tb=document.getElementById('dataAbsensi'),kelas=document.getElementById('staffAbsensiKelas')?.value||'',mapel=document.getElementById('staffAbsensiMapel')?.value||'',tanggal=document.getElementById('staffAbsensiTanggal')?.value||'',pertemuan=Number(document.getElementById('staffAbsensiPertemuan')?.value||1);
-    if(!tb)return;
-    const students=getDaftarSiswaAbsensiByClass(kelas);
-    tb.innerHTML=students.length?students.map((st,i)=>{
-        const rec=absensi.find(a=>(st.nisn&&String(a.nisn||'')===String(st.nisn)||normalizeName(a.nama)===normalizeName(st.nama))&&normalizeName(a.kelas||kelas)===normalizeName(kelas)&&normalizeName(a.mapel||'')===normalizeName(mapel)&&String(a.tanggalISO||a.tanggal||'')===tanggal&&Number(a.pertemuan||1)===pertemuan);
-        const selected=rec?.status||'Hadir';
-        const options=['Hadir','Sakit','Izin','Alpha'].map(v=>`<option value="${v}" ${selected===v?'selected':''}>${v}</option>`).join('');
-        return `<tr><td>${i+1}</td><td>${escapeHtml(st.nisn||'-')}</td><td><strong>${escapeHtml(st.nama||'-')}</strong></td><td>${escapeHtml(kelas)}</td><td>${escapeHtml(mapel)}</td><td><select id="statusAbsensiStaff_${i}" style="min-width:110px;"><option value="Hadir" ${selected==='Hadir'?'selected':''}>Hadir</option><option value="Sakit" ${selected==='Sakit'?'selected':''}>Sakit</option><option value="Izin" ${selected==='Izin'?'selected':''}>Izin</option><option value="Alpha" ${selected==='Alpha'?'selected':''}>Alpha</option></select></td><td>${escapeHtml(rec?.waktu||'-')}</td><td>${rec?`<button class="btn-warning" onclick="ubahAbsensiStaff('${escapeHtml(st.nisn||'')}',${absensi.indexOf(rec)})">Edit</button> <button class="btn-danger" onclick="hapusAbsensiStaff(${absensi.indexOf(rec)})">Hapus</button>`:'<span style="color:var(--text-muted);font-size:12px;">Belum disimpan</span>'}</td></tr>`;
-    }).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--text-muted);">Belum ada siswa pada kelas ini.</td></tr>';
+    const box=document.getElementById('daftarSesiAbsensiGuru');if(!box)return;const user=getCurrentUser();if(!isStaffUser(user)){box.innerHTML='';return;}
+    let sessions=absensiSesi.slice();if(!isAdminUser(user))sessions=sessions.filter(s=>normalizeName(s.dibuatOleh)===normalizeName(user.nama)||normalizeName(s.guru)===normalizeName(user.nama));sessions.sort((a,b)=>String(b.tanggal||'').localeCompare(String(a.tanggal||''))||Number(a.pertemuan)-Number(b.pertemuan));
+    box.innerHTML=sessions.length?sessions.map(s=>{const count=absensi.filter(a=>String(a.sessionId||'')===String(s.id)).length;const state=sessionStatusLabel(s);return `<div style="border:1px solid var(--border-color);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;"><div><strong>${escapeHtml(s.mapel||'-')}</strong> • ${escapeHtml(s.kelas||'-')} • Pertemuan ${escapeHtml(s.pertemuan||'-')}<div style="font-size:12px;color:var(--text-muted);margin-top:5px;">${escapeHtml(s.tanggal||'-')} • ${escapeHtml(s.jamMulai||'-')}–${escapeHtml(s.jamSelesai||'-')} • ${escapeHtml(state)} • ${count} siswa sudah absen</div></div><div style="display:flex;gap:7px;flex-wrap:wrap;"><button class="btn-warning" type="button" onclick="toggleSesiAbsensi('${escapeHtml(String(s.id))}')">${s.aktif===false?'Aktifkan':'Tutup'}</button><button class="btn-danger" type="button" onclick="hapusSesiAbsensi('${escapeHtml(String(s.id))}')">Hapus</button></div></div>`;}).join(''):'<div style="padding:18px;text-align:center;color:var(--text-muted);">Belum ada form absensi yang dibuat.</div>';
 }
-
-function getDaftarSiswaAbsensiByClass(kelas){
-    const map=new Map();siswa.filter(s=>normalizeName(s.kelas)===normalizeName(kelas)).forEach(s=>map.set(String(s.nisn||s.nama),s));users.filter(u=>u.role==='siswa'&&normalizeName(u.kelas)===normalizeName(kelas)).forEach(u=>{const key=String(u.nisn||u.nis||u.nama);if(!map.has(key))map.set(key,{nisn:u.nisn||u.nis||'',nama:u.nama,kelas:u.kelas});});return [...map.values()];
+function kembaliDariUnduhAbsensi(){showContent('absensi');}
+function initAbsensiPage(){
+    const user=getCurrentUser();if(!user)return;const menu=document.getElementById('absensiSiswaMenu'),staff=document.getElementById('absensiStaffView'),hist=document.getElementById('absensiSiswaRiwayat');
+    if(isStaffUser(user)){if(menu)menu.style.display='none';if(staff)staff.style.display='block';if(hist)hist.style.display='none';populateStaffAbsensiControls();renderAbsensiStaff();}
+    else{if(menu)menu.style.display='block';if(staff)staff.style.display='none';if(hist)hist.style.display='block';tutupFormAbsensiSiswa();renderSesiAbsensiSiswa();renderRiwayatAbsensiSiswa();}
 }
-function ubahAbsensiStaff(nisn,index){
-    if(!isStaffUser(getCurrentUser()))return; const st=getDaftarSiswaAbsensiByClass(document.getElementById('staffAbsensiKelas').value).find(s=>String(s.nisn||'')===String(nisn)); const old=index>=0?absensi[index]:null; const status=prompt('Status (Hadir/Sakit/Izin/Alpha):',old?.status||'Hadir');if(!status)return;
-    const tanggal=document.getElementById('staffAbsensiTanggal').value,pertemuan=Number(document.getElementById('staffAbsensiPertemuan').value||1);simpanAbsensiRecord({nisn:st?.nisn||'',nama:st?.nama||old?.nama||'',kelas:st?.kelas||old?.kelas||'',mapel:document.getElementById('staffAbsensiMapel')?.value||old?.mapel||'',status:status.trim(),foto:old?.foto||'',tanggal,tanggalISO:tanggal,pertemuan,waktu:old?.waktu||new Date().toLocaleTimeString('id-ID'),dibuatOleh:getCurrentUser().nama});renderAbsensiStaff();
-}
-function hapusAbsensiStaff(index){if(!isStaffUser(getCurrentUser())||index<0||!absensi[index])return;if(!confirm('Hapus data absensi ini?'))return;absensi.splice(index,1);localStorage.setItem('absensi',JSON.stringify(absensi));updateData();renderAbsensiStaff();}
 function startCamera(){
     const video=document.getElementById('video');if(!video||!navigator.mediaDevices?.getUserMedia){alert('Kamera tidak tersedia pada browser ini.');return;} navigator.mediaDevices.getUserMedia({video:true,audio:false}).then(stream=>{mediaStream=stream;video.srcObject=stream;}).catch(()=>alert('Kamera tidak dapat diakses. Izinkan akses kamera pada browser.'));
 }
