@@ -1644,7 +1644,7 @@ hr{border-color:#dbe4ee!important}
     color:#fff!important;
 }
 #loginPage .visual-bottom .footer-author strong{
-    font-weight:800!important;
+    font-weight:500!important;
 }
 @media(max-width:700px){
     #loginPage .visual-bottom .footer-credit{max-width:calc(100vw - 42px)!important;white-space:normal!important;}
@@ -1696,7 +1696,7 @@ hr{border-color:#dbe4ee!important}
 
             <div class="visual-bottom">
                 <div class="footer-credit footer-copyright">© 2026 SMA Negeri 1 Ma'u • Sistem Administrasi Guru Digital</div>
-                <div class="footer-credit footer-author">developer :<br><strong>SU@R GULO</strong><br><strong>Fpsg-06</strong></div>
+                <div class="footer-credit footer-author">Developer :<br><strong>SU@R GULO</strong><br><strong>Fpsg-06</strong></div>
             </div>
         </section>
 
@@ -1969,12 +1969,19 @@ hr{border-color:#dbe4ee!important}
                             <div class="materi-field"><label for="materiKelas">Kelas <span>*</span></label><select id="materiKelas"><option value="">Pilih kelas</option></select></div>
                             <div class="materi-field"><label for="materiPertemuan">Pertemuan Ke-</label><input type="number" id="materiPertemuan" min="1" max="50" placeholder="Contoh: 3"></div>
                             <div class="materi-field"><label for="materiSemester">Semester</label><select id="materiSemester"><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select></div>
+                            <div class="materi-field"><label for="materiElemen">Elemen</label><input type="text" id="materiElemen" placeholder="Contoh: Pemahaman Fisika"></div>
+                            <div class="materi-field"><label for="materiCP">Capaian Pembelajaran (CP)</label><textarea id="materiCP" rows="4" placeholder="Tuliskan Capaian Pembelajaran..."></textarea></div>
+                            <div class="materi-field"><label for="materiTP">Tujuan Pembelajaran (TP)</label><textarea id="materiTP" rows="4" placeholder="Tuliskan Tujuan Pembelajaran..."></textarea></div>
                         </div>
 
                         <div class="materi-form-section">
                             <div class="materi-section-title">📝 DETAIL & LAMPIRAN</div>
                             <div class="materi-field"><label for="materiDeskripsi">Deskripsi Materi <span>*</span></label><textarea id="materiDeskripsi" rows="5" placeholder="Tuliskan ringkasan atau deskripsi materi..."></textarea></div>
                             <div class="materi-field"><label for="materiTahun">Tahun Ajaran</label><input type="text" id="materiTahun" placeholder="Contoh: 2026/2027"></div>
+                            <div class="materi-field"><label for="materiTopik">Materi/Topik</label><input type="text" id="materiTopik" placeholder="Contoh: Hukum Newton"></div>
+                            <div class="materi-field"><label for="materiKegiatan">Kegiatan/Alur Pembelajaran</label><textarea id="materiKegiatan" rows="5" placeholder="Tuliskan kegiatan atau alur pembelajaran..."></textarea></div>
+                            <div class="materi-field"><label for="materiAlokasi">Alokasi Waktu</label><input type="text" id="materiAlokasi" placeholder="Contoh: 2 × 45 menit"></div>
+                            <div class="materi-field"><label for="materiAsesmen">Asesmen</label><textarea id="materiAsesmen" rows="4" placeholder="Tuliskan asesmen yang digunakan..."></textarea></div>
                             <div class="materi-source-tabs">
                                 <button type="button" id="materiSourceFileBtn" class="materi-source-btn active" onclick="setSumberMateri('file')">📎 Upload File</button>
                                 <button type="button" id="materiSourceLinkBtn" class="materi-source-btn" onclick="setSumberMateri('link')">🔗 Link Materi</button>
@@ -3129,7 +3136,11 @@ function applyFirebaseCollection(name,data){
     if(name==='pengumpulanTugas') pengumpulanTugas=clean;
     if(name==='absensiSesi') absensiSesi=clean;
   }finally{firebaseSyncing=false;}
+  if(name==='users'){
+    try{const session=getCurrentUser(); if(session){const fresh=clean.find(u=>String(u.username||'').toLowerCase()===String(session.username||'').toLowerCase()); if(fresh) originalLocalStorageSetItem('loginUser',JSON.stringify(fresh));}}catch(e){}
+  }
   if(typeof updateData==='function') updateData();
+  if(name==='jadwal' || name==='users') setTimeout(()=>{if(typeof renderDashboardJadwal==='function') renderDashboardJadwal();},0);
 }
 
 function startFirebaseSync(){
@@ -3849,8 +3860,8 @@ function getBiodataExportList(user=getCurrentUser()){
     if(isSiswaUser(user)){
         const st=getStudentProfileRecord(user); return st?[st]:[];
     }
-    if(isGuruUser(user)) return getGuruWaliStudents(user);
-    return [...siswa];
+    if(isGuruUser(user)) return getGuruWaliStudents(user).slice().sort((a,b)=>String(a.nama||'').localeCompare(String(b.nama||''),'id',{numeric:true,sensitivity:'base'}));
+    return [...siswa].sort((a,b)=>String(a.nama||'').localeCompare(String(b.nama||''),'id',{numeric:true,sensitivity:'base'}));
 }
 function getGuruWaliOptionsForDownload(user=getCurrentUser()){
     if(isGuruUser(user)) return [user];
@@ -3945,7 +3956,7 @@ function bukaHalamanUnduhAkun(){
     const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} showContent('unduhAkun'); const el=document.getElementById('downloadAkunRole'); if(!el)return; el.innerHTML=isAdminUser(user)?'<option value="siswa">Akun Siswa</option><option value="guru">Akun Guru</option>':'<option value="siswa">Akun Siswa</option>'; renderPreviewUnduhAkun();
 }
 function getAccountExportList(){
-    const user=getCurrentUser(), role=document.getElementById('downloadAkunRole')?.value||'siswa'; if(isGuruUser(user)&&role!=='siswa')return []; return users.filter(u=>u.role===role);
+    const user=getCurrentUser(), role=document.getElementById('downloadAkunRole')?.value||'siswa'; if(isGuruUser(user)&&role!=='siswa')return []; return users.filter(u=>u.role===role).slice().sort((a,b)=>String(a.nama||'').localeCompare(String(b.nama||''),'id',{numeric:true,sensitivity:'base'}));
 }
 function renderPreviewUnduhAkun(){
     const box=document.getElementById('previewUnduhAkun'); if(!box)return; const list=getAccountExportList();
@@ -3953,10 +3964,10 @@ function renderPreviewUnduhAkun(){
 }
 function downloadAkunExcel(){
     const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} const role=document.getElementById('downloadAkunRole')?.value||'siswa'; const list=getAccountExportList(); if(!list.length){alert('Tidak ada akun untuk diunduh.');return;}
-    const rows=list.map((u,i)=>[i+1,u.nama||'',u.gelar||'',u.username||'',u.nipNis||u.nis||'',u.role||'',u.kelas||'-',u.jenisKelamin||'',u.status||'aktif']); const ws=XLSX.utils.aoa_to_sheet([["SMA NEGERI 1 MA'U"],[`REKAP AKUN ${role.toUpperCase()}`],[],['No','Nama','Gelar','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status'],...rows]); ws['!cols']=[{wch:6},{wch:28},{wch:20},{wch:18},{wch:12},{wch:16},{wch:16},{wch:12}]; const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Data Akun');XLSX.writeFile(wb,`Data_Akun_${role}.xlsx`);
+    const rows=list.map((u,i)=>[i+1,u.nama||'',u.gelar||'',u.username||'',u.nipNis||u.nis||'',u.role||'',u.kelas||'-',u.jenisKelamin||'',u.status||'aktif']); const ws=XLSX.utils.aoa_to_sheet([["SMA NEGERI 1 MA'U"],[`REKAP AKUN ${role.toUpperCase()}`],[],['No','Nama','Gelar','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status'],...rows]); ws['!cols']=[{wch:6},{wch:28},{wch:20},{wch:18},{wch:14},{wch:16},{wch:16},{wch:16},{wch:18}]; const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Data Akun');XLSX.writeFile(wb,`Data_Akun_${role}.xlsx`);
 }
 function downloadAkunPDF(){
-    const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} const role=document.getElementById('downloadAkunRole')?.value||'siswa'; const list=getAccountExportList(); if(!list.length){alert('Tidak ada akun untuk diunduh.');return;} const {jsPDF}=window.jspdf; const doc=new jsPDF('l','mm','a4'); doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text("SMA NEGERI 1 MA'U",148,12,{align:'center'});doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text(`REKAP DATA AKUN ${role.toUpperCase()}`,148,19,{align:'center'}); const body=list.map((u,i)=>[i+1,u.nama||'-',u.username||'-',u.nipNis||u.nis||'-',u.role||'-',u.kelas||'-',u.jenisKelamin||'-',u.status||'aktif']); doc.autoTable({head:[['No','Nama','Gelar','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status']],body,startY:26,theme:'grid',styles:{fontSize:8},headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold'}}); doc.setFontSize(8);doc.text('Catatan: Password tidak ditampilkan dalam rekap untuk menjaga keamanan akun.',18,(doc.lastAutoTable?.finalY||180)+10); doc.save(`Data_Akun_${role}.pdf`);
+    const user=getCurrentUser(); if(!(isAdminUser(user)||isGuruUser(user))){alert('Akses ditolak.');return;} const role=document.getElementById('downloadAkunRole')?.value||'siswa'; const list=getAccountExportList(); if(!list.length){alert('Tidak ada akun untuk diunduh.');return;} const {jsPDF}=window.jspdf; const doc=new jsPDF('l','mm','a4'); doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text("SMA NEGERI 1 MA'U",148,12,{align:'center'});doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text(`REKAP DATA AKUN ${role.toUpperCase()}`,148,19,{align:'center'}); const body=list.map((u,i)=>[i+1,u.nama||'-',u.gelar||'-',u.username||'-',u.nipNis||u.nis||'-',u.role||'-',u.kelas||'-',u.jenisKelamin||'-',u.status||'aktif']); doc.autoTable({head:[['No','Nama','Gelar','Username','NIP / NIS','Role','Kelas','Jenis Kelamin','Status']],body,startY:26,theme:'grid',styles:{fontSize:8},headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold'}}); doc.setFontSize(8);doc.text('Catatan: Password tidak ditampilkan dalam rekap untuk menjaga keamanan akun.',18,(doc.lastAutoTable?.finalY||180)+10); doc.save(`Data_Akun_${role}.pdf`);
 }
 function kembaliDariUnduhAkun(){showContent('kelolaAkun');}
 
@@ -4393,7 +4404,7 @@ function bukaFormMateri(index=-1){
     if(index>=0) editMateri(index);
 }
 function resetFormMateri(){
-    ['materiJudul','materiDeskripsi','materiTahun','materiLink'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    ['materiJudul','materiDeskripsi','materiTahun','materiLink','materiElemen','materiCP','materiTP','materiTopik','materiKegiatan','materiAlokasi','materiAsesmen'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     document.getElementById('materiPertemuan').value=''; document.getElementById('materiSemester').value='Ganjil'; document.getElementById('editMateriIndex').value='-1';
     document.getElementById('judulFormMateri').innerText='Tambah Materi Baru'; document.getElementById('subjudulFormMateri').innerText='Lengkapi informasi materi sebelum disimpan.'; document.getElementById('btnSimpanMateri').innerText='Simpan Materi';
     document.getElementById('materiFile').value=''; document.getElementById('materiFilePreview').style.display='none'; document.getElementById('materiFilePreview').innerHTML=''; setSumberMateri('file'); populateMateriSelects();
@@ -4419,21 +4430,21 @@ async function simpanMateri(){
         if(file){ if(file.size>10*1024*1024){alert('Ukuran file maksimal 10 MB.');return;} attachment={type:'file',name:file.name,size:file.size,mime:file.type,data:await readFileAsDataURL(file)}; }
         else if(!attachment && !old){ attachment=null; }
     }
-    const record={judul,mapel,kelas,deskripsi,pertemuan:document.getElementById('materiPertemuan').value.trim(),semester:document.getElementById('materiSemester').value,tahunAjaran:document.getElementById('materiTahun').value.trim(),attachment,link:attachment?.type==='link'?attachment.url:'',dibuatOleh:old?.dibuatOleh||user.nama||'Pengguna',tanggalDibuat:old?.tanggalDibuat||new Date().toISOString()};
+    const record={judul,mapel,kelas,deskripsi,pertemuan:document.getElementById('materiPertemuan').value.trim(),semester:document.getElementById('materiSemester').value,tahunAjaran:document.getElementById('materiTahun').value.trim(),elemen:document.getElementById('materiElemen').value.trim(),cp:document.getElementById('materiCP').value.trim(),tp:document.getElementById('materiTP').value.trim(),materiTopik:document.getElementById('materiTopik').value.trim(),kegiatanAlur:document.getElementById('materiKegiatan').value.trim(),alokasiWaktu:document.getElementById('materiAlokasi').value.trim(),asesmen:document.getElementById('materiAsesmen').value.trim(),attachment,link:attachment?.type==='link'?attachment.url:'',dibuatOleh:old?.dibuatOleh||user.nama||'Pengguna',tanggalDibuat:old?.tanggalDibuat||new Date().toISOString()};
     if(idx>=0)materi[idx]=record; else materi.push(record);
     localStorage.setItem('materi',JSON.stringify(materi)); updateDashboardStats(); populateNilaiDropdowns(); alert(idx>=0?'Materi berhasil diperbarui.':'Materi berhasil ditambahkan.'); bukaDaftarMateri();
 }
 function tambahMateri(){bukaFormMateri();}
 function editMateri(index){
     const m=materi[index]; if(!m)return; document.getElementById('editMateriIndex').value=index; document.getElementById('judulFormMateri').innerText=`Edit Materi: ${m.judul}`; document.getElementById('subjudulFormMateri').innerText='Periksa kembali informasi materi sebelum diperbarui.'; document.getElementById('btnSimpanMateri').innerText='Perbarui Materi';
-    document.getElementById('materiJudul').value=m.judul||''; document.getElementById('materiDeskripsi').value=m.deskripsi||''; document.getElementById('materiPertemuan').value=m.pertemuan||''; document.getElementById('materiSemester').value=m.semester||'Ganjil'; document.getElementById('materiTahun').value=m.tahunAjaran||''; populateMateriSelects(m.mapel||'',m.kelas||'');
+    document.getElementById('materiJudul').value=m.judul||''; document.getElementById('materiDeskripsi').value=m.deskripsi||''; document.getElementById('materiPertemuan').value=m.pertemuan||''; document.getElementById('materiSemester').value=m.semester||'Ganjil'; document.getElementById('materiTahun').value=m.tahunAjaran||''; document.getElementById('materiElemen').value=m.elemen||''; document.getElementById('materiCP').value=m.cp||''; document.getElementById('materiTP').value=m.tp||''; document.getElementById('materiTopik').value=m.materiTopik||''; document.getElementById('materiKegiatan').value=m.kegiatanAlur||''; document.getElementById('materiAlokasi').value=m.alokasiWaktu||''; document.getElementById('materiAsesmen').value=m.asesmen||''; populateMateriSelects(m.mapel||'',m.kelas||'');
     document.getElementById('materiLink').value=m.attachment?.type==='link'?m.attachment.url:(m.link||''); setSumberMateri(m.attachment?.type==='link'?'link':'file');
     const box=document.getElementById('materiFilePreview'); if(m.attachment?.type==='file'){box.style.display='block';box.innerHTML=`📄 <strong>${escapeHtml(m.attachment.name)}</strong> &nbsp; File tersimpan. Pilih file baru jika ingin menggantinya.`;}
 }
 function lihatMateri(index){
     const m=materi[index]; if(!m)return; document.getElementById('materiListView').style.display='none';document.getElementById('materiFormView').style.display='none';document.getElementById('materiDetailView').style.display='block';
     let attachment=''; if(m.attachment?.type==='link'||m.link){const url=m.attachment?.url||m.link;attachment=`<div class="materi-attachment"><h4>🔗 Link Materi</h4><a href="${escapeHtml(url)}" target="_blank" rel="noopener">Buka Materi ↗</a></div>`;} else if(m.attachment?.type==='file'&&m.attachment.data){attachment=`<div class="materi-attachment"><h4>📎 File Materi</h4><a href="${m.attachment.data}" download="${escapeHtml(m.attachment.name)}">⬇️ Download ${escapeHtml(m.attachment.name)}</a></div>`;} else {attachment='<div class="materi-attachment"><span class="materi-no-attachment">Belum ada lampiran materi.</span></div>';}
-    document.getElementById('detailMateriContent').innerHTML=`<div class="materi-detail-mapel">${escapeHtml(m.mapel)} · ${escapeHtml(m.kelas)}</div><h3>${escapeHtml(m.judul)}</h3><div class="materi-detail-grid"><div class="materi-detail-item"><small>Guru/Pengunggah</small><strong>${escapeHtml(m.dibuatOleh||'-')}</strong></div><div class="materi-detail-item"><small>Pertemuan</small><strong>${escapeHtml(m.pertemuan||'-')}</strong></div><div class="materi-detail-item"><small>Semester</small><strong>${escapeHtml(m.semester||'-')}</strong></div><div class="materi-detail-item"><small>Tahun Ajaran</small><strong>${escapeHtml(m.tahunAjaran||'-')}</strong></div></div><div class="materi-detail-desc">${escapeHtml(m.deskripsi||'-').replace(/\n/g,'<br>')}</div>${attachment}`;
+    document.getElementById('detailMateriContent').innerHTML=`<div class="materi-detail-mapel">${escapeHtml(m.mapel)} · ${escapeHtml(m.kelas)}</div><h3>${escapeHtml(m.judul)}</h3><div class="materi-detail-grid"><div class="materi-detail-item"><small>Guru/Pengunggah</small><strong>${escapeHtml(m.dibuatOleh||'-')}</strong></div><div class="materi-detail-item"><small>Pertemuan</small><strong>${escapeHtml(m.pertemuan||'-')}</strong></div><div class="materi-detail-item"><small>Semester</small><strong>${escapeHtml(m.semester||'-')}</strong></div><div class="materi-detail-item"><small>Tahun Ajaran</small><strong>${escapeHtml(m.tahunAjaran||'-')}</strong></div></div><div class="materi-detail-grid" style="grid-template-columns:repeat(2,1fr);"><div class="materi-detail-item"><small>Elemen</small><strong>${escapeHtml(m.elemen||'-')}</strong></div><div class="materi-detail-item"><small>Materi/Topik</small><strong>${escapeHtml(m.materiTopik||'-')}</strong></div><div class="materi-detail-item"><small>Capaian Pembelajaran (CP)</small><strong>${escapeHtml(m.cp||'-').replace(/\n/g,'<br>')}</strong></div><div class="materi-detail-item"><small>Tujuan Pembelajaran (TP)</small><strong>${escapeHtml(m.tp||'-').replace(/\n/g,'<br>')}</strong></div><div class="materi-detail-item"><small>Kegiatan/Alur Pembelajaran</small><strong>${escapeHtml(m.kegiatanAlur||'-').replace(/\n/g,'<br>')}</strong></div><div class="materi-detail-item"><small>Alokasi Waktu</small><strong>${escapeHtml(m.alokasiWaktu||'-')}</strong></div><div class="materi-detail-item"><small>Asesmen</small><strong>${escapeHtml(m.asesmen||'-').replace(/\n/g,'<br>')}</strong></div></div><div class="materi-detail-desc">${escapeHtml(m.deskripsi||'-').replace(/\n/g,'<br>')}</div>${attachment}`;
 }
 function bukaModalHapusMateri(index){
     const user=JSON.parse(localStorage.getItem('loginUser'))||{}; if(!isStaffUser(user))return; pendingDeleteMateriIndex=index; const m=materi[index]; document.getElementById('hapusMateriNama').innerText=m?.judul||'-'; document.getElementById('hapusMateriKeterangan').innerText=`${m?.mapel||'-'} · ${m?.kelas||'-'}`; document.getElementById('modalHapusMateri').style.display='flex';
@@ -5432,7 +5443,7 @@ function renderJadwalHariIni(){
     if(!container) return;
     container.innerHTML = "";
 
-    let jadwalToday = jadwal.filter(j => j.hari.toLowerCase() === todayStr.toLowerCase());
+    let jadwalToday = jadwal.filter(j => normalizeName(j.hari) === normalizeName(todayStr));
     const loggedUser = getCurrentUser();
     if(loggedUser?.role === 'guru') jadwalToday = jadwalToday.filter(j => normalizeName(getScheduleTeacher(j)) === normalizeName(loggedUser.nama));
     if(loggedUser?.role === 'siswa') jadwalToday = jadwalToday.filter(j => normalizeName(j.kelas) === normalizeName(loggedUser.kelas));
@@ -5721,6 +5732,7 @@ function updateData(){
     updateAkunTable();
     populateNilaiDropdowns();
     updateDashboardStats();
+    renderDashboardJadwal();
     renderPengumuman();
     renderDashboardTugasNotifications();
     updateTugasTable();
