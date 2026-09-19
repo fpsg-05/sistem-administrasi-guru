@@ -1389,6 +1389,9 @@ canvas{ display: none; }
     --text-muted:#70829d;
     --border-color:#d6e0ec;
     --accent-color:#0e66c8;
+    #date{
+    color:#FDE68A !important;
+}
     --success-color:#20bf6b;
     --warning-color:#f5a623;
     --danger-color:#ef5350;
@@ -1396,14 +1399,20 @@ canvas{ display: none; }
 
 body:not(:has(#loginPage)),
 body:has(.dashboard[style*="display: block"]){
-    background:#0b2345;
+    background:#ffffff;
     color:#17355f;
 }
 
-.dashboard{background:#0b2345;color:#17355f;}
-.main{background:#0b2345!important;}
+.dashboard{
+    background:#ffffff!important;
+    color:#17355f;
+}
+
+.main{
+    background:#ffffff!important;
+}
 .sidebar{
-    background:linear-gradient(180deg,#ffffff 0%,#f7faff 100%);
+    background:linear-gradient(180deg,#38c1f8 0%,#38c1f8 100%);
     border-right:1px solid #000080;
     box-shadow:4px 0 18px rgba(31,73,125,.05);
 }
@@ -1418,23 +1427,26 @@ body:has(.dashboard[style*="display: block"]){
 
 .main{background:#eef3f9;}
 .header{
-    background:#ffffff;
+    background:#0707b7;
     border-color:#d6e0ec;
     box-shadow:0 8px 24px rgba(39,76,119,.07);
 }
-.header h1,.header h2,.header h3,.header p{color:#17355f;}
+.header h1,.header h2,.header h3,.header p{color:#ffffff;}
+.header > div:last-child p{
+    color:#fafafa !important;
+}
 .header .school-name,.header small{color:#70829d;}
 .user-avatar{background:linear-gradient(135deg,#0e68cb,#0875d1);border-color:#48b5ff;}
-.user-avatar.profile-photo-avatar{padding:0;overflow:hidden;background:#fff;}
+.user-avatar.profile-photo-avatar{padding:0;overflow:hidden;background:#ffffff;}
 .account-status-pending{background:#fff7ed!important;color:#c2410c!important;border-color:#fdba74!important;}
 
 .cards .card,.card{
     background:#ffffff;
-    border-color:#d6e0ec;
+    border-color:#ecedee;
     box-shadow:0 7px 20px rgba(39,76,119,.06);
 }
 .card-info h3{color:#70829d!important}
-.card-info h2{color:#17355f!important}
+.card-info h2{color:#000000!important}
 .icon-blue{background:#e7f4ff;color:#0e66c8}
 .icon-green{background:#e8f9f0;color:#18a85c}
 .icon-yellow{background:#fff5df;color:#d98a00}
@@ -1597,7 +1609,9 @@ hr{border-color:#dbe4ee!important}
 /* Jangan ubah halaman Login modern */
 #loginPage,
 #loginPage *{box-sizing:border-box}
-.dashboard,.dashboard .main{background:#0b2345!important;}
+.dashboard,.dashboard .main{
+    background:#ffffff!important;
+}
 #loginPage .visual-bottom{
     background:transparent!important;
     color:#fff!important;
