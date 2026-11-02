@@ -1684,6 +1684,116 @@ hr{border-color:#dbe4ee!important}
 #nilaiWorkspace table th:nth-child(2),#nilaiWorkspace table td:nth-child(2){text-align:left;min-width:190px;}
 #nilaiRombelCards button{min-height:76px;}
 </style>
+
+<style id="nilai-rombel-grid-improvement">
+/* Tata letak kartu rombel: 3 kolom dan 2 baris pada layar desktop */
+#nilaiRombelCards {
+    display: grid !important;
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+    margin: 18px 0 0 !important;
+    align-items: stretch;
+}
+#nilaiRombelCards button {
+    width: 100%;
+    min-width: 0;
+    min-height: 94px !important;
+    padding: 18px 20px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 7px;
+    text-align: left;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 13px !important;
+    background: var(--bg-card) !important;
+    color: var(--text-light) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,.10);
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+#nilaiRombelCards button:hover {
+    border-color: var(--accent-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(0,0,0,.16);
+}
+#nilaiRombelCards button b {
+    font-size: 15px !important;
+    line-height: 1.35;
+    font-weight: 750;
+}
+#nilaiRombelCards button small {
+    font-size: 12px;
+    line-height: 1.4;
+}
+/* Dropdown lama tetap tersedia untuk fungsi internal, tetapi tidak mengganggu tampilan kartu */
+#nilaiRombelCards + label,
+#nilaiRombelCards + label + select {
+    display: none !important;
+}
+#nilai > .staff-only {
+    width: 100%;
+}
+@media (max-width: 850px) {
+    #nilaiRombelCards {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+@media (max-width: 520px) {
+    #nilaiRombelCards {
+        grid-template-columns: 1fr !important;
+        gap: 11px !important;
+    }
+    #nilaiRombelCards button {
+        min-height: 78px !important;
+        padding: 14px 16px !important;
+    }
+}
+</style>
+
+
+<style id="data-siswa-class-navigation-style">
+#siswaRombelCards {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+    width:100%;
+    margin:14px 0 20px;
+}
+#siswaRombelCards .siswa-rombel-card {
+    width:100%;
+    min-width:0;
+    min-height:96px;
+    padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:7px;
+    text-align:left;
+    border:1px solid var(--border-color);
+    border-radius:13px;
+    background:var(--bg-card);
+    color:var(--text-light);
+    cursor:pointer;
+    box-shadow:0 2px 8px rgba(0,0,0,.09);
+    transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+#siswaRombelCards .siswa-rombel-card:hover {
+    border-color:var(--accent-color);
+    transform:translateY(-2px);
+    box-shadow:0 7px 18px rgba(0,0,0,.14);
+}
+#siswaRombelCards .siswa-rombel-card strong {font-size:15px;line-height:1.35;}
+#siswaRombelCards .siswa-rombel-card small {font-size:12px;color:var(--text-muted);}
+#siswaListView #filterKelasSiswa {display:none !important;}
+@media(max-width:850px){#siswaRombelCards{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:520px){
+    #siswaRombelCards{grid-template-columns:1fr;gap:11px;}
+    #siswaRombelCards .siswa-rombel-card{min-height:78px;padding:14px 16px;}
+    #siswaClassPicker .page-title-row{align-items:flex-start;gap:12px;flex-wrap:wrap;}
+}
+</style>
+
 </head>
 
 <body>
@@ -2098,8 +2208,28 @@ hr{border-color:#dbe4ee!important}
 
         <!-- DATA SISWA (ADMIN / GURU DAPAT MENGELOLA DATA SISWA) -->
         <div class="content" id="siswa">
-            <!-- DAFTAR DATA SISWA -->
-            <div id="siswaListView">
+            <!-- PILIH KELAS DATA SISWA -->
+            <div id="siswaClassPicker" style="display:none;">
+                <div class="page-title-row">
+                    <div>
+                        <h2>👨‍🎓 DATA SISWA SMAN 1 MA'U</h2>
+                        <p class="page-subtitle">Pilih rombongan belajar untuk melihat dan mengelola data siswa.</p>
+                    </div>
+                    <button class="btn-success" type="button" onclick="bukaHalamanUnduhBiodata()">📥 UNDUH BIODATA</button>
+                </div>
+                <h3 style="margin:18px 0 12px;color:var(--text-light);">Pilih Kelompok Kelas</h3>
+                <div id="siswaRombelCards"></div>
+            </div>
+            <!-- DAFTAR DATA SISWA PER KELAS -->
+
+            <div id="siswaListView" style="display:none;">
+                <div class="page-title-row" id="siswaClassDetailHeader">
+                    <div>
+                        <h2 id="siswaClassDetailTitle">DATA SISWA</h2>
+                        <p class="page-subtitle" id="siswaClassDetailSubtitle">Daftar siswa pada kelas terpilih.</p>
+                    </div>
+                    <button class="btn-back" type="button" onclick="kembaliPilihKelasSiswa()">⬅ Kembali ke Daftar Kelas</button>
+                </div>
                 <div class="page-title-row">
                     <div>
                         <h2>👨‍🎓 DATA SISWA SMAN 1 MA'U</h2>
@@ -5626,6 +5756,197 @@ showContent=function(id,fromHistory=false){
     <div class="modal-footer"><button class="btn-primary" type="button" onclick="tutupBiodataGuruWali()">Tutup</button></div>
   </div>
 </div>
+
+
+<script id="data-siswa-class-navigation">
+let siswaRombelAktif = '';
+
+/* Satu standar nama untuk enam rombongan belajar resmi. */
+const DAFTAR_ROMBEL_RESMI_SISWA = [
+    'X - Kreatif',
+    'X - Mandiri',
+    'XI - Jujur',
+    'XI - Religius',
+    'XII - Disiplin',
+    'XII - Toleransi'
+];
+
+function normalisasiNamaKelasSiswa(value){
+    return String(value || '')
+        .normalize('NFKC')
+        .toLocaleUpperCase('id')
+        .replace(/[^A-Z0-9]/g, '');
+}
+
+function getDaftarKelasSiswa(){
+    // Jangan mengambil nama kelas dari akun/jadwal. Gunakan daftar rombel resmi
+    // agar variasi seperti "X-KREATIF" dan "X - Kreatif" tidak menjadi kartu berbeda.
+    return DAFTAR_ROMBEL_RESMI_SISWA.slice();
+}
+
+function renderSiswaRombelCards(){
+    const box=document.getElementById('siswaRombelCards');
+    if(!box)return;
+    const classes=getDaftarKelasSiswa();
+    if(!classes.length){
+        box.innerHTML='<div style="padding:16px;border:1px dashed var(--border-color);border-radius:12px;color:var(--text-muted);">Belum ada kelas terdaftar. Tambahkan data siswa atau periksa data kelas.</div>';
+        return;
+    }
+    box.innerHTML=classes.map(k=>{
+        const count=siswa.filter(st=>normalisasiNamaKelasSiswa(st.kelas)===normalisasiNamaKelasSiswa(k)).length;
+        return `<button type="button" class="siswa-rombel-card" data-kelas="${escapeHtml(k)}" onclick="pilihKelasSiswa(this.dataset.kelas)">
+            <strong>${escapeHtml(k)}</strong>
+            <small>${count} siswa terdaftar</small>
+        </button>`;
+    }).join('');
+}
+
+function initSiswaRombelPage(){
+    const picker=document.getElementById('siswaClassPicker');
+    const list=document.getElementById('siswaListView');
+    const form=document.getElementById('siswaFormView');
+    if(!picker||!list||!form)return;
+    picker.style.display='block';
+    list.style.display='none';
+    form.style.display='none';
+    siswaRombelAktif='';
+    renderSiswaRombelCards();
+    populateFilterKelasSiswa();
+}
+
+function pilihKelasSiswa(kelas){
+    const valid=getDaftarKelasSiswa().find(k=>normalisasiNamaKelasSiswa(k)===normalisasiNamaKelasSiswa(kelas));
+    if(!valid)return;
+    siswaRombelAktif=valid;
+    const picker=document.getElementById('siswaClassPicker');
+    const list=document.getElementById('siswaListView');
+    const form=document.getElementById('siswaFormView');
+    if(picker)picker.style.display='none';
+    if(list)list.style.display='block';
+    if(form)form.style.display='none';
+    const title=document.getElementById('siswaClassDetailTitle');
+    const subtitle=document.getElementById('siswaClassDetailSubtitle');
+    if(title)title.textContent='DATA SISWA · '+valid;
+    if(subtitle)subtitle.textContent='Daftar siswa yang terdaftar pada kelas '+valid+'.';
+    populateFilterKelasSiswa();
+    const filter=document.getElementById('filterKelasSiswa');
+    if(filter)filter.value=valid;
+    const search=document.getElementById('filterNamaSiswa');
+    if(search)search.value='';
+    updateDataSiswaTable();
+}
+
+function kembaliPilihKelasSiswa(){
+    const picker=document.getElementById('siswaClassPicker');
+    const list=document.getElementById('siswaListView');
+    const form=document.getElementById('siswaFormView');
+    if(form)form.style.display='none';
+    if(list)list.style.display='none';
+    if(picker)picker.style.display='block';
+    siswaRombelAktif='';
+    renderSiswaRombelCards();
+}
+
+const _showContentSiswaClassOriginal = showContent;
+showContent = function(id, fromHistory=false){
+    const result=_showContentSiswaClassOriginal(id, fromHistory);
+    if(id==='siswa' && (isAdminUser(getCurrentUser())||isGuruUser(getCurrentUser()))){
+        initSiswaRombelPage();
+    }
+    return result;
+};
+
+const _bukaFormSiswaClassOriginal = bukaFormSiswa;
+bukaFormSiswa = function(index=-1){
+    if(!siswaRombelAktif && index===-1){
+        alert('Pilih kelas terlebih dahulu sebelum menambahkan siswa.');
+        return;
+    }
+    _bukaFormSiswaClassOriginal(index);
+    if(index===-1 && siswaRombelAktif){
+        populateKelasSiswa(siswaRombelAktif);
+    }
+};
+
+const _kembaliKeDaftarSiswaClassOriginal = kembaliKeDaftarSiswa;
+kembaliKeDaftarSiswa = function(){
+    _kembaliKeDaftarSiswaClassOriginal();
+    const list=document.getElementById('siswaListView');
+    const picker=document.getElementById('siswaClassPicker');
+    if(picker)picker.style.display='none';
+    if(list)list.style.display='block';
+    if(siswaRombelAktif){
+        const filter=document.getElementById('filterKelasSiswa');
+        if(filter)filter.value=siswaRombelAktif;
+        updateDataSiswaTable();
+    }
+};
+
+const _updateDataSiswaTableClassOriginal = updateDataSiswaTable;
+updateDataSiswaTable = function(){
+    if(!siswaRombelAktif){
+        const table=document.getElementById('dataSiswa');
+        if(table)table.innerHTML='';
+        return;
+    }
+    const keyword=(document.getElementById('filterNamaSiswa')?.value||'').trim().toLowerCase();
+    const table=document.getElementById('dataSiswa');
+    if(!table)return;
+    const filtered=siswa.filter(st=>{
+        const sameClass=normalisasiNamaKelasSiswa(st.kelas)===normalisasiNamaKelasSiswa(siswaRombelAktif);
+        const matchName=!keyword||String(st.nama||'').toLowerCase().includes(keyword)||String(st.nisn||'').includes(keyword);
+        return sameClass&&matchName;
+    });
+    table.innerHTML='';
+    if(!filtered.length){
+        table.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:28px;">Tidak ada data siswa pada kelas ini yang sesuai dengan pencarian.</td></tr>';
+        return;
+    }
+    filtered.forEach(st=>{
+        const originalIndex=siswa.indexOf(st);
+        const gender=st.jenisKelamin||'-';
+        const genderLabel=gender==='Laki-laki'?'♂ Laki-laki':gender==='Perempuan'?'♀ Perempuan':'-';
+        table.innerHTML+=`<tr>
+            <td>${originalIndex+1}</td>
+            <td>${escapeHtml(st.nisn||'Belum diisi')}</td>
+            <td>${escapeHtml(st.noKK||'-')}</td>
+            <td><strong>${escapeHtml(st.nama||'-')}</strong></td>
+            <td>${escapeHtml(genderLabel)}</td>
+            <td>${escapeHtml(st.kelas||'-')}</td>
+            <td>${escapeHtml(st.noHP||'-')}</td>
+            <td style="white-space:nowrap;">
+                ${(isAdminUser(getCurrentUser())||isGuruUser(getCurrentUser()))?`<button class="btn-edit-student" onclick="bukaFormSiswa(${originalIndex})">Edit</button>${isAdminUser(getCurrentUser())?`<button class="btn-danger" onclick="bukaModalHapusSiswa(${originalIndex})">Hapus</button>`:''}`:'<span style="color:var(--text-muted);font-size:12px;">Lihat saja</span>'}
+            </td>
+        </tr>`;
+    });
+    const subtitle=document.getElementById('siswaClassDetailSubtitle');
+    if(subtitle)subtitle.textContent=`${siswaRombelAktif} · ${filtered.length} siswa ditampilkan.`;
+};
+
+const _simpanDataSiswaClassOriginal = simpanDataSiswa;
+simpanDataSiswa = function(){
+    _simpanDataSiswaClassOriginal();
+    if(siswaRombelAktif && document.getElementById('siswaFormView')?.style.display==='none'){
+        const picker=document.getElementById('siswaClassPicker');
+        const list=document.getElementById('siswaListView');
+        if(picker)picker.style.display='none';
+        if(list)list.style.display='block';
+        const filter=document.getElementById('filterKelasSiswa');
+        if(filter)filter.value=siswaRombelAktif;
+        updateDataSiswaTable();
+        renderSiswaRombelCards();
+    }
+};
+
+const _konfirmasiHapusSiswaClassOriginal = konfirmasiHapusSiswa;
+konfirmasiHapusSiswa = function(){
+    _konfirmasiHapusSiswaClassOriginal();
+    if(siswaRombelAktif){
+        updateDataSiswaTable();
+        renderSiswaRombelCards();
+    }
+};
+</script>
 
 </body>
 </html>
