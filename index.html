@@ -1794,6 +1794,37 @@ hr{border-color:#dbe4ee!important}
 }
 </style>
 
+
+<style id="nilai-landing-match-data-siswa">
+#nilai > .page-title-row { margin-bottom:24px; }
+#nilai > .staff-only { display:block !important; width:100% !important; }
+#nilai > .staff-only > h3 { display:block !important; width:100% !important; margin:18px 0 12px !important; }
+#nilaiRombelCards { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:16px !important; width:100% !important; margin:14px 0 20px !important; align-items:stretch; }
+#nilaiRombelCards button { width:100% !important; min-width:0; min-height:96px !important; padding:18px 20px !important; display:flex; flex-direction:column; justify-content:center; gap:7px; text-align:left !important; border:1px solid var(--border-color) !important; border-radius:13px !important; background:var(--bg-card) !important; color:var(--text-light) !important; box-shadow:0 2px 8px rgba(0,0,0,.09); }
+#nilaiRombelCards button b { font-size:15px !important; line-height:1.35; font-weight:750; }
+#nilaiRombelCards button small { font-size:12px !important; line-height:1.4; color:var(--text-muted) !important; }
+@media(max-width:850px){#nilaiRombelCards{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}}
+@media(max-width:520px){#nilai > .page-title-row{align-items:flex-start;gap:12px;flex-wrap:wrap;}#nilaiRombelCards{grid-template-columns:1fr !important;gap:11px !important;}#nilaiRombelCards button{min-height:78px !important;padding:14px 16px !important;}}
+</style>
+
+
+<style id="hide-legacy-nilai-form-final">
+/* Sembunyikan form input nilai lama pada halaman awal Nilai Siswa.
+   Form pengelolaan nilai per rombel tetap menggunakan #nilaiWorkspace di halaman detail. */
+#nilai #formNilaiSiswa,
+#nilai #nilaiLegacyTableWrap {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: hidden !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -2511,19 +2542,26 @@ hr{border-color:#dbe4ee!important}
 
         <!-- NILAI SISWA -->
         <div class="content" id="nilai">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2>📊 PENILAIAN SISWA & REKAP RAPOR</h2>
-                <button class="staff-only btn-success" onclick="bukaHalamanUnduhNilai()" style="padding: 10px 18px; border-radius: 8px;">
-                    📥 Unduh Rekap Nilai
+            <div class="page-title-row">
+                <div>
+                    <h2>📊 PENILAIAN SISWA &amp; REKAP RAPOR</h2>
+                    <p class="page-subtitle">Pilih rombongan belajar untuk melihat dan mengelola nilai siswa.</p>
+                </div>
+                <button class="staff-only btn-success" type="button" onclick="bukaHalamanUnduhNilai()" style="padding:10px 18px;border-radius:8px;">
+                    📥 UNDUH REKAP NILAI
                 </button>
             </div>
-            <div class="staff-only" style="margin:14px 0 18px;">
-                <div style="font-weight:700;margin-bottom:10px;color:var(--text-light);">Pilih Rombel untuk mengelola nilai</div>
-                <div id="nilaiRombelCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:14px;"></div>
-                <label style="font-size:12px;color:var(--accent-color);display:block;margin-bottom:6px;">Rombel aktif</label>
-                <select id="nilaiKelas" onchange="pilihRombelNilai(this.value)" style="width:100%;max-width:420px;">
+            <div class="staff-only" style="width:100%;margin:0 0 18px;">
+                <h3 style="margin:18px 0 12px;color:var(--text-light);">Pilih Kelompok Kelas</h3>
+                <div id="nilaiRombelCards" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%;"></div>
+                <label for="nilaiKelas" style="display:none;">Rombel aktif</label>
+                <select id="nilaiKelas" onchange="pilihRombelNilai(this.value)" aria-label="Rombel aktif" style="display:none;">
                     <option value="">-- Pilih Rombel Terlebih Dahulu --</option>
                 </select>
+            </div>
+            <div class="staff-only" id="nilaiLandingGuide" style="margin:18px 0 8px;padding:18px 20px;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-card);color:var(--text-light);">
+                <strong style="display:block;font-size:15px;margin-bottom:6px;">Petunjuk Pengelolaan Nilai</strong>
+                <p style="margin:0;color:var(--text-muted);font-size:13px;line-height:1.6;">Silakan pilih kelompok kelas di atas untuk mulai mengelola nilai. Setelah kelas dipilih, tentukan mata pelajaran, lalu masukkan atau perbarui nilai siswa. Pastikan kelas dan mata pelajaran sudah sesuai sebelum menyimpan perubahan.</p>
             </div>
             <div id="nilaiWorkspace" class="staff-only" style="display:none;margin:18px 0;">
                 <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;">
@@ -2542,7 +2580,7 @@ hr{border-color:#dbe4ee!important}
                     <table style="min-width:900px;width:100%;"><thead id="nilaiWorkspaceHead"></thead><tbody id="nilaiWorkspaceBody"></tbody></table>
                 </div>
             </div>
-            <div class="staff-only form-box" id="formNilaiSiswa" style="opacity:.65;">
+            <div class="staff-only form-box" id="formNilaiSiswa" style="display:none !important;">
                 <input type="hidden" id="editNilaiIndex" value="-1">
                 
                 <label style="font-size:12px; color:var(--accent-color);">Pilih Siswa & Mata Pelajaran:</label>
@@ -2605,7 +2643,7 @@ hr{border-color:#dbe4ee!important}
                 <button class="btn-primary" id="btnSimpanNilai" onclick="simpanNilai()">+ INPUT / SIMPAN NILAI</button>
             </div>
 
-            <div style="overflow-x: auto;">
+            <div id="nilaiLegacyTableWrap" style="display:none !important;overflow-x:auto;">
                 <table>
                     <thead id="headerTabelNilai">
                         <tr>
