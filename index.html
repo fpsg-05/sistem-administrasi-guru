@@ -3305,42 +3305,88 @@ const firebaseConfig = {
 };
 
 let firebaseApp=null, firebaseAuth=null, firebaseDb=null, firebaseReady=false;
-let firebaseSyncing=false, firebaseListenersStarted=false;
+let firebaseSyncing=false, firebaseListenersStarted=false, firebaseAuthPromise=null;
+const firebaseKnownDocs=Object.create(null);
+const firebaseSaveQueues=Object.create(null);
+const firebaseInitialSnapshots=new Set();
+let resolveFirebaseInitialSync, rejectFirebaseInitialSync;
+const firebaseInitialSyncPromise=new Promise((resolve,reject)=>{resolveFirebaseInitialSync=resolve;rejectFirebaseInitialSync=reject;});
 const FIREBASE_COLLECTIONS=[
   "users","siswa","jadwal","absensi","materi","nilai","nilaiHarian","nilaiTugas",
   "komponenTambahan","pengumuman","tugas","pengumpulanTugas","absensiSesi"
 ];
 
 function cloneData(v){ try{return JSON.parse(JSON.stringify(v??{}));}catch(e){return {};}}
-function firebaseDocId(item,index){
+function firebaseDocId(item,index,name=''){
   if(item && item._firebaseId) return String(item._firebaseId);
   if(item && item.id!==undefined && item.id!==null && String(item.id).trim()) return String(item.id);
-  if(item && item.nisn) return 'nisn_'+String(item.nisn).replace(/[^a-zA-Z0-9_-]/g,'_');
+  const safe=v=>String(v??'').trim().replace(/[^a-zA-Z0-9_-]/g,'_');
+  if(name==='nilai' && item?.nisn && item?.mapel) return 'nilai_'+safe(item.nisn)+'_'+safe(normalizeName(item.mapel));
+  if(item && item.username) return 'username_'+safe(item.username);
+  if(item && item.nisn) return 'nisn_'+safe(item.nisn);
   return 'item_'+index;
 }
-
-async function firebaseSaveCollection(name,list){
-  if(!firebaseReady || !firebaseDb || !firebaseAuth?.currentUser) throw new Error('Firebase belum siap.');
-  const arr=Array.isArray(list)?cloneData(list):[];
-  const col=firebaseDb.collection(name);
-  const existing=await col.get();
-  const wanted=new Set();
-  const ops=[];
-  arr.forEach((item,i)=>{
-    const id=firebaseDocId(item,i); wanted.add(id);
-    const data=cloneData(item); data._firebaseId=id;
-    ops.push({type:'set',ref:col.doc(id),data});
-  });
-  existing.forEach(doc=>{if(!wanted.has(doc.id)) ops.push({type:'delete',ref:doc.ref});});
-  for(let i=0;i<ops.length;i+=450){
-    const batch=firebaseDb.batch();
-    ops.slice(i,i+450).forEach(op=>op.type==='delete'?batch.delete(op.ref):batch.set(op.ref,op.data,{merge:true}));
-    await batch.commit();
+function firebaseStableStringify(value){
+  const normalize=v=>Array.isArray(v)?v.map(normalize):(v&&typeof v==='object'?Object.keys(v).filter(k=>k!=='_firebaseId').sort().reduce((o,k)=>(o[k]=normalize(v[k]),o),{}):v);
+  return JSON.stringify(normalize(value));
+}
+async function ensureFirebaseConnected(){
+  if(!firebaseReady||!firebaseDb||!firebaseAuth) throw new Error('Firebase belum siap. Periksa konfigurasi dan koneksi.');
+  if(!firebaseAuth.currentUser){
+    if(!firebaseAuthPromise) firebaseAuthPromise=firebaseAuth.signInAnonymously();
+    await firebaseAuthPromise;
   }
+  if(!firebaseListenersStarted) startFirebaseSync();
+  await firebaseInitialSyncPromise;
+  if(!firebaseAuth.currentUser) throw new Error('Autentikasi Firebase belum berhasil.');
+}
+async function firebaseSaveCollection(name,list){
+  if(!FIREBASE_COLLECTIONS.includes(name)) throw new Error('Nama koleksi Firebase tidak dikenal: '+name);
+  await ensureFirebaseConnected();
+  const run=async()=>{
+    const arr=Array.isArray(list)?cloneData(list):[];
+    const baseline=firebaseKnownDocs[name]||new Map();
+    const desired=new Map();
+    arr.forEach((item,i)=>{
+      const id=firebaseDocId(item,i,name);
+      const data={...cloneData(item),_firebaseId:id};
+      desired.set(id,data);
+    });
+    const ops=[];
+    desired.forEach((data,id)=>{
+      const previous=baseline.get(id);
+      if(!previous || firebaseStableStringify(previous)!==firebaseStableStringify(data)){
+        ops.push({type:'set',ref:firebaseDb.collection(name).doc(id),data});
+      }
+    });
+    // Hanya hapus dokumen yang memang pernah diterima pada snapshot perangkat ini.
+    // Dokumen baru dari perangkat lain yang belum masuk snapshot tidak akan ikut terhapus.
+    baseline.forEach((previous,id)=>{
+      if(!desired.has(id)) ops.push({type:'delete',ref:firebaseDb.collection(name).doc(id)});
+    });
+    for(let i=0;i<ops.length;i+=450){
+      const batch=firebaseDb.batch();
+      ops.slice(i,i+450).forEach(op=>op.type==='delete'?batch.delete(op.ref):batch.set(op.ref,op.data));
+      await batch.commit();
+    }
+    // Gabungkan hasil commit dengan snapshot terbaru agar dokumen baru dari perangkat lain tetap tercatat.
+    const next=new Map(firebaseKnownDocs[name]||baseline);
+    baseline.forEach((_,id)=>{if(!desired.has(id))next.delete(id);});
+    ops.forEach(op=>{
+      const id=op.ref.id;
+      if(op.type==='delete')next.delete(id);
+      else next.set(id,cloneData(op.data));
+    });
+    firebaseKnownDocs[name]=next;
+  };
+  const previous=firebaseSaveQueues[name]||Promise.resolve();
+  const task=previous.catch(()=>{}).then(run);
+  firebaseSaveQueues[name]=task;
+  try{return await task;}finally{if(firebaseSaveQueues[name]===task)delete firebaseSaveQueues[name];}
 }
 
 function applyFirebaseCollection(name,data){
-  const clean=(Array.isArray(data)?data:[]).map(x=>{const y=cloneData(x);delete y._firebaseId;return y;});
+  const clean=(Array.isArray(data)?data:[]).map(x=>cloneData(x));
   firebaseSyncing=true;
   try{
     window[name]=clean;
@@ -3370,12 +3416,21 @@ function startFirebaseSync(){
   firebaseListenersStarted=true;
   const listen=()=>FIREBASE_COLLECTIONS.forEach(name=>{
     firebaseDb.collection(name).onSnapshot(snapshot=>{
-      applyFirebaseCollection(name,snapshot.docs.map(d=>d.data()));
-    },err=>console.error('Firebase realtime '+name+' gagal:',err));
+      const rows=snapshot.docs.map(d=>({...d.data(),_firebaseId:d.id}));
+      firebaseKnownDocs[name]=new Map(rows.map(row=>[String(row._firebaseId),cloneData(row)]));
+      applyFirebaseCollection(name,rows);
+      firebaseInitialSnapshots.add(name);
+      if(firebaseInitialSnapshots.size===FIREBASE_COLLECTIONS.length) resolveFirebaseInitialSync();
+    },err=>{
+      console.error('Firebase realtime '+name+' gagal:',err);
+      if(!firebaseInitialSnapshots.has(name)) rejectFirebaseInitialSync(new Error('Gagal membaca koleksi '+name+': '+(err?.message||err)));
+    });
   });
   if(firebaseAuth?.currentUser){listen();return;}
-  firebaseAuth.signInAnonymously().then(listen).catch(err=>{
+  if(!firebaseAuthPromise) firebaseAuthPromise=firebaseAuth.signInAnonymously();
+  firebaseAuthPromise.then(listen).catch(err=>{
     firebaseListenersStarted=false;
+    rejectFirebaseInitialSync(new Error('Autentikasi Firebase gagal: '+(err?.message||err)));
     console.error('Firebase Anonymous Auth gagal:',err);
   });
 }
@@ -3393,8 +3448,8 @@ function initFirebaseBackend(){
 const originalLocalStorageSetItem=localStorage.setItem.bind(localStorage);
 localStorage.setItem=function(key,value){
   if(FIREBASE_COLLECTIONS.includes(key)){
-    if(firebaseReady && firebaseAuth?.currentUser && !firebaseSyncing){
-      try{firebaseSaveCollection(key,JSON.parse(value)).catch(e=>console.error('Gagal menyimpan '+key,e));}catch(e){console.error(e);}
+    if(!firebaseSyncing){
+      try{firebaseSaveCollection(key,JSON.parse(value)).catch(e=>console.error('Gagal menyimpan '+key,e));}catch(e){console.error('Data '+key+' tidak valid:',e);}
     }
     return;
   }
@@ -4922,10 +4977,36 @@ function renderKomponenDinamisForm(){let box=document.getElementById('containerK
 function tentukanPredikat(nilaiAkhir){const n=Number(nilaiAkhir);if(!Number.isFinite(n))return '';if(n>=90)return 'A';if(n>=80)return 'B';if(n>=70)return 'C';if(n>=60)return 'D';return 'E';}
 function hitungNilaiOtomatis(){const tugas=Number(document.getElementById('nilaiTugasForm')?.value)||0,uts=Number(document.getElementById('nilaiUTS')?.value)||0,uas=Number(document.getElementById('nilaiUAS')?.value)||0,bobot=(tugas*.2)+(uts*.3)+(uas*.5),extras=komponenTambahan.map(c=>Number(document.getElementById('input_'+c.key)?.value)||0),akhir=extras.length?Math.round(bobot*.8+(extras.reduce((a,b)=>a+b,0)/extras.length)*.2):Math.round(bobot),nilaiAkhirEl=document.getElementById('nilaiAkhir'),predikatEl=document.getElementById('nilaiGrade');if(nilaiAkhirEl)nilaiAkhirEl.value=akhir;if(predikatEl)predikatEl.value=tentukanPredikat(akhir);}
 function findNilaiMainIndex(st,mapel){const key=nilaiStudentKey(st);return nilai.findIndex(n=>getNilaiRecordStudentKey(n)===key&&normalizeName(n.mapel)===normalizeName(mapel));}
-function simpanNilai(){const user=getCurrentUser();if(!isStaffUser(user)){alert('Akses ditolak.');return;}const index=Number(document.getElementById('editNilaiIndex').value),st=getSelectedNilaiStudent(),mapel=document.getElementById('nilaiMapel').value;if(!nilaiRombelAktif){alert('Pilih rombel terlebih dahulu.');return;}if(!st||!mapel){alert('Pilih siswa dan mata pelajaran!');return;}if(isAmbiguousNilaiStudent(st)){alert('NISN siswa kosong atau ganda. Perbaiki NISN pada Data Siswa sebelum menyimpan nilai agar data tidak tertukar.');return;}const getNum=id=>{const v=document.getElementById(id).value;if(v===''||v==null)return 0;const n=Number(v);return Number.isFinite(n)&&n>=0&&n<=100?n:null;};hitungNilaiOtomatis();const tugas=getNum('nilaiTugasForm'),uts=getNum('nilaiUTS'),uas=getNum('nilaiUAS'),angka=getNum('nilaiAkhir');if([tugas,uts,uas,angka].some(v=>v===null)){alert('Semua nilai harus berada pada rentang 0 sampai 100.');return;}const extra={};for(const c of komponenTambahan){const v=getNum('input_'+c.key);if(v===null){alert(`Nilai ${c.label} harus 0 sampai 100.`);return;}extra[c.key]=v;}const old=index>=0?nilai[index]:null;const existingIndex=index>=0?index:findNilaiMainIndex(st,mapel);const data={...(old||{}),nama:st.nama,nisn:nilaiNisn(st.nisn),mapel,kelas:st.kelas,kehadiran:document.getElementById('nilaiKehadiran').value||'100%',tugas,uts,uas,extra,angka,grade:tentukanPredikat(angka),dibuatOleh:old?.dibuatOleh||user.nama||user.username};if(existingIndex>=0)nilai[existingIndex]=data;else nilai.push(data);localStorage.setItem('nilai',JSON.stringify(nilai));alert('Nilai berhasil disimpan pada rombel '+st.kelas+'.');resetFormNilai();updateNilaiTable();}
+async function simpanNilai(){
+    const user=getCurrentUser();
+    if(!isStaffUser(user)){alert('Akses ditolak.');return;}
+    const index=Number(document.getElementById('editNilaiIndex').value),st=getSelectedNilaiStudent(),mapel=document.getElementById('nilaiMapel').value;
+    if(!nilaiRombelAktif){alert('Pilih rombel terlebih dahulu.');return;}
+    if(!st||!mapel){alert('Pilih siswa dan mata pelajaran!');return;}
+    if(isAmbiguousNilaiStudent(st)){alert('NISN siswa kosong atau ganda. Perbaiki NISN pada Data Siswa sebelum menyimpan nilai agar data tidak tertukar.');return;}
+    const getNum=id=>{const v=document.getElementById(id).value;if(v===''||v==null)return 0;const n=Number(v);return Number.isFinite(n)&&n>=0&&n<=100?n:null;};
+    hitungNilaiOtomatis();
+    const tugas=getNum('nilaiTugasForm'),uts=getNum('nilaiUTS'),uas=getNum('nilaiUAS'),angka=getNum('nilaiAkhir');
+    if([tugas,uts,uas,angka].some(v=>v===null)){alert('Semua nilai harus berada pada rentang 0 sampai 100.');return;}
+    const extra={};
+    for(const c of komponenTambahan){const v=getNum('input_'+c.key);if(v===null){alert(`Nilai ${c.label} harus 0 sampai 100.`);return;}extra[c.key]=v;}
+    const before=cloneData(nilai),old=index>=0?nilai[index]:null,existingIndex=index>=0?index:findNilaiMainIndex(st,mapel);
+    const data={...(old||{}),nama:st.nama,nisn:nilaiNisn(st.nisn),mapel,kelas:st.kelas,kehadiran:document.getElementById('nilaiKehadiran').value||'100%',tugas,uts,uas,extra,angka,grade:tentukanPredikat(angka),dibuatOleh:old?.dibuatOleh||user.nama||user.username};
+    if(existingIndex>=0)nilai[existingIndex]=data;else nilai.push(data);
+    try{
+        await firebaseSaveCollection('nilai',nilai);
+        alert('Nilai berhasil disimpan ke Firebase pada rombel '+st.kelas+'.');
+        resetFormNilai();updateNilaiTable();
+    }catch(error){
+        nilai=before;window.nilai=nilai;
+        console.error('Gagal menyimpan nilai:',error);
+        updateNilaiTable();
+        alert('Nilai BELUM berhasil disimpan ke Firebase. Data tidak dikonfirmasi tersimpan.\n\n'+(error?.message||error));
+    }
+}
 function editNilai(i){const n=nilai[i],st=resolveNilaiStudent(n);if(!n)return;if(!st){alert('Identitas siswa pada catatan lama belum dapat dipastikan. Data tetap aman. Periksa NISN dan rombel siswa terlebih dahulu.');return;}nilaiRombelAktif=st.kelas;const kelas=document.getElementById('nilaiKelas');if(kelas)kelas.value=st.kelas;populateNilaiDropdowns();document.getElementById('nilaiNama').value=nilaiStudentKey(st);document.getElementById('nilaiMapel').value=n.mapel;document.getElementById('editNilaiIndex').value=i;document.getElementById('nilaiKehadiran').value=n.kehadiran||'100%';document.getElementById('nilaiTugasForm').value=n.tugas??0;document.getElementById('nilaiUTS').value=n.uts??0;document.getElementById('nilaiUAS').value=n.uas??0;komponenTambahan.forEach(c=>{const el=document.getElementById('input_'+c.key);if(el)el.value=n.extra?.[c.key]??0;});document.getElementById('nilaiAkhir').value=n.angka??0;hitungNilaiOtomatis();document.getElementById('btnSimpanNilai').innerText='UPDATE DATA NILAI';renderNilaiRombelCards();document.getElementById('formNilaiSiswa')?.scrollIntoView({behavior:'smooth',block:'start'});}
 function resetFormNilai(){document.getElementById('editNilaiIndex').value='-1';document.getElementById('nilaiNama').value='';document.getElementById('nilaiMapel').value='';document.getElementById('nilaiKehadiran').value='';['nilaiTugasForm','nilaiUTS','nilaiUAS','nilaiAkhir'].forEach(id=>document.getElementById(id).value='');komponenTambahan.forEach(c=>{const el=document.getElementById('input_'+c.key);if(el)el.value='';});document.getElementById('nilaiGrade').value='A';document.getElementById('btnSimpanNilai').innerText='+ INPUT / SIMPAN NILAI';}
-function hapusNilai(i){if(!isStaffUser(getCurrentUser())){alert('Akses ditolak.');return;}if(confirm('Hapus catatan nilai ini?')){nilai.splice(i,1);localStorage.setItem('nilai',JSON.stringify(nilai));updateNilaiTable();}}
+async function hapusNilai(i){if(!isStaffUser(getCurrentUser())){alert('Akses ditolak.');return;}if(!confirm('Hapus catatan nilai ini?'))return;const before=cloneData(nilai);nilai.splice(i,1);try{await firebaseSaveCollection('nilai',nilai);updateNilaiTable();alert('Catatan nilai berhasil dihapus dari Firebase.');}catch(error){nilai=before;window.nilai=nilai;updateNilaiTable();console.error(error);alert('Catatan nilai gagal dihapus dari Firebase.\n\n'+(error?.message||error));}}
 function updateNilaiTable(){const user=getCurrentUser(),header=document.getElementById('headerTabelNilai'),table=document.getElementById('dataNilai');if(!header||!table)return;renderNilaiRombelCards();const extraHeaders=komponenTambahan.map(c=>`<th>${escapeHtml(c.label)}</th>`).join('');header.innerHTML=`<tr><th>No</th><th>Nama Siswa</th><th>Rombel</th><th>Mata Pelajaran</th><th>Kehadiran</th><th>Nilai Harian</th><th>Tugas</th><th>UTS</th><th>UAS</th>${extraHeaders}<th>Nilai Akhir</th><th>Grade</th>${isStaffUser(user)?'<th>Aksi</th>':''}</tr>`;let filtered=isStaffUser(user)?nilai.map((n,i)=>({n,i})).filter(x=>!nilaiRombelAktif||normalizeName(x.n.kelas||resolveNilaiStudent(x.n)?.kelas)===normalizeName(nilaiRombelAktif)):nilai.map((n,i)=>({n,i})).filter(x=>normalizeName(x.n.nama)===normalizeName(user.nama));table.innerHTML=filtered.length?'':'<tr><td colspan="14" style="text-align:center;padding:25px;color:var(--text-muted)">'+(nilaiRombelAktif?'Belum ada nilai pada rombel ini.':'Pilih rombel untuk menampilkan rekap nilai.')+'</td></tr>';filtered.forEach(({n,i},ri)=>{const st=resolveNilaiStudent(n),kelas=n.kelas||st?.kelas||'-',extra=komponenTambahan.map(c=>`<td>${n.extra?.[c.key]??0}</td>`).join(''),aksi=isStaffUser(user)?`<td><button class="btn-warning" onclick="editNilai(${i})">Edit</button> <button class="btn-danger" onclick="hapusNilai(${i})">Hapus</button></td>`:'';table.innerHTML+=`<tr><td>${ri+1}</td><td>${escapeHtml(n.nama||'-')}</td><td>${escapeHtml(kelas)}</td><td>${escapeHtml(n.mapel||'-')}</td><td>${escapeHtml(n.kehadiran||'100%')}</td><td class="nilai-harian-cell">${getNilaiHarianDisplay(n)}</td><td>${getNilaiTugasRecord(n.nama,n.mapel,n.nisn,n.kelas)?.rataRata??n.tugas??0}</td><td>${n.uts??0}</td><td>${n.uas??0}</td>${extra}<td><b>${n.angka??0}</b></td><td><span class="grade-badge grade-${String(n.grade||'c').toLowerCase()}">${escapeHtml(n.grade||'C')}</span></td>${aksi}</tr>`;});}
 function initNilaiPage(){const user=getCurrentUser();if(!isStaffUser(user))return;renderNilaiRombelCards();if(nilaiRombelAktif){const el=document.getElementById('nilaiKelas');if(el)el.value=nilaiRombelAktif;}populateNilaiDropdowns();updateNilaiTable();}
 
@@ -4949,7 +5030,29 @@ function getNilaiHarianRowRecord(rowIndex){const tr=document.querySelector(`tr[d
 function updateNilaiHarianRow(rowIndex){const rec=getNilaiHarianRowRecord(rowIndex);if(!rec)return;const total=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0),el=document.getElementById(`nh_total_${rowIndex}`);if(el)el.textContent=Math.round(total*100)/100;updateNilaiHarianSummary(getStudentsForNilaiHarian());}
 function updateNilaiHarianSummary(students){let total=0;const jumlah=Math.min(20,Math.max(1,Number(document.getElementById('nilaiHarianJumlahPertemuan')?.value||10)));students.forEach((st,idx)=>{const rec=getNilaiHarianRowRecord(idx);if(rec)total+=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0);});const avg=students.length?Math.round(total/(students.length*jumlah*3)*100)/100:0;const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};set('nilaiHarianJumlahSiswa',students.length);set('nilaiHarianTotalSemua',Math.round(total*100)/100);set('nilaiHarianRataSemua',avg);}
 function simpanNilaiHarianRecord(rec,user){const key=getNilaiHarianKey(rec.nama,rec.mapel,rec.nisn,rec.kelas),old=getNilaiHarianRecord(rec.nama,rec.mapel,rec.nisn,rec.kelas),total=rec.pertemuan.reduce((s,x)=>s+nilaiHarianNumber(x.afektif)+nilaiHarianNumber(x.kognitif)+nilaiHarianNumber(x.psikomotorik),0),final=Math.round(total/(rec.jumlah*3)*100)/100,saved={id:old?.id||('nilaiHarian_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),key,nama:rec.nama,nisn:rec.nisn,kelas:rec.kelas,mapel:rec.mapel,jumlahPertemuan:rec.jumlah,pertemuan:rec.pertemuan,jumlah:Math.round(total*100)/100,nilaiAkhir:final,statusFinal:'selesai',diperbaruiOleh:user.nama||user.username||'Pengguna',diperbaruiPada:new Date().toISOString()};const idx=old?nilaiHarian.indexOf(old):-1;if(idx>=0)nilaiHarian[idx]=saved;else nilaiHarian.push(saved);let mainIdx=nilai.findIndex(n=>getNilaiRecordStudentKey(n)===nilaiStudentKey({nama:rec.nama,nisn:rec.nisn,kelas:rec.kelas})&&normalizeName(n.mapel)===normalizeName(rec.mapel));if(mainIdx>=0)nilai[mainIdx]={...nilai[mainIdx],nisn:rec.nisn,nilaiHarian:final};else nilai.push({nama:rec.nama,nisn:rec.nisn,kelas:rec.kelas,mapel:rec.mapel,kehadiran:'100%',tugas:0,uts:0,uas:0,nilaiHarian:final,angka:0,grade:'C'});}
-function simpanSemuaNilaiHarian(){const user=getCurrentUser();if(!isStaffUser(user))return;const kelas=document.getElementById('filterNilaiHarianKelas')?.value||'',mapel=document.getElementById('filterNilaiHarianMapel')?.value||'';if(!kelas||!mapel){alert('Pilih rombel dan mata pelajaran terlebih dahulu.');return;}const students=getStudentsForNilaiHarian();if(!students.length){alert('Tidak ada siswa pada rombel ini.');return;}for(let idx=0;idx<students.length;idx++){const rec=getNilaiHarianRowRecord(idx);if(!rec)continue;const student=rec.nisn?siswa.find(st=>nilaiNisn(st.nisn)===nilaiNisn(rec.nisn)):siswa.find(st=>normalizeName(st.nama)===normalizeName(rec.nama)&&normalizeName(st.kelas)===normalizeName(rec.kelas));if(!student||isAmbiguousNilaiStudent(student)){alert(`NISN ${rec.nama} kosong atau ganda. Perbaiki Data Siswa sebelum menyimpan.`);return;}for(const x of rec.pertemuan)for(const v of [x.afektif,x.kognitif,x.psikomotorik])if(v!==null&&(!Number.isFinite(v)||v<0||v>100)){alert(`Nilai ${rec.nama}, pertemuan ${x.pertemuan} harus 0 sampai 100.`);return;}simpanNilaiHarianRecord(rec,user);}firebaseSaveCollection('nilaiHarian',nilaiHarian).catch(console.error);firebaseSaveCollection('nilai',nilai).catch(console.error);updateNilaiTable();renderNilaiHarianTable();alert(`Nilai Harian untuk ${students.length} siswa di ${kelas} berhasil disimpan.`);}
+async function simpanSemuaNilaiHarian(){
+    const user=getCurrentUser();if(!isStaffUser(user))return;
+    const kelas=document.getElementById('filterNilaiHarianKelas')?.value||'',mapel=document.getElementById('filterNilaiHarianMapel')?.value||'';
+    if(!kelas||!mapel){alert('Pilih rombel dan mata pelajaran terlebih dahulu.');return;}
+    const students=getStudentsForNilaiHarian();if(!students.length){alert('Tidak ada siswa pada rombel ini.');return;}
+    const beforeHarian=cloneData(nilaiHarian),beforeNilai=cloneData(nilai);
+    for(let idx=0;idx<students.length;idx++){
+        const rec=getNilaiHarianRowRecord(idx);if(!rec)continue;
+        const student=rec.nisn?siswa.find(st=>nilaiNisn(st.nisn)===nilaiNisn(rec.nisn)):siswa.find(st=>normalizeName(st.nama)===normalizeName(rec.nama)&&normalizeName(st.kelas)===normalizeName(rec.kelas));
+        if(!student||isAmbiguousNilaiStudent(student)){alert(`NISN ${rec.nama} kosong atau ganda. Perbaiki Data Siswa sebelum menyimpan.`);return;}
+        for(const x of rec.pertemuan)for(const v of [x.afektif,x.kognitif,x.psikomotorik])if(v!==null&&(!Number.isFinite(v)||v<0||v>100)){alert(`Nilai ${rec.nama}, pertemuan ${x.pertemuan} harus 0 sampai 100.`);return;}
+        simpanNilaiHarianRecord(rec,user);
+    }
+    try{
+        await Promise.all([firebaseSaveCollection('nilaiHarian',nilaiHarian),firebaseSaveCollection('nilai',nilai)]);
+        updateNilaiTable();renderNilaiHarianTable();
+        alert(`Nilai Harian untuk ${students.length} siswa di ${kelas} berhasil disimpan ke Firebase.`);
+    }catch(error){
+        nilaiHarian=beforeHarian;nilai=beforeNilai;window.nilaiHarian=nilaiHarian;window.nilai=nilai;
+        console.error('Gagal menyimpan nilai harian:',error);updateNilaiTable();renderNilaiHarianTable();
+        alert('Nilai harian BELUM berhasil disimpan ke Firebase.\n\n'+(error?.message||error));
+    }
+}
 function getNilaiHarianDisplay(n){const rec=getNilaiHarianRecord(n?.nama,n?.mapel,n?.nisn,n?.kelas),final=rec?.nilaiAkhir??n?.nilaiHarian,text=final!==null&&final!==undefined&&final!==''?`✓ ${final}`:'＋ Input';return `<button type="button" class="nilai-harian-btn ${final!==null&&final!==undefined?'has-score':''}" data-nama="${escapeHtml(n.nama||'')}" data-mapel="${escapeHtml(n.mapel||'')}" data-nisn="${escapeHtml(nilaiNisn(n.nisn))}" data-kelas="${escapeHtml(n.kelas||'')}" onclick="bukaNilaiHarian(this.dataset.nama,this.dataset.mapel,this.dataset.nisn,this.dataset.kelas)">${text}</button>`;}
 
 /* NILAI TUGAS */
@@ -4963,7 +5066,7 @@ function bukaNilaiTugasDariForm(){const user=getCurrentUser(),st=getSelectedNila
 function kembaliDariNilaiTugas(){showContent('nilai');}
 function renderNilaiTugasTable(){const tb=document.getElementById('dataNilaiTugas');if(!tb)return;populateNilaiTugasFilters();const k=document.getElementById('filterNilaiTugasKelas')?.value||'',m=document.getElementById('filterNilaiTugasMapel')?.value||'',n=document.getElementById('filterNilaiTugasNama')?.value||'';if(!k||!m){tb.innerHTML='<tr><td colspan="13" style="padding:28px;text-align:center;color:var(--text-muted)">Pilih <b>Rombel</b> dan <b>Mata Pelajaran</b> terlebih dahulu.</td></tr>';return;}const students=getDaftarSiswaNilaiTugas().filter(st=>normalizeName(st.kelas)===normalizeName(k)&&(!n||nilaiStudentKey(st)===n));tb.innerHTML=students.length?students.map((st,ri)=>{const rec=getNilaiTugasRecord(st.nama,m,st.nisn,st.kelas),vals=Array.from({length:10},(_,i)=>rec?.tugas?.[i]??''),avg=vals.reduce((a,v)=>a+(Number(v)||0),0)/10;return `<tr data-nt-row="${ri}" data-nt-nama="${escapeHtml(st.nama)}" data-nt-nisn="${escapeHtml(st.nisn)}" data-nt-kelas="${escapeHtml(st.kelas)}"><td>${ri+1}</td><td style="text-align:left;min-width:170px"><b>${escapeHtml(st.nama)}</b><small style="display:block;color:var(--text-muted)">${escapeHtml(st.nisn||'NISN belum diisi')}</small></td>${vals.map((v,i)=>`<td><input class="nilai-tugas-input" type="number" min="0" max="100" step="0.01" value="${v}" data-nt-row="${ri}" data-nt-i="${i}" oninput="updateNilaiTugasRow(${ri})"></td>`).join('')}<td id="nt_avg_${ri}" class="nilai-tugas-avg">${Math.round(avg*100)/100}</td></tr>`;}).join(''):'<tr><td colspan="13" style="padding:28px;text-align:center;color:var(--text-muted)">Tidak ada siswa pada rombel ini.</td></tr>';}
 function updateNilaiTugasRow(ri){let total=0;for(let i=0;i<10;i++)total+=Number(document.querySelector(`input[data-nt-row="${ri}"][data-nt-i="${i}"]`)?.value)||0;const el=document.getElementById(`nt_avg_${ri}`);if(el)el.textContent=Math.round(total/10*100)/100;}
-async function simpanSemuaNilaiTugas(){const user=getCurrentUser(),m=document.getElementById('filterNilaiTugasMapel')?.value||'',kelas=document.getElementById('filterNilaiTugasKelas')?.value||'';if(!isStaffUser(user))return;if(!kelas||!m){alert('Pilih rombel dan mata pelajaran terlebih dahulu.');return;}const rows=[...document.querySelectorAll('tr[data-nt-row]')];if(!rows.length){alert('Tidak ada siswa pada rombel ini.');return;}const updatedAt=new Date().toISOString();for(const tr of rows){const nama=tr.dataset.ntNama||'',nisn=tr.dataset.ntNisn||'',rombel=tr.dataset.ntKelas||'',student=nisn?siswa.find(st=>nilaiNisn(st.nisn)===nilaiNisn(nisn)):siswa.find(st=>normalizeName(st.nama)===normalizeName(nama)&&normalizeName(st.kelas)===normalizeName(rombel)),rowIndex=tr.dataset.ntRow;if(!student||isAmbiguousNilaiStudent(student)){alert(`NISN ${nama} kosong atau ganda. Perbaiki Data Siswa sebelum menyimpan.`);return;}const tugas=Array.from({length:10},(_,i)=>{const value=document.querySelector(`input[data-nt-row="${rowIndex}"][data-nt-i="${i}"]`)?.value??'';if(value==='')return 0;const num=Number(value);return Number.isFinite(num)&&num>=0&&num<=100?num:null;});if(tugas.some(v=>v===null)){alert(`Nilai tugas ${nama} harus berada pada rentang 0 sampai 100.`);return;}const key=getNilaiTugasKey(nama,m,nisn,rombel),old=getNilaiTugasRecord(nama,m,nisn,rombel),avg=Math.round(tugas.reduce((a,b)=>a+b,0)/10*100)/100,saved={id:old?.id||('nilaiTugas_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),key,nama,nisn,kelas:rombel,mapel:m,tugas,rataRata:avg,diperbaruiOleh:user.nama||user.username||'Pengguna',diperbaruiPada:updatedAt};const idx=old?nilaiTugas.indexOf(old):-1;if(idx>=0)nilaiTugas[idx]=saved;else nilaiTugas.push(saved);let mainIdx=nilai.findIndex(x=>getNilaiRecordStudentKey(x)===nilaiStudentKey({nama,nisn,kelas:rombel})&&normalizeName(x.mapel)===normalizeName(m));if(mainIdx<0){nilai.push({id:'nilai_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),nama,nisn,kelas:rombel,mapel:m,kehadiran:'100%',tugas:avg,uts:0,uas:0,nilaiHarian:getNilaiHarianRecord(nama,m,nisn,rombel)?.nilaiAkhir||0,angka:Math.round(avg*.2),grade:'D',extra:{},dibuatOleh:user.nama||user.username||'Pengguna'});mainIdx=nilai.length-1;}else nilai[mainIdx]={...nilai[mainIdx],nisn,kelas:rombel,tugas:avg};const main=nilai[mainIdx],final=Math.round((Number(main.tugas)||0)*.2+(Number(main.uts)||0)*.3+(Number(main.uas)||0)*.5);main.angka=final;main.grade=final>=85?'A':final>=75?'B':final>=60?'C':'D';}try{await firebaseSaveCollection('nilaiTugas',nilaiTugas);await firebaseSaveCollection('nilai',nilai);updateNilaiTable();renderNilaiTugasTable();alert(`Nilai Tugas untuk ${rows.length} siswa pada ${kelas} berhasil disimpan.`);}catch(error){console.error(error);alert('Nilai tugas gagal disinkronkan. Periksa koneksi Firebase.');}}
+async function simpanSemuaNilaiTugas(){const user=getCurrentUser(),m=document.getElementById('filterNilaiTugasMapel')?.value||'',kelas=document.getElementById('filterNilaiTugasKelas')?.value||'';if(!isStaffUser(user))return;if(!kelas||!m){alert('Pilih rombel dan mata pelajaran terlebih dahulu.');return;}const rows=[...document.querySelectorAll('tr[data-nt-row]')];if(!rows.length){alert('Tidak ada siswa pada rombel ini.');return;}const beforeNilaiTugas=cloneData(nilaiTugas),beforeNilai=cloneData(nilai);const updatedAt=new Date().toISOString();for(const tr of rows){const nama=tr.dataset.ntNama||'',nisn=tr.dataset.ntNisn||'',rombel=tr.dataset.ntKelas||'',student=nisn?siswa.find(st=>nilaiNisn(st.nisn)===nilaiNisn(nisn)):siswa.find(st=>normalizeName(st.nama)===normalizeName(nama)&&normalizeName(st.kelas)===normalizeName(rombel)),rowIndex=tr.dataset.ntRow;if(!student||isAmbiguousNilaiStudent(student)){alert(`NISN ${nama} kosong atau ganda. Perbaiki Data Siswa sebelum menyimpan.`);return;}const tugas=Array.from({length:10},(_,i)=>{const value=document.querySelector(`input[data-nt-row="${rowIndex}"][data-nt-i="${i}"]`)?.value??'';if(value==='')return 0;const num=Number(value);return Number.isFinite(num)&&num>=0&&num<=100?num:null;});if(tugas.some(v=>v===null)){alert(`Nilai tugas ${nama} harus berada pada rentang 0 sampai 100.`);return;}const key=getNilaiTugasKey(nama,m,nisn,rombel),old=getNilaiTugasRecord(nama,m,nisn,rombel),avg=Math.round(tugas.reduce((a,b)=>a+b,0)/10*100)/100,saved={id:old?.id||('nilaiTugas_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),key,nama,nisn,kelas:rombel,mapel:m,tugas,rataRata:avg,diperbaruiOleh:user.nama||user.username||'Pengguna',diperbaruiPada:updatedAt};const idx=old?nilaiTugas.indexOf(old):-1;if(idx>=0)nilaiTugas[idx]=saved;else nilaiTugas.push(saved);let mainIdx=nilai.findIndex(x=>getNilaiRecordStudentKey(x)===nilaiStudentKey({nama,nisn,kelas:rombel})&&normalizeName(x.mapel)===normalizeName(m));if(mainIdx<0){nilai.push({id:'nilai_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),nama,nisn,kelas:rombel,mapel:m,kehadiran:'100%',tugas:avg,uts:0,uas:0,nilaiHarian:getNilaiHarianRecord(nama,m,nisn,rombel)?.nilaiAkhir||0,angka:Math.round(avg*.2),grade:'D',extra:{},dibuatOleh:user.nama||user.username||'Pengguna'});mainIdx=nilai.length-1;}else nilai[mainIdx]={...nilai[mainIdx],nisn,kelas:rombel,tugas:avg};const main=nilai[mainIdx],final=Math.round((Number(main.tugas)||0)*.2+(Number(main.uts)||0)*.3+(Number(main.uas)||0)*.5);main.angka=final;main.grade=final>=85?'A':final>=75?'B':final>=60?'C':'D';}try{await firebaseSaveCollection('nilaiTugas',nilaiTugas);await firebaseSaveCollection('nilai',nilai);updateNilaiTable();renderNilaiTugasTable();alert(`Nilai Tugas untuk ${rows.length} siswa pada ${kelas} berhasil disimpan.`);}catch(error){nilaiTugas=beforeNilaiTugas;nilai=beforeNilai;window.nilaiTugas=nilaiTugas;window.nilai=nilai;console.error(error);updateNilaiTable();renderNilaiTugasTable();alert('Nilai tugas BELUM berhasil disimpan ke Firebase.\n\n'+(error?.message||error));}}
 
 function renderNilaiHarianTable(){
     const tbody=document.getElementById('dataNilaiHarian');if(!tbody)return;
@@ -5769,8 +5872,9 @@ async function simpanTabelInputNilai(){
         const tugas=values.tugas,uts=values.uts,uas=values.uas,bobot=tugas*.2+uts*.3+uas*.5,extraValues=Object.values(extra),angka=Math.round(extras.length?bobot*.8+(extraValues.reduce((a,b)=>a+b,0)/extraValues.length)*.2:bobot),grade=tentukanPredikat(angka),idx=findNilaiMainIndex(st,mapel),old=idx>=0?nilai[idx]:{};
         updates.push({idx,data:{...old,nama:st.nama,nisn:nilaiNisn(st.nisn),kelas:st.kelas,mapel,...values,extra,angka,grade,kehadiran:old.kehadiran||'100%',dibuatOleh:old.dibuatOleh||user.nama||user.username,diperbaruiPada:new Date().toISOString()}});
     }
+    const beforeNilai=cloneData(nilai);
     updates.forEach(({idx,data})=>{if(idx>=0)nilai[idx]=data;else nilai.push(data);});
-    try{localStorage.setItem('nilai',JSON.stringify(nilai));if(firebaseReady&&firebaseDb&&firebaseAuth?.currentUser)await firebaseSaveCollection('nilai',nilai);alert(`Nilai ${updates.length} siswa pada ${kelas} untuk ${mapel} berhasil disimpan.`);renderTabelInputNilai();}catch(e){console.error(e);alert('Nilai tersimpan di perangkat, tetapi sinkronisasi Firebase gagal. Periksa koneksi lalu coba lagi.');}
+    try{await firebaseSaveCollection('nilai',nilai);alert(`Nilai ${updates.length} siswa pada ${kelas} untuk ${mapel} berhasil disimpan ke Firebase.`);renderTabelInputNilai();}catch(e){nilai=beforeNilai;window.nilai=nilai;console.error(e);renderTabelInputNilai();alert('Nilai BELUM berhasil disimpan ke Firebase.\n\n'+(e?.message||e));}
 }
 
 const showContentNilaiOriginal=showContent;
